@@ -1,6 +1,7 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,5 +30,13 @@ public class MySliderView extends BaseSliderView {
         description.setText(getDescription());
         bindEventAndShow(v, target);
         return v;
+    }
+
+    public static class OnSliderClickListener implements BaseSliderView.OnSliderClickListener{
+        @Override
+        public void onSliderClick(BaseSliderView slider) {
+            Integer index = (Integer) slider.getView().getTag();
+            Log.e("clicked id", String.valueOf(index));
+        }
     }
 }

@@ -1,21 +1,22 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,13 +46,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
+            else
+                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        toolbar.post(new Runnable() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void run() {
+                Picasso.with(MainActivity.this).load(R.drawable.app_name).into((ImageView) findViewById(R.id.app_name));
             }
         });
 
@@ -101,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getNowPlaying(final Context context){
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.now_playing_progress_bar);
         if(Utils.isInternetConnected(context)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -110,15 +117,18 @@ public class MainActivity extends AppCompatActivity {
             nowPlaying.enqueue(new Callback<NowPlaying>() {
                 @Override
                 public void onResponse(Call<NowPlaying> call, Response<NowPlaying> response) {
+                    pb.setVisibility(View.GONE);
                     mNowPlayingList = response.body().getResults();
                     populateNowPlaying(context);
                 }
 
                 @Override
                 public void onFailure(Call<NowPlaying> call, Throwable t) {
-
+                    pb.setVisibility(View.GONE);
                 }
             });
+        }else {
+            pb.setVisibility(View.GONE);
         }
     }
 
@@ -129,31 +139,18 @@ public class MainActivity extends AppCompatActivity {
             imagePath.append(configurationPreference.getBaseUrl());
             imagePath.append(configurationPreference.getBackdropSizes().get(0));
             imagePath.append(nowPlaying.getBackdropPath());
-            Log.e("image path", imagePath.toString());
             MySliderView textSliderView = new MySliderView(context, i);
             textSliderView
                     .description(nowPlaying.getTitle())
                     .image(imagePath.toString())
-                    .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-                        @Override
-                        public void onSliderClick(BaseSliderView slider) {
-                            Integer index = (Integer) slider.getView().getTag();
-                            Log.e("clicked id", String.valueOf(index));
-                        }
-                    });
+                    .setOnSliderClickListener(new MySliderView.OnSliderClickListener());
 
             mNowPlayingSliderLayout.addSlider(textSliderView);
         }
         MySliderView textSliderView = new MySliderView(context, 0);
         textSliderView
                 .image(R.drawable.now_playing_view_more)
-                .setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-                    @Override
-                    public void onSliderClick(BaseSliderView slider) {
-                        Integer index = (Integer) slider.getView().getTag();
-                        Log.e("clicked id", String.valueOf(index));
-                    }
-                });
+                .setOnSliderClickListener(new MySliderView.OnSliderClickListener());
 
         mNowPlayingSliderLayout.addSlider(textSliderView);
 

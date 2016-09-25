@@ -31,8 +31,7 @@
                 <com.daimajia.slider.library.SliderLayout
                     android:id="@+id/now_playing_slider"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorPrimary"/>
+                    android:layout_height="match_parent"/>
                 <com.daimajia.slider.library.Indicators.PagerIndicator
                     android:id="@+id/custom_indicator"
                     android:layout_width="wrap_content"
@@ -52,6 +51,11 @@
                     android:layout_centerHorizontal="true"
                     android:layout_alignParentBottom="true"
                     android:paddingBottom="@dimen/description_height"/>
+                <ProgressBar
+                    android:id="@+id/now_playing_progress_bar"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </RelativeLayout>
 
         </ScrollView>
