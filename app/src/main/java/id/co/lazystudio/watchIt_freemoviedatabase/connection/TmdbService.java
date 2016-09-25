@@ -2,6 +2,7 @@ package id.co.lazystudio.watchIt_freemoviedatabase.connection;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.BuildConfig;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Configuration;
+import id.co.lazystudio.watchIt_freemoviedatabase.entity.NowPlaying;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -15,4 +16,8 @@ public interface TmdbService {
     @Headers("Content-Type: application/json")
     @GET("configuration?api_key="+API_KEY)
     Call<Configuration> getConfiguration();
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/now_playing?api_key="+API_KEY)
+    Call<NowPlaying> getNowPlaying();
 }
