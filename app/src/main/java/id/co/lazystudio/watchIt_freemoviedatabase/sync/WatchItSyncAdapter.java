@@ -10,15 +10,13 @@ import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.util.Log;
-
-import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.R;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Configuration;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,31 +44,8 @@ public class WatchItSyncAdapter extends AbstractThreadedSyncAdapter {
         configuration.enqueue(new Callback<Configuration>() {
             @Override
             public void onResponse(Call<Configuration> call, Response<Configuration> response) {
-                Configuration.Image image = response.body().getImages();
-                String baseUrl = image.getBaseUrl();
-                String secureBaseUrl = image.getSecureBaseUrl();
-                Log.e("base url", baseUrl);
-                Log.e("secure base url", secureBaseUrl);
-                List<String> backdropSizes = image.getBackdropSizes();
-                for(String backdropSize : backdropSizes){
-                    Log.e("backdrop sizes", backdropSize);
-                }
-                List<String> logoSizes = image.getLogoSizes();
-                for(String logoSize : logoSizes){
-                    Log.e("logo sizes", logoSize);
-                }
-                List<String> posterSizes = image.getPosterSizes();
-                for(String posterSize : posterSizes){
-                    Log.e("poster sizes", posterSize);
-                }
-                List<String> profileSizes = image.getProfileSizes();
-                for(String profileSize : profileSizes){
-                    Log.e("profile sizes", profileSize);
-                }
-                List<String> stillSizes = image.getStillSizes();
-                for(String stillSize : stillSizes){
-                    Log.e("still sizes", stillSize);
-                }
+                TmdbConfigurationPreference pref = new TmdbConfigurationPreference(getContext());
+                pref.setConfiguration(response.body());
             }
 
             @Override
