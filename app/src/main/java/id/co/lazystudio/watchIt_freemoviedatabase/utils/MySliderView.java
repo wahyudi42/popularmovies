@@ -23,7 +23,7 @@ public class MySliderView extends BaseSliderView {
 
     @Override
     public View getView() {
-        View v = LayoutInflater.from(getContext()).inflate(R.layout.slider_item,null);
+        View v = LayoutInflater.from(getContext()).inflate(R.layout.item_slider,null);
         v.setTag(mTag);
         ImageView target = (ImageView)v.findViewById(R.id.daimajia_slider_image);
         TextView description = (TextView)v.findViewById(R.id.description);

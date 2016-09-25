@@ -1,13 +1,15 @@
-package id.co.lazystudio.watchIt_freemoviedatabase.entity;
+package id.co.lazystudio.watchIt_freemoviedatabase.parser;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
+
 /**
  * Created by faqiharifian on 25/09/16.
  */
-public class NowPlaying {
+public class NowPlayingResponse {
     @SerializedName("page")
     private int page;
     @SerializedName("results")
@@ -21,7 +23,7 @@ public class NowPlaying {
         return page;
     }
 
-    public List<Movie> getResults() {
+    public List<Movie> getMovies() {
         return results;
     }
 

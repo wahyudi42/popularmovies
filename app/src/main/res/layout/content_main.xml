@@ -24,39 +24,66 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/now_playing_relative_layout"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
-                <com.daimajia.slider.library.SliderLayout
-                    android:id="@+id/now_playing_slider"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/now_playing_relative_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-                <com.daimajia.slider.library.Indicators.PagerIndicator
-                    android:id="@+id/custom_indicator"
-                    android:layout_width="wrap_content"
+                    android:layout_height="200dp">
+                    <com.daimajia.slider.library.SliderLayout
+                        android:id="@+id/now_playing_slider"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                    <com.daimajia.slider.library.Indicators.PagerIndicator
+                        android:id="@+id/custom_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        app:selected_color="@color/colorAccent"
+                        app:unselected_color="@color/colorPrimary"
+                        app:shape="oval"
+                        app:selected_padding_left="3dp"
+                        app:selected_padding_right="3dp"
+                        app:unselected_padding_left="3dp"
+                        app:unselected_padding_right="3dp"
+                        app:selected_width="8dp"
+                        app:selected_height="8dp"
+                        app:unselected_width="4dp"
+                        app:unselected_height="4dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:paddingBottom="@dimen/description_height"/>
+                    <ProgressBar
+                        android:id="@+id/now_playing_progress_bar"
+                        android:layout_centerInParent="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </RelativeLayout>
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    app:selected_color="@color/colorAccent"
-                    app:unselected_color="@color/colorPrimary"
-                    app:shape="oval"
-                    app:selected_padding_left="3dp"
-                    app:selected_padding_right="3dp"
-                    app:unselected_padding_left="3dp"
-                    app:unselected_padding_right="3dp"
-                    app:selected_width="8dp"
-                    app:selected_height="8dp"
-                    app:unselected_width="4dp"
-                    app:unselected_height="4dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:paddingBottom="@dimen/description_height"/>
-                <ProgressBar
-                    android:id="@+id/now_playing_progress_bar"
-                    android:layout_centerInParent="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
+                    android:layout_marginTop="@dimen/small_line_spacing"
+                    android:scrollbars="none">
+                        <LinearLayout
+                            android:id="@+id/genre_linear_layout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center">
+                            <ProgressBar
+                                android:id="@+id/genre_progress_bar"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                style="?android:attr/progressBarStyleSmall"/>
+                        </LinearLayout>
+
+                </HorizontalScrollView>
+            </LinearLayout>
+
+
 
         </ScrollView>
     </android.support.v7.widget.CardView>

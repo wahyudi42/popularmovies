@@ -6,13 +6,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
@@ -23,8 +28,10 @@ import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
+import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
-import id.co.lazystudio.watchIt_freemoviedatabase.entity.NowPlaying;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreResponse;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.NowPlayingResponse;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.MySliderView;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
@@ -35,10 +42,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private List<Movie> mNowPlayingList = new ArrayList<>();
+    private List<Genre> mGenres = new ArrayList<>();
     private TmdbConfigurationPreference configurationPreference = new TmdbConfigurationPreference(this);
 
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
+
+    LinearLayout mGenreLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         nowPlayingRelativeLayout.post(new Runnable() {
             @Override
             public void run() {
-                ScrollView.LayoutParams params = new ScrollView.LayoutParams(nowPlayingRelativeLayout.getWidth(), nowPlayingRelativeLayout.getWidth() * 9 / 16);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(nowPlayingRelativeLayout.getWidth(), nowPlayingRelativeLayout.getWidth() * 9 / 16);
                 nowPlayingRelativeLayout.setLayoutParams(params);
             }
         });
@@ -81,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mGenreLinearLayout = (LinearLayout) findViewById(R.id.genre_linear_layout);
+
         getNowPlaying(this);
+        getGenres(this);
     }
 
     @Override
@@ -112,18 +125,18 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<NowPlaying> nowPlaying = tmdbService.getNowPlaying();
+            final Call<NowPlayingResponse> nowPlaying = tmdbService.getNowPlaying();
 
-            nowPlaying.enqueue(new Callback<NowPlaying>() {
+            nowPlaying.enqueue(new Callback<NowPlayingResponse>() {
                 @Override
-                public void onResponse(Call<NowPlaying> call, Response<NowPlaying> response) {
+                public void onResponse(Call<NowPlayingResponse> call, Response<NowPlayingResponse> response) {
                     pb.setVisibility(View.GONE);
-                    mNowPlayingList = response.body().getResults();
+                    mNowPlayingList = response.body().getMovies();
                     populateNowPlaying(context);
                 }
 
                 @Override
-                public void onFailure(Call<NowPlaying> call, Throwable t) {
+                public void onFailure(Call<NowPlayingResponse> call, Throwable t) {
                     pb.setVisibility(View.GONE);
                 }
             });
@@ -155,5 +168,54 @@ public class MainActivity extends AppCompatActivity {
         mNowPlayingSliderLayout.addSlider(textSliderView);
 
         mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+    }
+
+    private void getGenres(final Context context){
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.genre_progress_bar);
+        if(Utils.isInternetConnected(context)) {
+            TmdbService tmdbService =
+                    TmdbClient.getClient().create(TmdbService.class);
+
+            final Call<GenreResponse> genre = tmdbService.getGenres();
+
+            genre.enqueue(new Callback<GenreResponse>() {
+                @Override
+                public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+                    pb.setVisibility(View.GONE);
+                    mGenreLinearLayout.setVisibility(View.VISIBLE);
+                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mGenreLinearLayout.getLayoutParams();
+                    params.gravity = Gravity.NO_GRAVITY;
+                    mGenres = response.body().getGenres();
+                    populateGenres(context);
+                }
+
+                @Override
+                public void onFailure(Call<GenreResponse> call, Throwable t) {
+                    pb.setVisibility(View.GONE);
+                }
+            });
+        }else {
+            pb.setVisibility(View.GONE);
+        }
+    }
+
+    private void populateGenres(Context context){
+        for(int j = 0; j < mGenres.size(); j++){
+            Genre genre = mGenres.get(j);
+            View v = getLayoutInflater().inflate(R.layout.item_genres, mGenreLinearLayout, false);
+//            View v = LayoutInflater.from(context).inflate(R.layout.item_genres,mGenreLinearLayout);
+            v.setTag(j);
+            TextView genreTextView = (TextView) v.findViewById(R.id.genre_text_view);
+            genreTextView.setText(genre.getName());
+            Log.e("genres", genre.getId()+" - "+genre.getName());
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.e("clicked genre index", String.valueOf(view.getTag()));
+                }
+            });
+            mGenreLinearLayout.addView(v);
+        }
+
     }
 }
