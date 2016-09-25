@@ -1,4 +1,7 @@
 <resources>
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">watchIt_freemoviedatabase.lazystudio.co.id</string>
+    <string name="content_authority">id.co.lazystudio.watchIt_freemoviedatabase</string>
     <string name="app_name">Watch It - Free Movie Database</string>
     <string name="action_settings">Settings</string>
 </resources>
