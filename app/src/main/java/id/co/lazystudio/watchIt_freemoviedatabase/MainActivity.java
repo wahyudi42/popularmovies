@@ -10,7 +10,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -185,23 +184,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateNowPlaying(Context context){
-        for(int i = 0; i < mNowPlayingList.size(); i++){
-            Movie nowPlaying = mNowPlayingList.get(i);
-            String imagePath = nowPlaying.getBackdropPath(context, 0);
-            MySliderView textSliderView = new MySliderView(context, i);
-            textSliderView
-                    .description(nowPlaying.getTitle())
-                    .image(imagePath)
-                    .setOnSliderClickListener(new MySliderView.OnSliderClickListener());
+        for(int i = 0; i <= mNowPlayingList.size(); i++){
+            Movie nowPlaying = null;
+            MySliderView textSliderView = null;
+            if(i < mNowPlayingList.size()) {
+                nowPlaying = mNowPlayingList.get(i);
+                String imagePath = nowPlaying.getBackdropPath(context, 0);
+                textSliderView = new MySliderView(context, i);
+                textSliderView
+                        .description(nowPlaying.getTitle())
+                        .image(imagePath);
+            }else{
+                textSliderView = new MySliderView(context, -1);
+                textSliderView.image(R.drawable.more_land);
+            }
+            textSliderView.error(R.drawable.no_image_land);
+            textSliderView.setOnSliderClickListener(new MySliderView.OnSliderClickListener());
 
             mNowPlayingSliderLayout.addSlider(textSliderView);
         }
-        MySliderView textSliderView = new MySliderView(context, 0);
-        textSliderView
-                .image(R.drawable.now_playing_view_more)
-                .setOnSliderClickListener(new MySliderView.OnSliderClickListener());
-
-        mNowPlayingSliderLayout.addSlider(textSliderView);
 
         mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
     }
@@ -282,8 +283,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populatePopular(Context context){
-        for(int j = 0; j < mPopularList.size(); j++){
-            Movie popular = mPopularList.get(j);
+        for(int j = 0; j <= mPopularList.size(); j++){
+            Movie popular = null;
+            if(j != mPopularList.size())
+                popular = mPopularList.get(j);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.setMargins(
                     context.getResources().getDimensionPixelSize(R.dimen.small_margin),
@@ -294,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
-            imageView.setTag(j);
+            imageView.setTag(j < mPopularList.size() ? j : -1);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -304,7 +307,10 @@ public class MainActivity extends AppCompatActivity {
 
             mPopularLinearLayout.addView(imageView);
 
-            Picasso.with(context).load(popular.getPosterPath(context, 0)).into(imageView);
+            if(popular != null)
+                Picasso.with(context).load(popular.getPosterPath(context, 0)).error(R.drawable.no_image_port).into(imageView);
+            else
+                Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(imageView);
         }
     }
 
@@ -338,8 +344,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateTopRated(Context context){
-        for(int j = 0; j < mTopRatedList.size(); j++){
-            Movie popular = mTopRatedList.get(j);
+        for(int k = 0; k <= mTopRatedList.size(); k++){
+            Movie topRated = null;
+            if(k < mTopRatedList.size())
+                topRated = mTopRatedList.get(k);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.setMargins(
                     context.getResources().getDimensionPixelSize(R.dimen.small_margin),
@@ -350,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
             ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
-            imageView.setTag(j);
+            imageView.setTag(k < mPopularList.size() ? k : -1);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -360,7 +368,10 @@ public class MainActivity extends AppCompatActivity {
 
             mTopRatedLinearLayout.addView(imageView);
 
-            Picasso.with(context).load(popular.getPosterPath(context, 0)).into(imageView);
+            if(topRated != null)
+                Picasso.with(context).load(topRated.getPosterPath(context, 0)).error(R.drawable.no_image_port).into(imageView);
+            else
+                Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(imageView);
         }
     }
 }
