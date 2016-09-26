@@ -7,16 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
@@ -31,7 +30,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreResponse;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.NowPlayingResponse;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListResponse;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.MySliderView;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
@@ -42,13 +41,14 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private List<Movie> mNowPlayingList = new ArrayList<>();
+    private List<Movie> mPopularList = new ArrayList<>();
     private List<Genre> mGenres = new ArrayList<>();
     private TmdbConfigurationPreference configurationPreference = new TmdbConfigurationPreference(this);
 
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
 
-    LinearLayout mGenreLinearLayout;
+    LinearLayout mGenreLinearLayout, mPopularLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +91,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mGenreLinearLayout = (LinearLayout) findViewById(R.id.genre_linear_layout);
+        mGenreLinearLayout = (LinearLayout) findViewById(R.id.genre_linearlayout);
+
+        mPopularLinearLayout = (LinearLayout) findViewById(R.id.popular_linearlayout);
+        mPopularLinearLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                HorizontalScrollView parent = (HorizontalScrollView) mPopularLinearLayout.getParent();
+                HorizontalScrollView.LayoutParams params = new HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, parent.getWidth() / 2);
+                params.gravity = Gravity.CENTER;
+                mPopularLinearLayout.setLayoutParams(params);
+
+                findViewById(R.id.popular_viewall_textview).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("view all clicked", "popular");
+                    }
+                });
+            }
+        });
 
         getNowPlaying(this);
         getGenres(this);
+        getPopular(this);
     }
 
     @Override
@@ -125,18 +144,18 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<NowPlayingResponse> nowPlaying = tmdbService.getNowPlaying();
+            final Call<MovieListResponse> nowPlaying = tmdbService.getNowPlaying();
 
-            nowPlaying.enqueue(new Callback<NowPlayingResponse>() {
+            nowPlaying.enqueue(new Callback<MovieListResponse>() {
                 @Override
-                public void onResponse(Call<NowPlayingResponse> call, Response<NowPlayingResponse> response) {
+                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                     pb.setVisibility(View.GONE);
                     mNowPlayingList = response.body().getMovies();
                     populateNowPlaying(context);
                 }
 
                 @Override
-                public void onFailure(Call<NowPlayingResponse> call, Throwable t) {
+                public void onFailure(Call<MovieListResponse> call, Throwable t) {
                     pb.setVisibility(View.GONE);
                 }
             });
@@ -148,14 +167,11 @@ public class MainActivity extends AppCompatActivity {
     private void populateNowPlaying(Context context){
         for(int i = 0; i < mNowPlayingList.size(); i++){
             Movie nowPlaying = mNowPlayingList.get(i);
-            StringBuilder imagePath = new StringBuilder();
-            imagePath.append(configurationPreference.getBaseUrl());
-            imagePath.append(configurationPreference.getBackdropSizes().get(0));
-            imagePath.append(nowPlaying.getBackdropPath());
+            String imagePath = nowPlaying.getBackdropPath(context, 0);
             MySliderView textSliderView = new MySliderView(context, i);
             textSliderView
                     .description(nowPlaying.getTitle())
-                    .image(imagePath.toString())
+                    .image(imagePath)
                     .setOnSliderClickListener(new MySliderView.OnSliderClickListener());
 
             mNowPlayingSliderLayout.addSlider(textSliderView);
@@ -171,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getGenres(final Context context){
-        final ProgressBar pb = (ProgressBar) findViewById(R.id.genre_progress_bar);
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.genre_progressbar);
         if(Utils.isInternetConnected(context)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -203,11 +219,9 @@ public class MainActivity extends AppCompatActivity {
         for(int j = 0; j < mGenres.size(); j++){
             Genre genre = mGenres.get(j);
             View v = getLayoutInflater().inflate(R.layout.item_genres, mGenreLinearLayout, false);
-//            View v = LayoutInflater.from(context).inflate(R.layout.item_genres,mGenreLinearLayout);
             v.setTag(j);
             TextView genreTextView = (TextView) v.findViewById(R.id.genre_text_view);
             genreTextView.setText(genre.getName());
-            Log.e("genres", genre.getId()+" - "+genre.getName());
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -216,6 +230,61 @@ public class MainActivity extends AppCompatActivity {
             });
             mGenreLinearLayout.addView(v);
         }
+    }
 
+    private void getPopular(final Context context){
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.popular_progressbar);
+        if(Utils.isInternetConnected(context)) {
+            TmdbService tmdbService =
+                    TmdbClient.getClient().create(TmdbService.class);
+
+            final Call<MovieListResponse> genre = tmdbService.getPopular();
+
+            genre.enqueue(new Callback<MovieListResponse>() {
+                @Override
+                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                    pb.setVisibility(View.GONE);
+                    mPopularLinearLayout.setVisibility(View.VISIBLE);
+                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mPopularLinearLayout.getLayoutParams();
+                    params.gravity = Gravity.NO_GRAVITY;
+                    mPopularList = response.body().getMovies();
+                    populatePopular(context);
+                }
+
+                @Override
+                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                    pb.setVisibility(View.GONE);
+                }
+            });
+        }else {
+            pb.setVisibility(View.GONE);
+        }
+    }
+
+    private void populatePopular(Context context){
+        for(int j = 0; j < mPopularList.size(); j++){
+            Movie popular = mPopularList.get(j);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.setMargins(
+                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
+            );
+            ImageView imageView = new ImageView(context);
+            imageView.setLayoutParams(params);
+            imageView.setAdjustViewBounds(true);
+            imageView.setTag(j);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.e("clicked popular index", String.valueOf(view.getTag()));
+                }
+            });
+
+            mPopularLinearLayout.addView(imageView);
+
+            Picasso.with(context).load(popular.getPosterPath(context, 0)).into(imageView);
+        }
     }
 }

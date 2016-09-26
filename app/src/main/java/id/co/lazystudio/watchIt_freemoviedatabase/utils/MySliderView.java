@@ -36,7 +36,7 @@ public class MySliderView extends BaseSliderView {
         @Override
         public void onSliderClick(BaseSliderView slider) {
             Integer index = (Integer) slider.getView().getTag();
-            Log.e("clicked id", String.valueOf(index));
+            Log.e("clicked now playing id", String.valueOf(index));
         }
     }
 }

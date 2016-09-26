@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 /**
  * Created by faqiharifian on 25/09/16.
  */
-public class NowPlayingResponse {
+public class MovieListResponse {
     @SerializedName("page")
     private int page;
     @SerializedName("results")

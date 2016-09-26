@@ -1,6 +1,10 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.entity;
 
+import android.content.Context;
+
 import com.google.gson.annotations.SerializedName;
+
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
 
 /**
  * Created by faqiharifian on 23/09/16.
@@ -50,12 +54,22 @@ public class Movie {
         return overview;
     }
 
-    public String getPosterPath() {
-        return posterPath;
+    public String getPosterPath(Context context, int index) {
+        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+        StringBuilder imagePath = new StringBuilder();
+        imagePath.append(conf.getBaseUrl());
+        imagePath.append(conf.getBackdropSizes().get(index));
+        imagePath.append(posterPath);
+        return imagePath.toString();
     }
 
-    public String getBackdropPath() {
-        return backdropPath;
+    public String getBackdropPath(Context context, int index) {
+        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+        StringBuilder imagePath = new StringBuilder();
+        imagePath.append(conf.getBaseUrl());
+        imagePath.append(conf.getBackdropSizes().get(index));
+        imagePath.append(backdropPath);
+        return imagePath.toString();
     }
 
     public String getReleaseDate() {

@@ -68,23 +68,63 @@
                     android:layout_marginTop="@dimen/small_line_spacing"
                     android:scrollbars="none">
                         <LinearLayout
-                            android:id="@+id/genre_linear_layout"
+                            android:id="@+id/genre_linearlayout"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_gravity="center">
                             <ProgressBar
-                                android:id="@+id/genre_progress_bar"
+                                android:id="@+id/genre_progressbar"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 style="?android:attr/progressBarStyleSmall"/>
                         </LinearLayout>
 
                 </HorizontalScrollView>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/line_spacing">
+                    <TextView
+                        android:id="@+id/popular_title_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/popular_title"
+                        style="@style/AppTheme.MovieCategoryTitle"/>
+                    <TextView
+                        android:id="@+id/popular_viewall_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="@string/view_all"
+                        style="@style/AppTheme.MovieViewAll"
+                        android:layout_alignBaseline="@+id/popular_title_textview" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/popular_title_textview"
+                        android:id="@+id/popular_horizontalscrollview">
+                            <LinearLayout
+                                android:id="@+id/popular_linearlayout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:layout_gravity="center">
+
+                                <ProgressBar
+                                    android:id="@+id/popular_progressbar"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"/>
+                            </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                </RelativeLayout>
+
             </LinearLayout>
-
-
-
         </ScrollView>
     </android.support.v7.widget.CardView>
 
