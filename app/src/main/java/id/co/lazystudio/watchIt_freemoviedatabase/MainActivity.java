@@ -42,13 +42,14 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private List<Movie> mNowPlayingList = new ArrayList<>();
     private List<Movie> mPopularList = new ArrayList<>();
+    private List<Movie> mTopRatedList = new ArrayList<>();
     private List<Genre> mGenres = new ArrayList<>();
     private TmdbConfigurationPreference configurationPreference = new TmdbConfigurationPreference(this);
 
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
 
-    LinearLayout mGenreLinearLayout, mPopularLinearLayout;
+    LinearLayout mGenreLinearLayout, mPopularLinearLayout, mTopRatedLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +112,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mTopRatedLinearLayout = (LinearLayout) findViewById(R.id.toprated_linearlayout);
+        mTopRatedLinearLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                HorizontalScrollView parent = (HorizontalScrollView) mTopRatedLinearLayout.getParent();
+                HorizontalScrollView.LayoutParams params = new HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, parent.getWidth() / 2);
+                params.gravity = Gravity.CENTER;
+                mTopRatedLinearLayout.setLayoutParams(params);
+
+                findViewById(R.id.toprated_viewall_textview).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("view all clicked", "top rated");
+                    }
+                });
+            }
+        });
+
         getNowPlaying(this);
         getGenres(this);
         getPopular(this);
+        getTopRated(this);
     }
 
     @Override
@@ -238,9 +258,9 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<MovieListResponse> genre = tmdbService.getPopular();
+            final Call<MovieListResponse> popular = tmdbService.getPopular();
 
-            genre.enqueue(new Callback<MovieListResponse>() {
+            popular.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
                     pb.setVisibility(View.GONE);
@@ -283,6 +303,62 @@ public class MainActivity extends AppCompatActivity {
             });
 
             mPopularLinearLayout.addView(imageView);
+
+            Picasso.with(context).load(popular.getPosterPath(context, 0)).into(imageView);
+        }
+    }
+
+    private void getTopRated(final Context context){
+        final ProgressBar pb = (ProgressBar) findViewById(R.id.toprated_progressbar);
+        if(Utils.isInternetConnected(context)) {
+            TmdbService tmdbService =
+                    TmdbClient.getClient().create(TmdbService.class);
+
+            final Call<MovieListResponse> topRated = tmdbService.getTopRated();
+
+            topRated.enqueue(new Callback<MovieListResponse>() {
+                @Override
+                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                    pb.setVisibility(View.GONE);
+                    mTopRatedLinearLayout.setVisibility(View.VISIBLE);
+                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mTopRatedLinearLayout.getLayoutParams();
+                    params.gravity = Gravity.NO_GRAVITY;
+                    mTopRatedList = response.body().getMovies();
+                    populateTopRated(context);
+                }
+
+                @Override
+                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                    pb.setVisibility(View.GONE);
+                }
+            });
+        }else {
+            pb.setVisibility(View.GONE);
+        }
+    }
+
+    private void populateTopRated(Context context){
+        for(int j = 0; j < mTopRatedList.size(); j++){
+            Movie popular = mTopRatedList.get(j);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+            params.setMargins(
+                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
+            );
+            ImageView imageView = new ImageView(context);
+            imageView.setLayoutParams(params);
+            imageView.setAdjustViewBounds(true);
+            imageView.setTag(j);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.e("clicked top rated index", String.valueOf(view.getTag()));
+                }
+            });
+
+            mTopRatedLinearLayout.addView(imageView);
 
             Picasso.with(context).load(popular.getPosterPath(context, 0)).into(imageView);
         }

@@ -8,6 +8,6 @@
     <dimen name="line_spacing">32dp</dimen>
     <dimen name="small_margin">4dp</dimen>
 
-    <dimen name="category_title">16sp</dimen>
+    <dimen name="category_title">20sp</dimen>
     <dimen name="view_all">12sp</dimen>
 </resources>
