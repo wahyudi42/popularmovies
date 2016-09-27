@@ -62,26 +62,17 @@
             <!-- /NOW PLAYING SLIDER -->
 
             <!-- GENRES -->
-            <HorizontalScrollView
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/genre_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_line_spacing"
                 android:layout_marginBottom="@dimen/small_line_spacing"
-                android:scrollbars="none">
-                <LinearLayout
-                    android:id="@+id/genre_linearlayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center">
-                    <ProgressBar
-                        android:id="@+id/genre_progressbar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        style="?android:attr/progressBarStyleSmall"/>
-                </LinearLayout>
+                android:scrollbars="none"
+                android:orientation="horizontal"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" >
 
-            </HorizontalScrollView>
+            </android.support.v7.widget.RecyclerView>
             <!-- /GENRES -->
 
             <ScrollView

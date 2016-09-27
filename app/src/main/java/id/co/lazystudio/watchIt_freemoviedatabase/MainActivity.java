@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -16,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.adapter.GenreAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
@@ -48,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
 
-    LinearLayout mGenreLinearLayout, mPopularLinearLayout, mTopRatedLinearLayout;
+    LinearLayout mPopularLinearLayout, mTopRatedLinearLayout;
+    RecyclerView mGenreRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mGenreLinearLayout = (LinearLayout) findViewById(R.id.genre_linearlayout);
+        mGenreRecyclerView = (RecyclerView) findViewById(R.id.genre_recyclerview);
 
         mPopularLinearLayout = (LinearLayout) findViewById(R.id.popular_linearlayout);
         mPopularLinearLayout.post(new Runnable() {
@@ -236,7 +238,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getGenres(final Context context){
-        final ProgressBar pb = (ProgressBar) findViewById(R.id.genre_progressbar);
         if(Utils.isInternetConnected(context)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -246,38 +247,15 @@ public class MainActivity extends AppCompatActivity {
             genre.enqueue(new Callback<GenreResponse>() {
                 @Override
                 public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
-                    pb.setVisibility(View.GONE);
-                    mGenreLinearLayout.setVisibility(View.VISIBLE);
-                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mGenreLinearLayout.getLayoutParams();
-                    params.gravity = Gravity.NO_GRAVITY;
                     mGenres = response.body().getGenres();
-                    populateGenres(context);
+                    mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
                 }
 
                 @Override
                 public void onFailure(Call<GenreResponse> call, Throwable t) {
-                    pb.setVisibility(View.GONE);
                 }
             });
         }else {
-            pb.setVisibility(View.GONE);
-        }
-    }
-
-    private void populateGenres(Context context){
-        for(int j = 0; j < mGenres.size(); j++){
-            Genre genre = mGenres.get(j);
-            View v = getLayoutInflater().inflate(R.layout.item_genres, mGenreLinearLayout, false);
-            v.setTag(j);
-            TextView genreTextView = (TextView) v.findViewById(R.id.genre_text_view);
-            genreTextView.setText(genre.getName());
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.e("clicked genre index", String.valueOf(view.getTag()));
-                }
-            });
-            mGenreLinearLayout.addView(v);
         }
     }
 
