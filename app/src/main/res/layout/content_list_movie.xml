@@ -17,8 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3"
-        android:gravity="center"
-        android:stretchMode="columnWidth">
+        android:verticalSpacing="@dimen/small_margin"
+        android:horizontalSpacing="@dimen/small_margin"
+        android:padding="@dimen/small_margin"
+        android:scrollbarStyle="outsideOverlay">
 
     </GridView>
 </RelativeLayout>

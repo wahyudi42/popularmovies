@@ -2,7 +2,6 @@ package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -111,6 +109,14 @@ public class MainActivity extends AppCompatActivity {
                         viewAll(ListMovie.POPULAR);
                     }
                 });
+
+                findViewById(R.id.popular_title_textview).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("view all clicked", "popular");
+                        viewAll(ListMovie.POPULAR);
+                    }
+                });
             }
         });
 
@@ -124,6 +130,14 @@ public class MainActivity extends AppCompatActivity {
                 mTopRatedLinearLayout.setLayoutParams(params);
 
                 findViewById(R.id.toprated_viewall_textview).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("view all clicked", "top rated");
+                        viewAll(ListMovie.TOP_RATED);
+                    }
+                });
+
+                findViewById(R.id.toprated_title_textview).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.e("view all clicked", "top rated");
@@ -188,10 +202,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void populateNowPlaying(Context context){
-        for(int i = 0; i <= mNowPlayingList.size(); i++){
+        int to = 5;
+        for(int i = 0; i <= to; i++){
             Movie nowPlaying = null;
             MySliderView textSliderView = null;
-            if(i < mNowPlayingList.size()) {
+            if(i < to) {
                 nowPlaying = mNowPlayingList.get(i);
                 String imagePath = nowPlaying.getBackdropPath(context, 0);
                 textSliderView = new MySliderView(context, i);
@@ -302,37 +317,45 @@ public class MainActivity extends AppCompatActivity {
                 popular = mPopularList.get(j);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.setMargins(
-                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
             );
             final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
             imageView.setTag(j < mPopularList.size() ? j : -1);
-            imageView.setOnTouchListener(new View.OnTouchListener() {
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getAction()){
-                        case MotionEvent.ACTION_DOWN: {
-                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
-                            imageView.invalidate();
-                            Log.e("clicked popular index", String.valueOf(view.getTag()));
-                            if((Integer)view.getTag() == -1)
-                                viewAll(ListMovie.POPULAR);
-                            break;
-                        }
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL: {
-                            imageView.getDrawable().clearColorFilter();
-                            imageView.invalidate();
-                            break;
-                        }
-                    }
-                    return true;
+                public void onClick(View view) {
+                    Log.e("clicked popular index", String.valueOf(view.getTag()));
+                    if((Integer)view.getTag() == -1)
+                        viewAll(ListMovie.POPULAR);
                 }
             });
+//            imageView.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    switch (motionEvent.getAction()){
+//                        case MotionEvent.ACTION_DOWN: {
+//                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
+//                            imageView.invalidate();
+//                            Log.e("clicked popular index", String.valueOf(view.getTag()));
+//                            if((Integer)view.getTag() == -1)
+//                                viewAll(ListMovie.POPULAR);
+//                            break;
+//                        }
+//                        case MotionEvent.ACTION_UP:
+//                        case MotionEvent.ACTION_CANCEL: {
+//                            imageView.getDrawable().clearColorFilter();
+//                            imageView.invalidate();
+//                            break;
+//                        }
+//                    }
+//                    return true;
+//                }
+//            });
 
             mPopularLinearLayout.addView(imageView);
 
@@ -379,37 +402,45 @@ public class MainActivity extends AppCompatActivity {
                 topRated = mTopRatedList.get(k);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.setMargins(
-                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_margin),
+                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
             );
             final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
-            imageView.setTag(k < mPopularList.size() ? k : -1);
-            imageView.setOnTouchListener(new View.OnTouchListener() {
+            imageView.setTag(k < mTopRatedList.size() ? k : -1);
+            imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getAction()){
-                        case MotionEvent.ACTION_DOWN: {
-                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
-                            imageView.invalidate();
-                            Log.e("clicked top rated index", String.valueOf(view.getTag()));
-                            if((Integer)view.getTag() == -1)
-                                viewAll(ListMovie.TOP_RATED);
-                            break;
-                        }
-                        case MotionEvent.ACTION_UP:
-                        case MotionEvent.ACTION_CANCEL: {
-                            imageView.getDrawable().clearColorFilter();
-                            imageView.invalidate();
-                            break;
-                        }
-                    }
-                    return true;
+                public void onClick(View view) {
+                    Log.e("clicked top rated index", String.valueOf(view.getTag()));
+                    if((Integer)view.getTag() == -1)
+                        viewAll(ListMovie.TOP_RATED);
                 }
             });
+//            imageView.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    switch (motionEvent.getAction()){
+//                        case MotionEvent.ACTION_DOWN: {
+//                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
+//                            imageView.invalidate();
+//                            Log.e("clicked top rated index", String.valueOf(view.getTag()));
+//                            if((Integer)view.getTag() == -1)
+//                                viewAll(ListMovie.TOP_RATED);
+//                            break;
+//                        }
+//                        case MotionEvent.ACTION_UP:
+//                        case MotionEvent.ACTION_CANCEL: {
+//                            imageView.getDrawable().clearColorFilter();
+//                            imageView.invalidate();
+//                            break;
+//                        }
+//                    }
+//                    return true;
+//                }
+//            });
 
             mTopRatedLinearLayout.addView(imageView);
 

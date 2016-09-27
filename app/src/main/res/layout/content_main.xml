@@ -20,98 +20,105 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:background="@android:color/white"
         app:cardCornerRadius="0dp">
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <!-- NOW PLAYING SLIDER -->
+            <RelativeLayout
+                android:id="@+id/now_playing_relative_layout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/now_playing_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <com.daimajia.slider.library.Indicators.PagerIndicator
+                    android:id="@+id/custom_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:selected_color="@color/colorAccent"
+                    app:unselected_color="@color/colorPrimary"
+                    app:shape="oval"
+                    app:selected_padding_left="3dp"
+                    app:selected_padding_right="3dp"
+                    app:unselected_padding_left="3dp"
+                    app:unselected_padding_right="3dp"
+                    app:selected_width="8dp"
+                    app:selected_height="8dp"
+                    app:unselected_width="4dp"
+                    app:unselected_height="4dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentBottom="true"
+                    android:paddingBottom="@dimen/description_height"/>
+                <ProgressBar
+                    android:id="@+id/now_playing_progress_bar"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+            <!-- /NOW PLAYING SLIDER -->
+
+            <!-- GENRES -->
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- NOW PLAYING SLIDER -->
-                <RelativeLayout
-                    android:id="@+id/now_playing_relative_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp">
-                    <com.daimajia.slider.library.SliderLayout
-                        android:id="@+id/now_playing_slider"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
-                    <com.daimajia.slider.library.Indicators.PagerIndicator
-                        android:id="@+id/custom_indicator"
+                android:layout_marginTop="@dimen/small_line_spacing"
+                android:layout_marginBottom="@dimen/small_line_spacing"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:id="@+id/genre_linearlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+                    <ProgressBar
+                        android:id="@+id/genre_progressbar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        app:selected_color="@color/colorAccent"
-                        app:unselected_color="@color/colorPrimary"
-                        app:shape="oval"
-                        app:selected_padding_left="3dp"
-                        app:selected_padding_right="3dp"
-                        app:unselected_padding_left="3dp"
-                        app:unselected_padding_right="3dp"
-                        app:selected_width="8dp"
-                        app:selected_height="8dp"
-                        app:unselected_width="4dp"
-                        app:unselected_height="4dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="@dimen/description_height"/>
-                    <ProgressBar
-                        android:id="@+id/now_playing_progress_bar"
-                        android:layout_centerInParent="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </RelativeLayout>
-                <!-- /NOW PLAYING SLIDER -->
+                        style="?android:attr/progressBarStyleSmall"/>
+                </LinearLayout>
 
-                <!-- GENRES -->
-                <HorizontalScrollView
+            </HorizontalScrollView>
+            <!-- /GENRES -->
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="none">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_line_spacing"
-                    android:scrollbars="none">
-                        <LinearLayout
-                            android:id="@+id/genre_linearlayout"
+                    android:orientation="vertical">
+
+                    <!-- POPULAR -->
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/line_spacing">
+                        <TextView
+                            android:id="@+id/popular_title_textview"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:layout_gravity="center">
-                            <ProgressBar
-                                android:id="@+id/genre_progressbar"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                style="?android:attr/progressBarStyleSmall"/>
-                        </LinearLayout>
+                            android:text="@string/popular_title"
+                            style="@style/AppTheme.MovieCategoryTitle"/>
+                        <TextView
+                            android:id="@+id/popular_viewall_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="@string/view_all"
+                            style="@style/AppTheme.MovieViewAll"
+                            android:layout_alignBaseline="@+id/popular_title_textview" />
 
-                </HorizontalScrollView>
-                <!-- /GENRES -->
-
-                <!-- POPULAR -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/line_spacing">
-                    <TextView
-                        android:id="@+id/popular_title_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/popular_title"
-                        style="@style/AppTheme.MovieCategoryTitle"/>
-                    <TextView
-                        android:id="@+id/popular_viewall_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="@string/view_all"
-                        style="@style/AppTheme.MovieViewAll"
-                        android:layout_alignBaseline="@+id/popular_title_textview" />
-
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/popular_title_textview"
-                        android:id="@+id/popular_horizontalscrollview">
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/popular_title_textview"
+                            android:id="@+id/popular_horizontalscrollview">
                             <LinearLayout
                                 android:id="@+id/popular_linearlayout"
                                 android:layout_width="wrap_content"
@@ -126,36 +133,36 @@
                                     android:layout_gravity="center"/>
                             </LinearLayout>
 
-                    </HorizontalScrollView>
+                        </HorizontalScrollView>
 
-                </RelativeLayout>
-                <!-- /POPULAR -->
+                    </RelativeLayout>
+                    <!-- /POPULAR -->
 
-                <!-- TOP RATED -->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/line_spacing">
-                    <TextView
-                        android:id="@+id/toprated_title_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/toprated_title"
-                        style="@style/AppTheme.MovieCategoryTitle"/>
-                    <TextView
-                        android:id="@+id/toprated_viewall_textview"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:text="@string/view_all"
-                        style="@style/AppTheme.MovieViewAll"
-                        android:layout_alignBaseline="@+id/toprated_title_textview" />
-
-                    <HorizontalScrollView
+                    <!-- TOP RATED -->
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/toprated_title_textview"
-                        android:id="@+id/toprated_horizontalscrollview">
+                        android:layout_marginTop="@dimen/line_spacing">
+                        <TextView
+                            android:id="@+id/toprated_title_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/toprated_title"
+                            style="@style/AppTheme.MovieCategoryTitle"/>
+                        <TextView
+                            android:id="@+id/toprated_viewall_textview"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:text="@string/view_all"
+                            style="@style/AppTheme.MovieViewAll"
+                            android:layout_alignBaseline="@+id/toprated_title_textview" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/toprated_title_textview"
+                            android:id="@+id/toprated_horizontalscrollview">
                             <LinearLayout
                                 android:id="@+id/toprated_linearlayout"
                                 android:layout_width="wrap_content"
@@ -170,13 +177,15 @@
                                     android:layout_gravity="center"/>
                             </LinearLayout>
 
-                    </HorizontalScrollView>
+                        </HorizontalScrollView>
 
-                </RelativeLayout>
-                <!-- /TOP RATED -->
+                    </RelativeLayout>
+                    <!-- /TOP RATED -->
 
-            </LinearLayout>
-        </ScrollView>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
     </android.support.v7.widget.CardView>
 
 
