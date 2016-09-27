@@ -5,6 +5,8 @@
     <string name="app_name">Watch It - Free Movie Database</string>
     <string name="action_settings">Settings</string>
     <string name="view_all">View All</string>
-    <string name="popular_title">Popular Movies</string>
+    <string name="now_playing_title">Now Playing</string>
+    <string name="popular_title">Popular</string>
     <string name="toprated_title">Top Rated</string>
+    <string name="title_activity_list_movie">ListMovie</string>
 </resources>

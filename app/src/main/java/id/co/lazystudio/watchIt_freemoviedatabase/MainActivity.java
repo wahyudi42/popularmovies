@@ -1,6 +1,8 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -32,7 +36,6 @@ import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreResponse;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListResponse;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.MySliderView;
-import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Movie> mPopularList = new ArrayList<>();
     private List<Movie> mTopRatedList = new ArrayList<>();
     private List<Genre> mGenres = new ArrayList<>();
-    private TmdbConfigurationPreference configurationPreference = new TmdbConfigurationPreference(this);
 
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
@@ -60,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
-            else
+            else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Log.e("view all clicked", "popular");
+                        viewAll(ListMovie.POPULAR);
                     }
                 });
             }
@@ -124,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Log.e("view all clicked", "top rated");
+                        viewAll(ListMovie.TOP_RATED);
                     }
                 });
             }
@@ -138,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return false;
     }
 
     @Override
@@ -199,7 +203,16 @@ public class MainActivity extends AppCompatActivity {
                 textSliderView.image(R.drawable.more_land);
             }
             textSliderView.error(R.drawable.no_image_land);
-            textSliderView.setOnSliderClickListener(new MySliderView.OnSliderClickListener());
+            textSliderView.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                @Override
+                public void onSliderClick(BaseSliderView slider) {
+                    Integer index = (Integer) slider.getView().getTag();
+                    Log.e("clicked now playing id", String.valueOf(index));
+                    if(index == -1){
+                        viewAll(ListMovie.NOW_PLAYING);
+                    }
+                }
+            });
 
             mNowPlayingSliderLayout.addSlider(textSliderView);
         }
@@ -294,14 +307,30 @@ public class MainActivity extends AppCompatActivity {
                     context.getResources().getDimensionPixelSize(R.dimen.small_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
             );
-            ImageView imageView = new ImageView(context);
+            final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
             imageView.setTag(j < mPopularList.size() ? j : -1);
-            imageView.setOnClickListener(new View.OnClickListener() {
+            imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View view) {
-                    Log.e("clicked popular index", String.valueOf(view.getTag()));
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()){
+                        case MotionEvent.ACTION_DOWN: {
+                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
+                            imageView.invalidate();
+                            Log.e("clicked popular index", String.valueOf(view.getTag()));
+                            if((Integer)view.getTag() == -1)
+                                viewAll(ListMovie.POPULAR);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL: {
+                            imageView.getDrawable().clearColorFilter();
+                            imageView.invalidate();
+                            break;
+                        }
+                    }
+                    return true;
                 }
             });
 
@@ -355,14 +384,30 @@ public class MainActivity extends AppCompatActivity {
                     context.getResources().getDimensionPixelSize(R.dimen.small_margin),
                     context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
             );
-            ImageView imageView = new ImageView(context);
+            final ImageView imageView = new ImageView(context);
             imageView.setLayoutParams(params);
             imageView.setAdjustViewBounds(true);
             imageView.setTag(k < mPopularList.size() ? k : -1);
-            imageView.setOnClickListener(new View.OnClickListener() {
+            imageView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View view) {
-                    Log.e("clicked top rated index", String.valueOf(view.getTag()));
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getAction()){
+                        case MotionEvent.ACTION_DOWN: {
+                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
+                            imageView.invalidate();
+                            Log.e("clicked top rated index", String.valueOf(view.getTag()));
+                            if((Integer)view.getTag() == -1)
+                                viewAll(ListMovie.TOP_RATED);
+                            break;
+                        }
+                        case MotionEvent.ACTION_UP:
+                        case MotionEvent.ACTION_CANCEL: {
+                            imageView.getDrawable().clearColorFilter();
+                            imageView.invalidate();
+                            break;
+                        }
+                    }
+                    return true;
                 }
             });
 
@@ -373,5 +418,11 @@ public class MainActivity extends AppCompatActivity {
             else
                 Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(imageView);
         }
+    }
+
+    private void viewAll(String target){
+        Intent i = new Intent(MainActivity.this, ListMovie.class);
+        i.putExtra(target, true);
+        startActivity(i);
     }
 }
