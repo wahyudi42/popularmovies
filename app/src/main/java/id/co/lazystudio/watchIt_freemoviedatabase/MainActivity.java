@@ -8,11 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.GenreAdapter;
+import id.co.lazystudio.watchIt_freemoviedatabase.adapter.SummaryMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
@@ -49,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
 
-    LinearLayout mPopularLinearLayout, mTopRatedLinearLayout;
-    RecyclerView mGenreRecyclerView;
+    RecyclerView mGenreRecyclerView, mPopularRecyclerView, mTopRatedRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,24 +93,15 @@ public class MainActivity extends AppCompatActivity {
 
         mGenreRecyclerView = (RecyclerView) findViewById(R.id.genre_recyclerview);
 
-        mPopularLinearLayout = (LinearLayout) findViewById(R.id.popular_linearlayout);
-        mPopularLinearLayout.post(new Runnable() {
+        mPopularRecyclerView = (RecyclerView) findViewById(R.id.popular_recyclerview);
+        mPopularRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                HorizontalScrollView parent = (HorizontalScrollView) mPopularLinearLayout.getParent();
-                HorizontalScrollView.LayoutParams params = new HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, parent.getWidth() / 2);
-                params.gravity = Gravity.CENTER;
-                mPopularLinearLayout.setLayoutParams(params);
+                LinearLayout parent = (LinearLayout) mPopularRecyclerView.getParent();
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
+                mPopularRecyclerView.setLayoutParams(params);
 
-                findViewById(R.id.popular_viewall_textview).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.e("view all clicked", "popular");
-                        viewAll(ListMovie.POPULAR);
-                    }
-                });
-
-                findViewById(R.id.popular_title_textview).setOnClickListener(new View.OnClickListener() {
+                findViewById(R.id.popular_title_relativelayout).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.e("view all clicked", "popular");
@@ -122,24 +111,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mTopRatedLinearLayout = (LinearLayout) findViewById(R.id.toprated_linearlayout);
-        mTopRatedLinearLayout.post(new Runnable() {
+        mTopRatedRecyclerView = (RecyclerView) findViewById(R.id.toprated_recyclerview);
+        mTopRatedRecyclerView.post(new Runnable() {
             @Override
             public void run() {
-                HorizontalScrollView parent = (HorizontalScrollView) mTopRatedLinearLayout.getParent();
-                HorizontalScrollView.LayoutParams params = new HorizontalScrollView.LayoutParams(HorizontalScrollView.LayoutParams.WRAP_CONTENT, parent.getWidth() / 2);
-                params.gravity = Gravity.CENTER;
-                mTopRatedLinearLayout.setLayoutParams(params);
+                LinearLayout parent = (LinearLayout) mTopRatedRecyclerView.getParent();
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
+                mTopRatedRecyclerView.setLayoutParams(params);
 
-                findViewById(R.id.toprated_viewall_textview).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.e("view all clicked", "top rated");
-                        viewAll(ListMovie.TOP_RATED);
-                    }
-                });
-
-                findViewById(R.id.toprated_title_textview).setOnClickListener(new View.OnClickListener() {
+                findViewById(R.id.toprated_title_relativelayout).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Log.e("view all clicked", "top rated");
@@ -260,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPopular(final Context context){
-        final ProgressBar pb = (ProgressBar) findViewById(R.id.popular_progressbar);
         if(Utils.isInternetConnected(context)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -270,82 +249,21 @@ public class MainActivity extends AppCompatActivity {
             popular.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                    pb.setVisibility(View.GONE);
-                    mPopularLinearLayout.setVisibility(View.VISIBLE);
-                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mPopularLinearLayout.getLayoutParams();
-                    params.gravity = Gravity.NO_GRAVITY;
                     mPopularList = response.body().getMovies();
-                    populatePopular(context);
+                    mPopularList.add(new Movie(-1));
+
+                    mPopularRecyclerView.setAdapter(new SummaryMovieAdapter(context, mPopularList, ListMovie.POPULAR));
                 }
 
                 @Override
                 public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                    pb.setVisibility(View.GONE);
                 }
             });
         }else {
-            pb.setVisibility(View.GONE);
-        }
-    }
-
-    private void populatePopular(Context context){
-        for(int j = 0; j <= mPopularList.size(); j++){
-            Movie popular = null;
-            if(j != mPopularList.size())
-                popular = mPopularList.get(j);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.setMargins(
-                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
-                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
-            );
-            final ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(params);
-            imageView.setAdjustViewBounds(true);
-            imageView.setTag(j < mPopularList.size() ? j : -1);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.e("clicked popular index", String.valueOf(view.getTag()));
-                    if((Integer)view.getTag() == -1)
-                        viewAll(ListMovie.POPULAR);
-                }
-            });
-//            imageView.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View view, MotionEvent motionEvent) {
-//                    switch (motionEvent.getAction()){
-//                        case MotionEvent.ACTION_DOWN: {
-//                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
-//                            imageView.invalidate();
-//                            Log.e("clicked popular index", String.valueOf(view.getTag()));
-//                            if((Integer)view.getTag() == -1)
-//                                viewAll(ListMovie.POPULAR);
-//                            break;
-//                        }
-//                        case MotionEvent.ACTION_UP:
-//                        case MotionEvent.ACTION_CANCEL: {
-//                            imageView.getDrawable().clearColorFilter();
-//                            imageView.invalidate();
-//                            break;
-//                        }
-//                    }
-//                    return true;
-//                }
-//            });
-
-            mPopularLinearLayout.addView(imageView);
-
-            if(popular != null)
-                Picasso.with(context).load(popular.getPosterPath(context, 0)).error(R.drawable.no_image_port).into(imageView);
-            else
-                Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(imageView);
         }
     }
 
     private void getTopRated(final Context context){
-        final ProgressBar pb = (ProgressBar) findViewById(R.id.toprated_progressbar);
         if(Utils.isInternetConnected(context)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -355,77 +273,17 @@ public class MainActivity extends AppCompatActivity {
             topRated.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
-                    pb.setVisibility(View.GONE);
-                    mTopRatedLinearLayout.setVisibility(View.VISIBLE);
-                    HorizontalScrollView.LayoutParams params = (HorizontalScrollView.LayoutParams) mTopRatedLinearLayout.getLayoutParams();
-                    params.gravity = Gravity.NO_GRAVITY;
                     mTopRatedList = response.body().getMovies();
-                    populateTopRated(context);
+                    mTopRatedList.add(new Movie(-1));
+
+                    mTopRatedRecyclerView.setAdapter(new SummaryMovieAdapter(context, mTopRatedList, ListMovie.TOP_RATED));
                 }
 
                 @Override
                 public void onFailure(Call<MovieListResponse> call, Throwable t) {
-                    pb.setVisibility(View.GONE);
                 }
             });
         }else {
-            pb.setVisibility(View.GONE);
-        }
-    }
-
-    private void populateTopRated(Context context){
-        for(int k = 0; k <= mTopRatedList.size(); k++){
-            Movie topRated = null;
-            if(k < mTopRatedList.size())
-                topRated = mTopRatedList.get(k);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            params.setMargins(
-                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
-                    context.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                    context.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
-            );
-            final ImageView imageView = new ImageView(context);
-            imageView.setLayoutParams(params);
-            imageView.setAdjustViewBounds(true);
-            imageView.setTag(k < mTopRatedList.size() ? k : -1);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.e("clicked top rated index", String.valueOf(view.getTag()));
-                    if((Integer)view.getTag() == -1)
-                        viewAll(ListMovie.TOP_RATED);
-                }
-            });
-//            imageView.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View view, MotionEvent motionEvent) {
-//                    switch (motionEvent.getAction()){
-//                        case MotionEvent.ACTION_DOWN: {
-//                            imageView.getDrawable().setColorFilter(0x77000000,PorterDuff.Mode.SRC_ATOP);
-//                            imageView.invalidate();
-//                            Log.e("clicked top rated index", String.valueOf(view.getTag()));
-//                            if((Integer)view.getTag() == -1)
-//                                viewAll(ListMovie.TOP_RATED);
-//                            break;
-//                        }
-//                        case MotionEvent.ACTION_UP:
-//                        case MotionEvent.ACTION_CANCEL: {
-//                            imageView.getDrawable().clearColorFilter();
-//                            imageView.invalidate();
-//                            break;
-//                        }
-//                    }
-//                    return true;
-//                }
-//            });
-
-            mTopRatedLinearLayout.addView(imageView);
-
-            if(topRated != null)
-                Picasso.with(context).load(topRated.getPosterPath(context, 0)).error(R.drawable.no_image_port).into(imageView);
-            else
-                Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(imageView);
         }
     }
 

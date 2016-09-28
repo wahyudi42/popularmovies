@@ -38,6 +38,10 @@ public class Movie {
     @SerializedName("vote_count")
     private int voteCount;
 
+    public Movie(int id){
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }

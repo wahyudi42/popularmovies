@@ -86,91 +86,80 @@
                     android:orientation="vertical">
 
                     <!-- POPULAR -->
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_marginTop="@dimen/line_spacing">
-                        <TextView
-                            android:id="@+id/popular_title_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/popular_title"
-                            style="@style/AppTheme.MovieCategoryTitle"/>
-                        <TextView
-                            android:id="@+id/popular_viewall_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="@string/view_all"
-                            style="@style/AppTheme.MovieViewAll"
-                            android:layout_alignBaseline="@+id/popular_title_textview" />
-
-                        <HorizontalScrollView
+                        <RelativeLayout
+                            android:id="@+id/popular_title_relativelayout"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/popular_title_textview"
-                            android:id="@+id/popular_horizontalscrollview">
-                            <LinearLayout
-                                android:id="@+id/popular_linearlayout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/popular_title_textview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_gravity="center">
+                                android:text="@string/popular_title"
+                                style="@style/AppTheme.MovieCategoryTitle"/>
+                            <TextView
+                                android:id="@+id/popular_viewall_textview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:text="@string/view_all"
+                                style="@style/AppTheme.MovieViewAll"
+                                android:layout_alignBaseline="@+id/popular_title_textview" />
+                        </RelativeLayout>
 
-                                <ProgressBar
-                                    android:id="@+id/popular_progressbar"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"/>
-                            </LinearLayout>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/popular_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:scrollbars="horizontal"
+                            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
 
-                        </HorizontalScrollView>
-
-                    </RelativeLayout>
+                        </android.support.v7.widget.RecyclerView>
+                    </LinearLayout>
                     <!-- /POPULAR -->
 
                     <!-- TOP RATED -->
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="vertical"
                         android:layout_marginTop="@dimen/line_spacing">
-                        <TextView
-                            android:id="@+id/toprated_title_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/toprated_title"
-                            style="@style/AppTheme.MovieCategoryTitle"/>
-                        <TextView
-                            android:id="@+id/toprated_viewall_textview"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="@string/view_all"
-                            style="@style/AppTheme.MovieViewAll"
-                            android:layout_alignBaseline="@+id/toprated_title_textview" />
-
-                        <HorizontalScrollView
+                        <RelativeLayout
+                            android:id="@+id/toprated_title_relativelayout"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/toprated_title_textview"
-                            android:id="@+id/toprated_horizontalscrollview">
-                            <LinearLayout
-                                android:id="@+id/toprated_linearlayout"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/toprated_title_textview"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_gravity="center">
+                                android:text="@string/toprated_title"
+                                style="@style/AppTheme.MovieCategoryTitle"/>
+                            <TextView
+                                android:id="@+id/toprated_viewall_textview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:text="@string/view_all"
+                                style="@style/AppTheme.MovieViewAll"
+                                android:layout_alignBaseline="@+id/toprated_title_textview" />
+                        </RelativeLayout>
 
-                                <ProgressBar
-                                    android:id="@+id/toprated_progressbar"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"/>
-                            </LinearLayout>
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/toprated_recyclerview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:scrollbars="horizontal"
+                            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
 
-                        </HorizontalScrollView>
+                        </android.support.v7.widget.RecyclerView>
 
-                    </RelativeLayout>
+                    </LinearLayout>
                     <!-- /TOP RATED -->
 
                 </LinearLayout>
