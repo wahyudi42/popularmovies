@@ -22,6 +22,7 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.GenreAdapter;
@@ -48,7 +49,11 @@ public class MainActivity extends AppCompatActivity {
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout nowPlayingRelativeLayout;
 
+    List<String> processList = new ArrayList<>(Arrays.asList("now_playing", "genre", "popular", "top_rated"));
+
     RecyclerView mGenreRecyclerView, mPopularRecyclerView, mTopRatedRecyclerView;
+
+    ProgressBar mainProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
             else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+
+        mainProgressBar = (ProgressBar) findViewById(R.id.main_progressbar);
 
         toolbar.post(new Runnable() {
             @Override
@@ -168,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             nowPlaying.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                    setComplete("now_playing");
                     pb.setVisibility(View.GONE);
                     mNowPlayingList = response.body().getMovies();
                     populateNowPlaying(context);
@@ -227,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             genre.enqueue(new Callback<GenreResponse>() {
                 @Override
                 public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+                    setComplete("genre");
                     mGenres = response.body().getGenres();
                     mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
                 }
@@ -249,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
             popular.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                    setComplete("popular");
                     mPopularList = response.body().getMovies();
                     mPopularList.add(new Movie(-1));
 
@@ -273,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             topRated.enqueue(new Callback<MovieListResponse>() {
                 @Override
                 public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                    setComplete("top_rated");
                     mTopRatedList = response.body().getMovies();
                     mTopRatedList.add(new Movie(-1));
 
@@ -291,5 +302,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(MainActivity.this, ListMovie.class);
         i.putExtra(target, true);
         startActivity(i);
+    }
+
+    private void setComplete(String process){
+        processList.remove(process);
+        if(processList.isEmpty())
+            mainProgressBar.setVisibility(View.GONE);
     }
 }

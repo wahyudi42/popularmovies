@@ -4,10 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -32,18 +35,22 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.MATCH_PARENT);
+        int verticalMargin = mContext.getResources().getDimensionPixelSize(R.dimen.small_line_spacing);
+        RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(
+                (parent.getHeight() - 2 * verticalMargin) * 2 / 3,
+                RecyclerView.LayoutParams.MATCH_PARENT);
         params.setMargins(
                 mContext.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                mContext.getResources().getDimensionPixelSize(R.dimen.small_line_spacing),
+                verticalMargin,
                 mContext.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
-                mContext.getResources().getDimensionPixelSize(R.dimen.small_line_spacing)
+                verticalMargin
         );
-        final ImageView imageView = new ImageView(mContext);
-        imageView.setLayoutParams(params);
-        imageView.setAdjustViewBounds(true);
-        imageView.setBackgroundResource(R.color.colorPrimaryDark);
-        return new ViewHolder(imageView);
+//        final ImageView imageView = new ImageView(mContext);
+//        imageView.setLayoutParams(params);
+//        imageView.setAdjustViewBounds(true);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poster, parent, false);
+        v.setLayoutParams(params);
+        return new ViewHolder(v);
     }
 
     @Override
@@ -59,17 +66,45 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         ImageView posterImageView;
+        ProgressBar progressBar;
 
         public ViewHolder(View view){
             super(view);
-            posterImageView = (ImageView) view;
+            posterImageView = (ImageView) view.findViewById(R.id.poster_imageview);
+            progressBar = (ProgressBar) view.findViewById(R.id.poster_progressbar);
         }
 
         public void bind(final Context context, final Movie movie, final String type){
             if(movie.getId() == -1){
-                Picasso.with(context).load(R.drawable.more_port).error(R.drawable.no_image_port).into(posterImageView);
+                Picasso.with(context)
+                        .load(R.drawable.more_port)
+                        .error(R.drawable.no_image_port)
+                        .into(posterImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
             }else{
-                Picasso.with(context).load(movie.getPosterPath(context, 0)).error(R.drawable.no_image_port).into(posterImageView);
+                Picasso.with(context)
+                        .load(movie.getPosterPath(context, 0))
+                        .error(R.drawable.no_image_port)
+                        .into(posterImageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
             }
 
             posterImageView.setOnClickListener(new View.OnClickListener() {
