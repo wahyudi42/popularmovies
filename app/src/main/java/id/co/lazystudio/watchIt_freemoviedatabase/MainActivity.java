@@ -31,8 +31,8 @@ import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreResponse;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListResponse;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.MySliderView;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
@@ -170,11 +170,11 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<MovieListResponse> nowPlaying = tmdbService.getNowPlaying();
+            final Call<MovieListParser> nowPlaying = tmdbService.getNowPlaying();
 
-            nowPlaying.enqueue(new Callback<MovieListResponse>() {
+            nowPlaying.enqueue(new Callback<MovieListParser>() {
                 @Override
-                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     setComplete("now_playing");
                     pb.setVisibility(View.GONE);
                     mNowPlayingList = response.body().getMovies();
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                public void onFailure(Call<MovieListParser> call, Throwable t) {
                     pb.setVisibility(View.GONE);
                 }
             });
@@ -234,18 +234,18 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<GenreResponse> genre = tmdbService.getGenres();
+            final Call<GenreParser> genre = tmdbService.getGenres();
 
-            genre.enqueue(new Callback<GenreResponse>() {
+            genre.enqueue(new Callback<GenreParser>() {
                 @Override
-                public void onResponse(Call<GenreResponse> call, Response<GenreResponse> response) {
+                public void onResponse(Call<GenreParser> call, Response<GenreParser> response) {
                     setComplete("genre");
                     mGenres = response.body().getGenres();
                     mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
                 }
 
                 @Override
-                public void onFailure(Call<GenreResponse> call, Throwable t) {
+                public void onFailure(Call<GenreParser> call, Throwable t) {
                 }
             });
         }else {
@@ -257,11 +257,11 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<MovieListResponse> popular = tmdbService.getPopular();
+            final Call<MovieListParser> popular = tmdbService.getPopular();
 
-            popular.enqueue(new Callback<MovieListResponse>() {
+            popular.enqueue(new Callback<MovieListParser>() {
                 @Override
-                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     setComplete("popular");
                     mPopularList = response.body().getMovies();
                     mPopularList.add(new Movie(-1));
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                public void onFailure(Call<MovieListParser> call, Throwable t) {
                 }
             });
         }else {
@@ -282,11 +282,11 @@ public class MainActivity extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            final Call<MovieListResponse> topRated = tmdbService.getTopRated();
+            final Call<MovieListParser> topRated = tmdbService.getTopRated();
 
-            topRated.enqueue(new Callback<MovieListResponse>() {
+            topRated.enqueue(new Callback<MovieListParser>() {
                 @Override
-                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     setComplete("top_rated");
                     mTopRatedList = response.body().getMovies();
                     mTopRatedList.add(new Movie(-1));
@@ -295,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                public void onFailure(Call<MovieListParser> call, Throwable t) {
                 }
             });
         }else {

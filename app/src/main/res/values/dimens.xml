@@ -10,5 +10,6 @@
     <dimen name="small_margin">8dp</dimen>
 
     <dimen name="category_title">20sp</dimen>
+    <dimen name="movie_title">18sp</dimen>
     <dimen name="view_all">12sp</dimen>
 </resources>

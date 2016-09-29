@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 /**
  * Created by faqiharifian on 26/09/16.
  */
-public class GenreResponse {
+public class GenreParser {
     @SerializedName("genres")
     private List<Genre> genres;
 

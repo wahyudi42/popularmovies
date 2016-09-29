@@ -39,15 +39,27 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:padding="@dimen/small_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+            android:paddingLeft="@dimen/activity_horizontal_margin">
             <TextView
                 android:id="@+id/movie_title_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_marginBottom="@dimen/smaller_margin"
                 style="@style/AppTheme.MovieTitle"/>
+            <TextView
+                android:id="@+id/movie_releasedate_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.TextSecondary"
+                android:layout_below="@id/movie_title_textview"/>
+            <TextView
+                android:id="@+id/movie_runtime_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/AppTheme.TextSecondary"
+                android:layout_below="@id/movie_title_textview"
+                android:layout_alignRight="@id/movie_releasedate_textview"
+                android:layout_marginLeft="@dimen/smaller_margin"/>
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

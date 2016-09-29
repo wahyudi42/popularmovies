@@ -15,7 +15,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListResponse;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +66,7 @@ public class ListMovie extends AppCompatActivity {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
-            Call<MovieListResponse> movieList;
+            Call<MovieListParser> movieList;
             switch (mTitle){
                 case POPULAR:
                     movieList = tmdbService.getPopular();
@@ -79,16 +79,16 @@ public class ListMovie extends AppCompatActivity {
                     break;
             }
 
-            movieList.enqueue(new Callback<MovieListResponse>() {
+            movieList.enqueue(new Callback<MovieListParser>() {
                 @Override
-                public void onResponse(Call<MovieListResponse> call, Response<MovieListResponse> response) {
+                public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     progressBar.setVisibility(View.GONE);
                     mMovieList = response.body().getMovies();
                     listMovieGridView.setAdapter(new ListMovieAdapter(context, mMovieList));
                 }
 
                 @Override
-                public void onFailure(Call<MovieListResponse> call, Throwable t) {
+                public void onFailure(Call<MovieListParser> call, Throwable t) {
                     progressBar.setVisibility(View.GONE);
                 }
             });

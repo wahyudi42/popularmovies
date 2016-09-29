@@ -1,158 +1,171 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.entity;
 
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
 
 /**
  * Created by faqiharifian on 23/09/16.
  */
-public class Movie implements Parcelable {
+public class Movie {
     //    genres, collection, productionCompanies, productionCountries
-    @SerializedName("id")
-    private int id;
     @SerializedName("adult")
     private boolean adult;
+    @SerializedName("id")
+    private int id;
+    @SerializedName("title")
+    private String title;
+    @SerializedName("release_date")
+    private String releaseDate;
+    @SerializedName("runtime")
+    private int runtime;
     @SerializedName("homepage")
     private String homepage;
+    @SerializedName("tagline")
+    private String tagline;
     @SerializedName("overview")
     private String overview;
     @SerializedName("poster_path")
     private String posterPath;
     @SerializedName("backdrop_path")
     private String backdropPath;
-    @SerializedName("release_date")
-    private String releaseDate;
-    @SerializedName("status")
-    private String status;
-    @SerializedName("tagline")
-    private String tagline;
-    @SerializedName("title")
-    private String title;
-    @SerializedName("video")
-    private boolean video;
+    @SerializedName("popularity")
+    private float popularity;
     @SerializedName("vote_average")
     private float voteAverage;
     @SerializedName("vote_count")
     private int voteCount;
+    @SerializedName("revenue")
+    private long revenue;
+    @SerializedName("budget")
+    private long budget;
+    @SerializedName("genres")
+    private List<Genre> genres;
+    @SerializedName("belongs_to_collection")
+    private Collection collection;
+    @SerializedName("production_companies")
+    private List<Company> companies;
+    @SerializedName("status")
+    private String status;
+    @SerializedName("video")
+    private boolean video;
 
+    public Movie(){
+
+    }
     public Movie(int id){
         this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public boolean isAdult() {
-        return adult;
     }
 
     public String getHomepage() {
         return homepage;
     }
 
-    public String getOverview() {
-        return overview;
+    public boolean isAdult() {
+        return adult;
     }
 
-    public String getPosterPath(Context context, int index) {
-        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
-        StringBuilder imagePath = new StringBuilder();
-        imagePath.append(conf.getBaseUrl());
-        imagePath.append(conf.getBackdropSizes().get(index));
-        imagePath.append(posterPath);
-        return imagePath.toString();
-    }
-
-    public String getBackdropPath(Context context, int index) {
-        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
-        StringBuilder imagePath = new StringBuilder();
-        imagePath.append(conf.getBaseUrl());
-        imagePath.append(conf.getBackdropSizes().get(index));
-        imagePath.append(backdropPath);
-        return imagePath.toString();
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public String getTagline() {
-        return tagline;
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public boolean isVideo() {
-        return video;
+    public String getReleaseDate() {
+        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
+        String result = "-";
+        try{
+            Date temp;
+            if(!this.releaseDate.equals("")) {
+                temp = parser.parse(this.releaseDate);
+                result = formatter.format(temp);
+            }
+
+        }catch(ParseException pe){
+            pe.printStackTrace();
+        }
+        return result;
     }
 
-    public float getVoteAverage() {
-        return voteAverage;
+    public String getRuntime() {
+        return runtime+" min";
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getPosterPath(Context context, int sizeIndex) {
+        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+
+        return conf.getBaseUrl()+
+                conf.getPosterSizes().get(sizeIndex)+
+                posterPath;
+    }
+
+    public String getBackdropPath(Context context, int sizeIndex) {
+        TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+
+        return conf.getBaseUrl()+
+                conf.getBackdropSizes().get(sizeIndex)+
+                backdropPath;
+    }
+
+    public String getPopularity() {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(popularity);
+    }
+
+    public String getVoteAverage() {
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(voteAverage);
     }
 
     public int getVoteCount() {
         return voteCount;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getRevenue() {
+        return "$ "+ NumberFormat.getInstance().format(revenue);
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
-        dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
-        dest.writeString(this.homepage);
-        dest.writeString(this.overview);
-        dest.writeString(this.posterPath);
-        dest.writeString(this.backdropPath);
-        dest.writeString(this.releaseDate);
-        dest.writeString(this.status);
-        dest.writeString(this.tagline);
-        dest.writeString(this.title);
-        dest.writeByte(this.video ? (byte) 1 : (byte) 0);
-        dest.writeFloat(this.voteAverage);
-        dest.writeInt(this.voteCount);
+    public String getBudget() {
+        return "$ "+ NumberFormat.getInstance().format(budget);
     }
 
-    protected Movie(Parcel in) {
-        this.id = in.readInt();
-        this.adult = in.readByte() != 0;
-        this.homepage = in.readString();
-        this.overview = in.readString();
-        this.posterPath = in.readString();
-        this.backdropPath = in.readString();
-        this.releaseDate = in.readString();
-        this.status = in.readString();
-        this.tagline = in.readString();
-        this.title = in.readString();
-        this.video = in.readByte() != 0;
-        this.voteAverage = in.readFloat();
-        this.voteCount = in.readInt();
+    public List<Genre> getGenres() {
+        return genres;
     }
 
-    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel source) {
-            return new Movie(source);
-        }
+    public Collection getCollection() {
+        return collection;
+    }
 
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
 }
