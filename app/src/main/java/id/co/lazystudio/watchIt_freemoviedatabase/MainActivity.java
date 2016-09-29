@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void populateNowPlaying(Context context){
+    private void populateNowPlaying(final Context context){
         int to = 5;
         for(int i = 0; i <= to; i++){
             Movie nowPlaying = null;
@@ -212,9 +212,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onSliderClick(BaseSliderView slider) {
                     Integer index = (Integer) slider.getView().getTag();
-                    Log.e("clicked now playing id", String.valueOf(index));
                     if(index == -1){
                         viewAll(ListMovie.NOW_PLAYING);
+                    }else{
+                        Movie movie = mNowPlayingList.get(index);
+                        Intent i = new Intent(context, DetailMovie.class);
+                        i.putExtra(DetailMovie.MOVIE_KEY, movie);
+                        startActivity(i);
                     }
                 }
             });

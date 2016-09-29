@@ -29,7 +29,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- SyncAdapter's dummy authentication service -->
         <service
@@ -73,6 +73,15 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.watchIt_freemoviedatabase.MainActivity" />
+        </activity>
+        <activity
+            android:name=".DetailMovie"
+            android:label="@string/title_activity_detail_movie"
+            android:parentActivityName=".ListMovie"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="id.co.lazystudio.watchIt_freemoviedatabase.ListMovie" />
         </activity>
     </application>
 

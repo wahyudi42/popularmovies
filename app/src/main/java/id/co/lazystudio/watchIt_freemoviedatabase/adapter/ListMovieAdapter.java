@@ -1,6 +1,7 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie;
 import id.co.lazystudio.watchIt_freemoviedatabase.R;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 
@@ -46,7 +48,7 @@ public class ListMovieAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View v= inflater.inflate(R.layout.item_list_movie, parent, false);
 
@@ -80,6 +82,15 @@ public class ListMovieAdapter extends BaseAdapter {
 
         TextView title = (TextView) v.findViewById(R.id.title_textview);
         title.setText(movie.getTitle());
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(mContext, DetailMovie.class);
+                i.putExtra(DetailMovie.MOVIE_KEY, mMovieList.get(position));
+                mContext.startActivity(i);
+            }
+        });
 
         return v;
     }

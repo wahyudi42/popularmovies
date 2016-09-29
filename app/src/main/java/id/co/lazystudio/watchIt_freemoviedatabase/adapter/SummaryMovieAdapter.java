@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie;
 import id.co.lazystudio.watchIt_freemoviedatabase.ListMovie;
 import id.co.lazystudio.watchIt_freemoviedatabase.R;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
@@ -116,6 +117,9 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                         context.startActivity(i);
                     }else {
                         Log.e("clicked", movie.getId() + " - " + movie.getTitle());
+                        Intent i = new Intent(context, DetailMovie.class);
+                        i.putExtra(DetailMovie.MOVIE_KEY, movie);
+                        context.startActivity(i);
                     }
                 }
             });
