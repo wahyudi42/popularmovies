@@ -15,7 +15,7 @@ public class Company implements Parcelable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
-    private int name;
+    private String name;
     @SerializedName("description")
     private String description;
 //    @SerializedName("headquarters")
@@ -29,7 +29,7 @@ public class Company implements Parcelable {
         return id;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 
@@ -58,7 +58,7 @@ public class Company implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
-        dest.writeInt(this.name);
+        dest.writeString(this.name);
         dest.writeString(this.description);
         dest.writeString(this.homepage);
         dest.writeString(this.logoPath);
@@ -69,13 +69,13 @@ public class Company implements Parcelable {
 
     protected Company(Parcel in) {
         this.id = in.readInt();
-        this.name = in.readInt();
+        this.name = in.readString();
         this.description = in.readString();
         this.homepage = in.readString();
         this.logoPath = in.readString();
     }
 
-    public static final Parcelable.Creator<Company> CREATOR = new Parcelable.Creator<Company>() {
+    public static final Creator<Company> CREATOR = new Creator<Company>() {
         @Override
         public Company createFromParcel(Parcel source) {
             return new Company(source);

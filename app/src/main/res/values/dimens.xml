@@ -12,4 +12,10 @@
     <dimen name="category_title">20sp</dimen>
     <dimen name="movie_title">18sp</dimen>
     <dimen name="view_all">12sp</dimen>
+
+    <dimen name="rounded_corner">16dp</dimen>
+    <dimen name="small_rounded_corner">8dp</dimen>
+    <dimen name="smaller_rounded_corner">4dp</dimen>
+
+    <dimen name="tag_width">32dp</dimen>
 </resources>

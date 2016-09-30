@@ -4,9 +4,11 @@ import id.co.lazystudio.watchIt_freemoviedatabase.BuildConfig;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Configuration;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieParser;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Path;
 
 /**
  * Created by faqiharifian on 23/09/16.
@@ -33,4 +35,8 @@ public interface TmdbService {
     @Headers("Content-Type: application/json")
     @GET("movie/top_rated?api_key="+API_KEY)
     Call<MovieListParser> getTopRated();
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/{id}?api_key="+API_KEY+"&append_to_response=images,videos,keywords,similar")
+    Call<MovieParser> getMovie(@Path("id") int id);
 }

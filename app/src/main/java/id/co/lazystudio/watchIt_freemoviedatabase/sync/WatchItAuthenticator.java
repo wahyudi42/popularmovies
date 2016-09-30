@@ -54,7 +54,7 @@ public class WatchItAuthenticator extends AbstractAccountAuthenticator {
             Bundle bundle) throws NetworkErrorException {
         throw new UnsupportedOperationException();
     }
-    // Getting a label for the auth token is not supported
+    // Getting a genre_main for the auth token is not supported
     @Override
     public String getAuthTokenLabel(String s) {
         throw new UnsupportedOperationException();

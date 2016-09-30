@@ -1,6 +1,8 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.entity;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -8,6 +10,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +19,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPrefere
 /**
  * Created by faqiharifian on 23/09/16.
  */
-public class Movie {
+public class Movie implements Parcelable {
     //    genres, collection, productionCompanies, productionCountries
     @SerializedName("adult")
     private boolean adult;
@@ -129,12 +132,12 @@ public class Movie {
 
     public String getPopularity() {
         DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(popularity);
+        return popularity > 0 ? df.format(popularity) : "-";
     }
 
     public String getVoteAverage() {
         DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(voteAverage);
+        return voteCount > 0 ? df.format(voteAverage) : "-";
     }
 
     public int getVoteCount() {
@@ -168,4 +171,69 @@ public class Movie {
     public boolean isVideo() {
         return video;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.adult ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.releaseDate);
+        dest.writeInt(this.runtime);
+        dest.writeString(this.homepage);
+        dest.writeString(this.tagline);
+        dest.writeString(this.overview);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.backdropPath);
+        dest.writeFloat(this.popularity);
+        dest.writeFloat(this.voteAverage);
+        dest.writeInt(this.voteCount);
+        dest.writeLong(this.revenue);
+        dest.writeLong(this.budget);
+        dest.writeList(this.genres);
+        dest.writeParcelable(this.collection, flags);
+        dest.writeTypedList(this.companies);
+        dest.writeString(this.status);
+        dest.writeByte(this.video ? (byte) 1 : (byte) 0);
+    }
+
+    protected Movie(Parcel in) {
+        this.adult = in.readByte() != 0;
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.releaseDate = in.readString();
+        this.runtime = in.readInt();
+        this.homepage = in.readString();
+        this.tagline = in.readString();
+        this.overview = in.readString();
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.popularity = in.readFloat();
+        this.voteAverage = in.readFloat();
+        this.voteCount = in.readInt();
+        this.revenue = in.readLong();
+        this.budget = in.readLong();
+        this.genres = new ArrayList<Genre>();
+        in.readList(this.genres, Genre.class.getClassLoader());
+        this.collection = in.readParcelable(Collection.class.getClassLoader());
+        this.companies = in.createTypedArrayList(Company.CREATOR);
+        this.status = in.readString();
+        this.video = in.readByte() != 0;
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

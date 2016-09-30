@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -11,6 +12,7 @@
     tools:showIn="@layout/activity_detail_movie"
     android:id="@+id/content_container">
 
+    <!-- BACKDROP + POSTER + TITLE -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,32 +36,210 @@
                 android:layout_centerInParent="true" />
 
         </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/movie_title_relativelayout"
+
+        <FrameLayout
+            android:id="@+id/movie_title_framelayout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:paddingLeft="@dimen/activity_horizontal_margin">
-            <TextView
-                android:id="@+id/movie_title_textview"
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:id="@+id/movie_title_relativelayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/smaller_margin"
-                style="@style/AppTheme.MovieTitle"/>
-            <TextView
-                android:id="@+id/movie_releasedate_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextSecondary"
-                android:layout_below="@id/movie_title_textview"/>
-            <TextView
-                android:id="@+id/movie_runtime_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/AppTheme.TextSecondary"
-                android:layout_below="@id/movie_title_textview"
-                android:layout_alignRight="@id/movie_releasedate_textview"
-                android:layout_marginLeft="@dimen/smaller_margin"/>
-        </RelativeLayout>
+                android:layout_gravity="center_vertical">
+                <TextView
+                    android:id="@+id/movie_title_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/smaller_margin"
+                    style="@style/AppTheme.MovieTitle"
+                    android:maxLines="2"/>
+                <TextView
+                    android:id="@+id/movie_releasedate_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppTheme.TextSecondary"
+                    android:layout_below="@id/movie_title_textview"/>
+                <TextView
+                    android:id="@+id/movie_runtime_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/AppTheme.TextSecondary"
+                    android:layout_below="@id/movie_title_textview"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_toRightOf="@+id/movie_releasedate_textview" />
+            </RelativeLayout>
+        </FrameLayout>
     </LinearLayout>
+
+    <!-- GENRES -->
+    <!--<GridLayout-->
+        <!--android:id="@+id/movie_genre_gridlayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/line_spacing"-->
+        <!--android:visibility="gone"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:orientation="horizontal">-->
+    <!--</GridLayout>-->
+    <!--<me.gujun.android.taggroup.TagGroup-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/line_spacing"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:foregroundGravity="center_horizontal"-->
+        <!--android:id="@+id/genre_taggroup"-->
+        <!--style="@style/AppTheme.TagGroup"-->
+        <!--android:visibility="gone"/>-->
+    <co.lujun.androidtagview.TagContainerLayout
+        android:id="@+id/genre_tagcontainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone"
+        style="@style/AppTheme.TagContainer"/>
+
+    <!-- RATE + POPULARITY -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/line_spacing">
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/smaller_margin"
+                app:cardCornerRadius="@dimen/smaller_rounded_corner">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin">
+                    <TextView
+                        android:id="@+id/movie_ratelabel_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        style="@style/AppTheme.MovieDetailSecondary"
+                        android:text="@string/label_rate"/>
+                    <TextView
+                        android:id="@+id/movie_rateaverage_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/movie_ratelabel_textview"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:id="@+id/movie_ratecount_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/movie_rateaverage_textview"
+                        android:layout_centerHorizontal="true"
+                        style="@style/AppTheme.MovieDetailSecondary"
+                        android:text="something"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/smaller_margin"
+                app:cardCornerRadius="@dimen/smaller_rounded_corner">
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginBottom="@dimen/small_margin"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin">
+                    <TextView
+                        android:id="@+id/movie_popularitylabel_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        style="@style/AppTheme.MovieDetailSecondary"
+                        android:text="@string/label_popularity"/>
+                    <TextView
+                        android:id="@+id/movie_popularity_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/movie_popularitylabel_textview"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/movie_popularity_textview"
+                        android:layout_centerHorizontal="true"
+                        style="@style/AppTheme.MovieDetailSecondary"
+                        android:text="..."
+                        android:visibility="invisible"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- TAGLINE -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_tagline_relativelayout"
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/left_tag"
+            android:layout_toLeftOf="@+id/movie_tagline_textview"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="false"
+            android:id="@+id/movie_tagline_left_imageview"
+            android:alpha="0.54" />
+        <TextView
+            android:id="@+id/movie_tagline_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/smaller_margin"
+            android:layout_marginBottom="@dimen/smaller_margin"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/small_margin"
+            android:layout_marginRight="@dimen/small_margin"
+            android:gravity="center_horizontal" />
+        <ImageView
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/right_tag"
+            android:layout_toRightOf="@+id/movie_tagline_textview"
+            android:layout_centerVertical="true"
+            android:id="@+id/movie_tagline_right_imageview"
+            android:alpha="0.54" />
+    </RelativeLayout>
+
+    <!-- OVERVIEW -->
+    <TextView
+        android:id="@+id/movie_overview_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/line_spacing"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:gravity="center"
+        android:visibility="gone"/>
+
 </LinearLayout>
