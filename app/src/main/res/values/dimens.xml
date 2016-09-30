@@ -18,4 +18,5 @@
     <dimen name="smaller_rounded_corner">4dp</dimen>
 
     <dimen name="tag_width">32dp</dimen>
+    <dimen name="movie_collection_title">32sp</dimen>
 </resources>

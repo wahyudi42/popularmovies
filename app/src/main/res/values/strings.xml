@@ -13,4 +13,10 @@
     <string name="title_activity_detail_movie">DetailMovie</string>
     <string name="label_rate">Rate</string>
     <string name="label_popularity">Popularity</string>
+    <string name="label_production_company">Produced By</string>
+    <string name="label_collection">Part of</string>
+    <string name="label_keyword">Keywords</string>
+    <string name="label_budget">Budget</string>
+    <string name="label_revenue">Revenue</string>
+    <string name="label_overview">Overview</string>
 </resources>

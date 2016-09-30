@@ -6,11 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
@@ -46,14 +48,27 @@ public class DetailMovie extends AppCompatActivity {
     private List<Keyword> mKeywordList = new ArrayList<>();
     private List<Video> mVideo = new ArrayList<>();
 
+    ImageView backdropImageView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_movie);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Bundle args = getIntent().getExtras();
+        mMovie = args.getParcelable(MOVIE_KEY);
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(mMovie.getTitle());
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white, getTheme())));
+        else
+            toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white)));
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -62,8 +77,23 @@ public class DetailMovie extends AppCompatActivity {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        Bundle args = getIntent().getExtras();
-        mMovie = args.getParcelable(MOVIE_KEY);
+        backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
+
+        final ScrollView detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
+        detailScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                float alpha = (float) detailScrollView.getScrollY() / backdropImageView.getBottom();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white, getTheme())));
+                    toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary, getTheme())));
+                }else {
+                    toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white)));
+                    toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary)));
+                }
+//                toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(R.color.dark_grey)));
+            }
+        });
 
         getMovie();
         populateView();
@@ -80,7 +110,6 @@ public class DetailMovie extends AppCompatActivity {
             movie.enqueue(new retrofit2.Callback<MovieParser>() {
                 @Override
                 public void onResponse(Call<MovieParser> call, Response<MovieParser> response) {
-                    Log.e("complete", "true");
                     MovieParser movieParser = response.body();
                     mMovie = (Movie)response.body();
                     mCollection = movieParser.getCollection();
@@ -90,24 +119,22 @@ public class DetailMovie extends AppCompatActivity {
                     mPosterList = movieParser.getPosters();
                     mKeywordList = movieParser.getKeywords();
                     mVideo = movieParser.getVideos();
-//                    pb.setVisibility(View.GONE);
+                    pb.setVisibility(View.GONE);
                     populateView();
-                    Log.e("overview", mMovie.getOverview());
                 }
 
                 @Override
                 public void onFailure(Call<MovieParser> call, Throwable t) {
                     t.printStackTrace();
-//                    pb.setVisibility(View.GONE);
+                    pb.setVisibility(View.GONE);
                 }
             });
         }else {
-//            pb.setVisibility(View.GONE);
+            pb.setVisibility(View.GONE);
         }
     }
 
     private void populateView(){
-        final ImageView backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
         backdropImageView.post(new Runnable() {
             @Override
             public void run() {
@@ -174,6 +201,10 @@ public class DetailMovie extends AppCompatActivity {
             rateCountTextView.setVisibility(View.VISIBLE);
             rateCountTextView.setText(String.valueOf(mMovie.getVoteCount()));
         }
+        TextView budgetTextView = (TextView) findViewById(R.id.movie_budget_textview);
+        budgetTextView.setText(mMovie.getBudget());
+        TextView revenueTextView = (TextView) findViewById(R.id.movie_revenue_textview);
+        revenueTextView.setText(mMovie.getRevenue());
 
         ((TextView) findViewById(R.id.movie_popularity_textview)).setText(mMovie.getPopularity());
 
@@ -193,56 +224,21 @@ public class DetailMovie extends AppCompatActivity {
             }
         }
 
-
         if(mMovie.getOverview() != null){
             if(!mMovie.getOverview().equals("")){
+                findViewById(R.id.movie_overview_relativelayout).setVisibility(View.VISIBLE);
                 TextView overviewTextView = (TextView) findViewById(R.id.movie_overview_textview);
-                overviewTextView.setVisibility(View.VISIBLE);
                 overviewTextView.setText(mMovie.getOverview());
             }
         }
 
         if(mGenreList.size() > 0){
-//            TagGroup genreTagGroup = (TagGroup) findViewById(R.id.genre_taggroup);
             TagContainerLayout genreContainer = (TagContainerLayout) findViewById(R.id.genre_tagcontainer);
-//            GridLayout genreGridLayout = (GridLayout) findViewById(R.id.movie_genre_gridlayout);
-//            genreGridLayout.setVisibility(View.VISIBLE);
-//            genreTagGroup.setVisibility(View.VISIBLE);
             genreContainer.setVisibility(View.VISIBLE);
             String[] tags = new String[mGenreList.size()];
             for(int i = 0; i < mGenreList.size(); i++){
-//                View v = getLayoutInflater().inflate(R.layout.item_genre_detail, genreGridLayout, false);
-//                TextView genreTextView = (TextView) v.findViewById(R.id.genre_text_view);
-//                genreTextView.setText(genre.getName());
-//                v.setTag(genre.getId());
-//                v.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Integer index = (Integer)view.getTag();
-//                        Genre genre = mGenreList.get(index);
-//                        Log.e("genre clicked", genre.getId()+" - "+genre);
-//                    }
-//                });
-//                genreGridLayout.addView(v);
                 tags[i] = mGenreList.get(i).getName();
             }
-//            genreTagGroup.setTags(tags);
-//            genreTagGroup.setOnTagClickListener(new TagGroup.OnTagClickListener() {
-//                @Override
-//                public void onTagClick(String tag) {
-//                    Genre genre = null;
-//                    for (Genre g : mGenreList){
-//                        if(g.getName().equals(tag)){
-//                            genre = g;
-//                            break;
-//                        }
-//                    }
-////                    Integer index = (Integer)view.getTag();
-////                        Genre genre = mGenreList.get(index);
-//                    if(genre != null)
-//                        Log.e("genre clicked", genre.getId()+" - "+genre.getName());
-//                }
-//            });
             genreContainer.setTags(tags);
             genreContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
                 @Override
@@ -257,5 +253,85 @@ public class DetailMovie extends AppCompatActivity {
                 }
             });
         }
+
+        if(mCompanyList.size() > 0){
+//            RelativeLayout companyRelativeLayout = (RelativeLayout) findViewById(R.id.movie_productioncompany_container_relativelayout);
+//            companyRelativeLayout.setVisibility(View.VISIBLE);
+//
+//            TextView companyTextView = (TextView) findViewById(R.id.movie_productioncompany_textview);
+//            companyTextView.setText(mCompanyList.get(0).getName());
+//            ImageView companyImageView = (ImageView) findViewById(R.id.movie_productioncompany_imageview);
+//
+//            Picasso.with(this)
+//                    .load(mCompanyList.get(0).getLogoPath(this, 0))
+//                    .error(R.drawable.no_image_land)
+//                    .into(companyImageView);
+//            Log.e("company", mCompanyList.get(0).getLogoPath(this, 0));
+        }
+
+        if(mCollection != null){
+            final RelativeLayout collectionRelativeLayout = (RelativeLayout) findViewById(R.id.movie_collection_relativelayout);
+            collectionRelativeLayout.setVisibility(View.VISIBLE);
+
+//            TextView companyTextView = (TextView) findViewById(R.id.movie_productioncompany_textview);
+//            companyTextView.setText(mCompanyList.get(0).getName());
+            final ImageView collectionImageView = (ImageView) findViewById(R.id.movie_collection_imageview);
+
+            collectionImageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) collectionImageView.getLayoutParams();
+                    params.width = collectionRelativeLayout.getWidth();
+                    params.height = collectionRelativeLayout.getWidth() / 2;
+                }
+            });
+            Picasso.with(this)
+                    .load(mCollection.getBackdropPath(this, 0))
+                    .error(R.drawable.no_image_land)
+                    .resize(collectionRelativeLayout.getWidth(), collectionRelativeLayout.getWidth()/2)
+                    .centerCrop()
+                    .into(collectionImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
+                            TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
+                            collectionTextView.setVisibility(View.VISIBLE);
+                            collectionTextView.setText(mCollection.getName());
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+        }
+
+        if(mKeywordList.size() > 0){
+            TagContainerLayout genreContainer = (TagContainerLayout) findViewById(R.id.keyword_tagcontainer);
+            genreContainer.setVisibility(View.VISIBLE);
+            String[] tags = new String[mKeywordList.size()];
+            for(int i = 0; i < mKeywordList.size(); i++){
+                tags[i] = mKeywordList.get(i).getName();
+            }
+            genreContainer.setTags(tags);
+            genreContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
+                @Override
+                public void onTagClick(int position, String text) {
+                    Keyword keyword = mKeywordList.get(position);
+                    Log.e("keyword clicked", keyword.getId()+" - "+keyword.getName());
+                }
+
+                @Override
+                public void onTagLongClick(int position, String text) {
+
+                }
+            });
+        }
+    }
+
+    public static int getColorWithAlpha(float alpha, int baseColor) {
+        int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
+        int rgb = 0x00ffffff & baseColor;
+        return a + rgb;
     }
 }

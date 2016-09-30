@@ -43,17 +43,6 @@
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="AppTheme.TagGroup" parent="TagGroup">
-        <item name="atg_borderColor">@color/colorPrimary</item>
-        <item name="atg_textColor">@android:color/white</item>
-        <item name="atg_backgroundColor">@color/colorPrimary</item>
-        <item name="atg_pressedBackgroundColor">@color/colorPrimaryDark</item>
-        <item name="atg_horizontalSpacing">@dimen/small_margin</item>
-        <item name="atg_verticalSpacing">@dimen/small_margin</item>
-        <item name="atg_horizontalPadding">@dimen/small_margin</item>
-        <item name="atg_verticalPadding">@dimen/smaller_margin</item>
-    </style>
-
     <style name="AppTheme.TagContainer">
         <item name="container_border_color">@android:color/transparent</item>
         <item name="container_background_color">@android:color/transparent</item>
@@ -68,6 +57,19 @@
         <item name="tag_text_color">@android:color/white</item>
         <item name="tag_clickable">true</item>
         <item name="tag_theme">none</item>
+    </style>
+
+    <style name="AppTheme.KeywordTagContainer" parent="AppTheme.TagContainer">
+        <item name="tag_background_color">@color/colorPrimaryLight</item>
+        <item name="tag_border_color">@color/colorPrimaryLight</item>
+    </style>
+
+    <style name="AppTheme.MovieCollectionTitle" parent="AppTheme.MovieCategoryTitle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
 </resources>
