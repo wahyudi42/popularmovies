@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie">
-    <ScrollView
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView
         android:id="@+id/movie_detail_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,18 +36,18 @@
                 android:id="@+id/detail_movie_progressbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/backdrop_relativelayout"
                 android:indeterminate="true"
                 app:mpb_progressStyle="horizontal"
                 app:mpb_useIntrinsicPadding="false"
-                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
+                android:layout_alignBottom="@+id/backdrop_relativelayout" />
 
             <include layout="@layout/content_detail_movie"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/backdrop_relativelayout"/>
         </RelativeLayout>
-    </ScrollView>
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

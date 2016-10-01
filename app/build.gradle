@@ -40,4 +40,5 @@ dependencies {
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.7'
     compile 'me.gujun.android.taggroup:library:1.4@aar'
     compile 'co.lujun:androidtagview:1.0.3'
+    compile 'com.github.nirhart:parallaxscroll:1.0'
 }

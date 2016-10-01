@@ -170,13 +170,21 @@ public class DetailMovie extends AppCompatActivity {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) posterImageView.getLayoutParams();
                 params.height = posterImageView.getWidth() * 3 / 2;
 
+                int margin = getResources().getDimensionPixelSize(R.dimen.line_spacing);
+
                 LinearLayout container = (LinearLayout) findViewById(R.id.content_container);
                 RelativeLayout.LayoutParams containerParams = (RelativeLayout.LayoutParams) container.getLayoutParams();
-                containerParams.setMargins(0, -(params.height / 3), 0, 0);
+                containerParams.setMargins(0, -((params.height / 3)), 0, 0);
+//                containerParams.setMargins(0, -((params.height / 3)+margin), 0, 0);
 
                 FrameLayout movieFrameLayout = (FrameLayout) findViewById(R.id.movie_title_framelayout);
                 LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams) movieFrameLayout.getLayoutParams();
-                titleParams.setMargins(0, params.height / 3, 0, 0);
+                titleParams.setMargins(0, (params.height / 3), 0, 0);
+
+                View titleView = findViewById(R.id.movie_title_view);
+                RelativeLayout.LayoutParams viewParams = (RelativeLayout.LayoutParams)titleView.getLayoutParams();
+                viewParams.height = movieFrameLayout.getHeight();
+                viewParams.setMargins(0, (params.height / 3), 0, 0);
             }
         });
 
