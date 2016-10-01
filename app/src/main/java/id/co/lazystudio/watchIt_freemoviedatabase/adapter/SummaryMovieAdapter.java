@@ -27,12 +27,21 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     List<Movie> mMovies;
     Context mContext;
     String mType;
+    int id = -1;
 
     public SummaryMovieAdapter(Context context, List<Movie> movies, String type){
         mContext = context;
         mMovies = movies;
         mMovies.add(new Movie(-1));
         mType = type;
+    }
+
+    public SummaryMovieAdapter(Context context, List<Movie> movies, String type, int id){
+        mContext = context;
+        mMovies = movies;
+        mMovies.add(new Movie(-1));
+        mType = type;
+        this.id = id;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,9 +55,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                 mContext.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                 verticalMargin
         );
-//        final ImageView imageView = new ImageView(mContext);
-//        imageView.setLayoutParams(params);
-//        imageView.setAdjustViewBounds(true);
+
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poster, parent, false);
         v.setLayoutParams(params);
         return new ViewHolder(v);
@@ -57,7 +64,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Movie movie = mMovies.get(position);
-        holder.bind(mContext, movie, mType);
+        holder.bind(mContext, movie, mType, id);
     }
 
     @Override
@@ -75,7 +82,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
             progressBar = (ProgressBar) view.findViewById(R.id.poster_progressbar);
         }
 
-        public void bind(final Context context, final Movie movie, final String type){
+        public void bind(final Context context, final Movie movie, final String type, final int id){
             if(movie.getId() == -1){
                 Picasso.with(context)
                         .load(R.drawable.more_port)
@@ -114,6 +121,8 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                     if (movie.getId() == -1){
                         Intent i = new Intent(context, ListMovie.class);
                         i.putExtra(type, true);
+                        if(id != -1)
+                            i.putExtra(ListMovie.KEY_MOVIE_ID, id);
                         context.startActivity(i);
                     }else {
                         Log.e("clicked", movie.getId() + " - " + movie.getTitle());

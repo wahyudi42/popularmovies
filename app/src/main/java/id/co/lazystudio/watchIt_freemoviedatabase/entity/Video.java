@@ -40,6 +40,10 @@ public class Video implements Parcelable {
         return site;
     }
 
+    public String getImageUrl(){
+        return "http://img.youtube.com/vi/"+key+"/sddefault.jpg";
+    }
+
     @Override
     public int describeContents() {
         return 0;

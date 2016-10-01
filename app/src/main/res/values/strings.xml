@@ -19,4 +19,6 @@
     <string name="label_budget">Budget</string>
     <string name="label_revenue">Revenue</string>
     <string name="label_overview">Overview</string>
+    <string name="label_similar">Similar</string>
+    <string name="label_video">Related Youtube Videos</string>
 </resources>

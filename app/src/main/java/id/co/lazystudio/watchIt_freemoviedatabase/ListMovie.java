@@ -25,6 +25,8 @@ public class ListMovie extends AppCompatActivity {
     public static final String NOW_PLAYING = "now_playing";
     public static final String POPULAR = "popular";
     public static final String TOP_RATED = "top_rated";
+    public static final String SIMILAR = "similar";
+    public static final String KEY_MOVIE_ID = "id";
 
     List<Movie> mMovieList = new ArrayList<>();
     private ProgressBar progressBar;

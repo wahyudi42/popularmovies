@@ -132,13 +132,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/smaller_margin"
                 app:cardCornerRadius="@dimen/smaller_rounded_corner">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
                     android:layout_marginBottom="@dimen/small_margin"
@@ -175,13 +175,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/smaller_margin"
                 app:cardCornerRadius="@dimen/smaller_rounded_corner">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
                     android:layout_marginBottom="@dimen/small_margin"
@@ -224,13 +224,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/smaller_margin"
                 app:cardCornerRadius="@dimen/smaller_rounded_corner">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
                     android:layout_marginBottom="@dimen/small_margin"
@@ -258,13 +258,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
             <android.support.v7.widget.CardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/smaller_margin"
                 app:cardCornerRadius="@dimen/smaller_rounded_corner">
                 <RelativeLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
                     android:layout_marginBottom="@dimen/small_margin"
@@ -347,19 +347,12 @@
         android:id="@+id/movie_collection_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/line_spacing">
-        <TextView
-            android:id="@+id/movie_collection_label_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="@string/label_collection"
-            style="@style/AppTheme.MovieCategoryTitle"/>
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/placeholder"
-            android:layout_below="@id/movie_collection_label_textview"
             android:layout_marginTop="@dimen/small_line_spacing">
             <ImageView
                 android:id="@+id/movie_collection_imageview"
@@ -372,18 +365,49 @@
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/movie_collection_textview"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="@dimen/smaller_margin"
+                android:paddingBottom="@dimen/smaller_margin"
                 style="@style/AppTheme.MovieCollectionTitle"
                 android:visibility="gone"/>
         </RelativeLayout>
     </RelativeLayout>
 
-    <!-- KEYWORDS -->
+    <!-- SIMILAR -->
     <RelativeLayout
+        android:id="@+id/movie_similar_relativelayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/line_spacing">
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/movie_similar_label_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/label_similar"
+            style="@style/AppTheme.MovieCategoryTitle"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/movie_similar_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/movie_similar_label_textview"
+            android:orientation="horizontal"
+            android:scrollbars="horizontal"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+    <!-- KEYWORDS -->
+    <RelativeLayout
+        android:id="@+id/movie_keyword_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone">
         <TextView
             android:id="@+id/movie_keyword_label_textview"
             android:layout_width="wrap_content"
@@ -397,8 +421,34 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/movie_keyword_label_textview"
             android:layout_marginTop="@dimen/small_line_spacing"
-            android:visibility="gone"
             style="@style/AppTheme.KeywordTagContainer"/>
+    </RelativeLayout>
 
+    <!-- RELATED YOUTUBE -->
+    <RelativeLayout
+        android:id="@+id/movie_video_relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/line_spacing"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/movie_video_label_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="@string/label_video"
+            style="@style/AppTheme.MovieCategoryTitle"/>
+        <GridView
+            android:id="@+id/movie_video_gridview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/movie_video_label_textview"
+            android:numColumns="2"
+            android:verticalSpacing="@dimen/small_margin"
+            android:horizontalSpacing="@dimen/small_margin"
+            android:padding="@dimen/small_margin"
+            android:scrollbarStyle="outsideOverlay">
+
+        </GridView>
     </RelativeLayout>
 </LinearLayout>

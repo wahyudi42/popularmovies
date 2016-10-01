@@ -3,11 +3,13 @@ package id.co.lazystudio.watchIt_freemoviedatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -23,6 +25,8 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
+import id.co.lazystudio.watchIt_freemoviedatabase.adapter.SummaryMovieAdapter;
+import id.co.lazystudio.watchIt_freemoviedatabase.adapter.VideoAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Collection;
@@ -47,6 +51,7 @@ public class DetailMovie extends AppCompatActivity {
     private List<Image> mPosterList = new ArrayList<>();
     private List<Keyword> mKeywordList = new ArrayList<>();
     private List<Video> mVideo = new ArrayList<>();
+    private List<Movie> mSimilarList = new ArrayList<>();
 
     ImageView backdropImageView;
 
@@ -91,7 +96,6 @@ public class DetailMovie extends AppCompatActivity {
                     toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white)));
                     toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary)));
                 }
-//                toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(R.color.dark_grey)));
             }
         });
 
@@ -111,7 +115,7 @@ public class DetailMovie extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieParser> call, Response<MovieParser> response) {
                     MovieParser movieParser = response.body();
-                    mMovie = (Movie)response.body();
+                    mMovie = response.body();
                     mCollection = movieParser.getCollection();
                     mCompanyList = movieParser.getCompanies();
                     mGenreList = movieParser.getGenres();
@@ -119,6 +123,7 @@ public class DetailMovie extends AppCompatActivity {
                     mPosterList = movieParser.getPosters();
                     mKeywordList = movieParser.getKeywords();
                     mVideo = movieParser.getVideos();
+                    mSimilarList = movieParser.getSimilars();
                     pb.setVisibility(View.GONE);
                     populateView();
                 }
@@ -273,8 +278,6 @@ public class DetailMovie extends AppCompatActivity {
             final RelativeLayout collectionRelativeLayout = (RelativeLayout) findViewById(R.id.movie_collection_relativelayout);
             collectionRelativeLayout.setVisibility(View.VISIBLE);
 
-//            TextView companyTextView = (TextView) findViewById(R.id.movie_productioncompany_textview);
-//            companyTextView.setText(mCompanyList.get(0).getName());
             final ImageView collectionImageView = (ImageView) findViewById(R.id.movie_collection_imageview);
 
             collectionImageView.post(new Runnable() {
@@ -282,39 +285,41 @@ public class DetailMovie extends AppCompatActivity {
                 public void run() {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) collectionImageView.getLayoutParams();
                     params.width = collectionRelativeLayout.getWidth();
-                    params.height = collectionRelativeLayout.getWidth() / 2;
+                    params.height = collectionRelativeLayout.getWidth() / 3;
+                    Picasso.with(DetailMovie.this)
+                            .load(mCollection.getBackdropPath(DetailMovie.this, 0))
+                            .error(R.drawable.no_image_land)
+                            .resize(collectionRelativeLayout.getWidth(), collectionRelativeLayout.getWidth()/3)
+                            .centerCrop()
+                            .into(collectionImageView, new Callback() {
+                                @Override
+                                public void onSuccess() {
+                                    findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
+                                    TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
+                                    collectionTextView.setVisibility(View.VISIBLE);
+                                    collectionTextView.setText(mCollection.getName());
+                                }
+
+                                @Override
+                                public void onError() {
+
+                                }
+                            });
                 }
             });
-            Picasso.with(this)
-                    .load(mCollection.getBackdropPath(this, 0))
-                    .error(R.drawable.no_image_land)
-                    .resize(collectionRelativeLayout.getWidth(), collectionRelativeLayout.getWidth()/2)
-                    .centerCrop()
-                    .into(collectionImageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
-                            TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
-                            collectionTextView.setVisibility(View.VISIBLE);
-                            collectionTextView.setText(mCollection.getName());
-                        }
-
-                        @Override
-                        public void onError() {
-
-                        }
-                    });
         }
 
         if(mKeywordList.size() > 0){
-            TagContainerLayout genreContainer = (TagContainerLayout) findViewById(R.id.keyword_tagcontainer);
-            genreContainer.setVisibility(View.VISIBLE);
+            RelativeLayout keywordRelativeLayout = (RelativeLayout) findViewById(R.id.movie_keyword_relativelayout);
+            keywordRelativeLayout.setVisibility(View.VISIBLE);
+
+            TagContainerLayout keywordContainer = (TagContainerLayout) findViewById(R.id.keyword_tagcontainer);
             String[] tags = new String[mKeywordList.size()];
             for(int i = 0; i < mKeywordList.size(); i++){
                 tags[i] = mKeywordList.get(i).getName();
             }
-            genreContainer.setTags(tags);
-            genreContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
+            keywordContainer.setTags(tags);
+            keywordContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
                 @Override
                 public void onTagClick(int position, String text) {
                     Keyword keyword = mKeywordList.get(position);
@@ -326,6 +331,22 @@ public class DetailMovie extends AppCompatActivity {
 
                 }
             });
+        }
+
+        if(mSimilarList.size() > 0){
+            findViewById(R.id.movie_similar_relativelayout).setVisibility(View.VISIBLE);
+            mSimilarList.add(new Movie(-1));
+
+            RecyclerView similarRecyclerView = (RecyclerView) findViewById(R.id.movie_similar_recyclerview);
+            similarRecyclerView.setAdapter(new SummaryMovieAdapter(this, mSimilarList, ListMovie.SIMILAR, mMovie.getId()));
+        }
+
+        if(mVideo.size() > 0){
+            findViewById(R.id.movie_video_relativelayout).setVisibility(View.VISIBLE);
+            final GridView videoGridView = (GridView) findViewById(R.id.movie_video_gridview);
+
+            videoGridView.setAdapter(new VideoAdapter(this, mVideo));
+
         }
     }
 
