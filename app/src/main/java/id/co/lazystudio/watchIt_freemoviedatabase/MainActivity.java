@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
@@ -35,8 +36,8 @@ import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
-import id.co.lazystudio.watchIt_freemoviedatabase.view.MySliderView;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
+import id.co.lazystudio.watchIt_freemoviedatabase.view.MySliderView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,13 +49,15 @@ public class MainActivity extends AppCompatActivity {
     private List<Genre> mGenres = new ArrayList<>();
 
     SliderLayout mNowPlayingSliderLayout;
-    RelativeLayout nowPlayingRelativeLayout;
+    RelativeLayout mNowPlayingRelativeLayout;
 
     List<String> processList = new ArrayList<>(Arrays.asList("now_playing", "genre", "popular", "top_rated"));
 
     RecyclerView mGenreRecyclerView, mPopularRecyclerView, mTopRatedRecyclerView;
 
     ProgressBar mainProgressBar;
+
+    TextView mNotificationTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
         mainProgressBar = (ProgressBar) findViewById(R.id.main_progressbar);
 
+        mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
+
         toolbar.post(new Runnable() {
             @Override
             public void run() {
@@ -81,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
 
         WatchItSyncAdapter.initializeSyncAdapter(this);
 
-        nowPlayingRelativeLayout = (RelativeLayout) findViewById(R.id.now_playing_relative_layout);
-        nowPlayingRelativeLayout.post(new Runnable() {
+        mNowPlayingRelativeLayout = (RelativeLayout) findViewById(R.id.now_playing_relative_layout);
+        mNowPlayingRelativeLayout.post(new Runnable() {
             @Override
             public void run() {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(nowPlayingRelativeLayout.getWidth(), nowPlayingRelativeLayout.getWidth() * 9 / 16);
-                nowPlayingRelativeLayout.setLayoutParams(params);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mNowPlayingRelativeLayout.getWidth(), mNowPlayingRelativeLayout.getWidth() * 9 / 16);
+                mNowPlayingRelativeLayout.setLayoutParams(params);
             }
         });
 
@@ -179,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     pb.setVisibility(View.GONE);
                     if(response.body().getStatusCode() != 0){
                         setComplete("now_playing", response.body());
+                        mNowPlayingRelativeLayout.setVisibility(View.GONE);
                     }else{
                         setComplete("now_playing");
                         mNowPlayingList = response.body().getMovies();
@@ -189,10 +195,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
                     setComplete("now_playing", "Server Error Occured");
+                    pb.setVisibility(View.GONE);
+                    mNowPlayingRelativeLayout.setVisibility(View.GONE);
                 }
             });
         }else {
             setComplete("now_playing", "No Internet Connection");
+            pb.setVisibility(View.GONE);
+            mNowPlayingRelativeLayout.setVisibility(View.GONE);
         }
     }
 
@@ -248,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
                         setComplete("genre", response.body());
                     }else {
                         setComplete("genre");
+                        mGenreRecyclerView.setVisibility(View.VISIBLE);
                         mGenres = response.body().getGenres();
                         mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
                     }
@@ -336,12 +347,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setComplete(String process, String error){
-        Utils.setProcessError(findViewById(R.id.error_textview), error);
+        Utils.setProcessError(mNotificationTextView, error);
+        findViewById(R.id.content_container).setVisibility(View.GONE);
         setComplete(process);
     }
 
     private void setComplete(String process, ErrorParser error){
-        Utils.setProcessError(findViewById(R.id.error_textview), error);
+        Utils.setProcessError(mNotificationTextView, error);
+        findViewById(R.id.content_container).setVisibility(View.GONE);
         setComplete(process);
     }
 }

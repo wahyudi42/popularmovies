@@ -17,6 +17,17 @@
         app:mpb_useIntrinsicPadding="false"
         style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
 
+    <TextView
+        android:id="@+id/notification_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/small_margin"
+        android:paddingBottom="@dimen/small_margin"
+        android:textColor="@android:color/white"
+        android:background="@color/colorAccent"
+        android:visibility="gone"/>
+
     <GridView
         android:id="@+id/movies_gridview"
         android:layout_width="match_parent"

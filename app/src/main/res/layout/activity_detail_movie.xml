@@ -46,6 +46,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/backdrop_relativelayout"/>
+
+            <TextView
+                android:id="@+id/notification_textview"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="center"
+                android:paddingTop="@dimen/small_margin"
+                android:paddingBottom="@dimen/small_margin"
+                android:textColor="@android:color/white"
+                android:background="@color/colorAccent"
+                android:visibility="gone"/>
         </RelativeLayout>
     </com.nirhart.parallaxscroll.views.ParallaxScrollView>
 
@@ -55,6 +66,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/transparent"
         app:theme="@style/ToolbarColoredBackArrow"
-        app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+        </android.support.v7.widget.Toolbar>
 
 </RelativeLayout>

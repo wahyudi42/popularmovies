@@ -56,6 +56,7 @@ public class DetailMovie extends AppCompatActivity {
     private List<Video> mVideo = new ArrayList<>();
     private List<Movie> mSimilarList = new ArrayList<>();
     private ProgressBar detailProgressBar;
+    private TextView mNotificationTextView;
 
     ImageView backdropImageView;
 
@@ -87,6 +88,8 @@ public class DetailMovie extends AppCompatActivity {
         }
 
         detailProgressBar = (ProgressBar) findViewById(R.id.detail_movie_progressbar);
+
+        mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
 
         backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
 
@@ -408,12 +411,12 @@ public class DetailMovie extends AppCompatActivity {
 
     private void setComplete(String error){
         setComplete();
-        Utils.setProcessError(null, error);
+        Utils.setProcessError(mNotificationTextView, error);
     }
 
     private void setComplete(ErrorParser error){
         setComplete();
-        Utils.setProcessError(null, error);
+        Utils.setProcessError(mNotificationTextView, error);
     }
 
     public static int getColorWithAlpha(float alpha, int baseColor) {

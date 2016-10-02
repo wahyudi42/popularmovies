@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
@@ -34,10 +36,12 @@ public class ListMovie extends AppCompatActivity {
     public static final String KEY_TITLE = "title";
 
     List<Movie> mMovieList = new ArrayList<>();
-    private ProgressBar progressBar;
+    private ProgressBar listProgressBar;
     private GridView listMovieGridView;
     private String mType;
     private int mId = 0;
+
+    TextView mNotificationTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,9 @@ public class ListMovie extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        progressBar = (ProgressBar) findViewById(R.id.list_movie_progressbar);
+        listProgressBar = (ProgressBar) findViewById(R.id.list_movie_progressbar);
+        mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
+
         Bundle args = getIntent().getExtras();
         if(args.getBoolean(NOW_PLAYING, false)) {
             getSupportActionBar().setTitle(getResources().getString(R.string.now_playing_title));
@@ -92,7 +98,7 @@ public class ListMovie extends AppCompatActivity {
         listMovieGridView.setAdapter(new ListMovieAdapter(this, mMovieList));
         getMovieList(this);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -136,18 +142,32 @@ public class ListMovie extends AppCompatActivity {
             movieListCall.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    progressBar.setVisibility(View.GONE);
+                    setComplete();
                     mMovieList = response.body().getMovies();
                     listMovieGridView.setAdapter(new ListMovieAdapter(context, mMovieList));
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
+                    listProgressBar.setVisibility(View.GONE);
                 }
             });
         }else {
-            progressBar.setVisibility(View.GONE);
+            setComplete("No Internet Connection");
         }
+    }
+
+    private void setComplete() {
+        Utils.setProcessComplete(listProgressBar);
+    }
+
+    private void setComplete(String error){
+        Utils.setProcessError(mNotificationTextView, error);
+        setComplete();
+    }
+
+    private void setComplete(ErrorParser error){
+        Utils.setProcessError(mNotificationTextView, error);
+        setComplete();
     }
 }
