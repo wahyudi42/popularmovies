@@ -43,26 +43,21 @@
         <item name="android:textSize">10sp</item>
     </style>
 
-    <style name="AppTheme.TagContainer">
-        <item name="container_border_color">@android:color/transparent</item>
-        <item name="container_background_color">@android:color/transparent</item>
-        <item name="vertical_interval">@dimen/small_margin</item>
-        <item name="horizontal_interval">@dimen/small_margin</item>
-        <item name="tag_background_color">@color/colorPrimary</item>
-        <item name="tag_border_color">@color/colorPrimary</item>
-        <item name="container_gravity">center</item>
-        <item name="tag_corner_radius">@dimen/smaller_rounded_corner</item>
-        <item name="tag_horizontal_padding">@dimen/small_margin</item>
-        <item name="tag_vertical_padding">@dimen/smaller_margin</item>
-        <item name="tag_text_color">@android:color/white</item>
-        <item name="tag_clickable">true</item>
-        <item name="tag_theme">none</item>
+    <style name="AppTheme.FlexboxLayout">
+        <item name="flexWrap">wrap</item>
+        <item name="justifyContent">center</item>
+        <item name="alignItems">center</item>
+        <item name="alignContent">center</item>
     </style>
 
-    <style name="AppTheme.KeywordTagContainer" parent="AppTheme.TagContainer">
-        <item name="tag_background_color">@color/colorPrimaryLight</item>
-        <item name="tag_border_color">@color/colorPrimaryLight</item>
-    </style>
+    <!--<style name="AppTheme.GenreFlexboxLayout" parent="AppTheme.FlexboxLayout">-->
+        <!--<item name=""-->
+    <!--</style>-->
+
+    <!--<style name="AppTheme.KeywordTagContainer" parent="AppTheme.FlexboxLayout">-->
+        <!--<item name="tag_background_color">@color/gray_500</item>-->
+        <!--<item name="tag_border_color">@color/gray_500</item>-->
+    <!--</style>-->
 
     <style name="AppTheme.MovieCollectionTitle" parent="AppTheme.MovieCategoryTitle">
         <item name="android:textSize">@dimen/category_title</item>

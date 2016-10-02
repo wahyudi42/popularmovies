@@ -97,7 +97,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/movie_tagline_relativelayout"
-            android:layout_marginTop="@dimen/line_spacing"
             android:visibility="gone">
             <ImageView
                 android:layout_width="32dp"
@@ -131,13 +130,13 @@
         </RelativeLayout>
 
         <!-- GENRES -->
-        <co.lujun.androidtagview.TagContainerLayout
-            android:id="@+id/genre_tagcontainer"
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/genre_flexboxlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/line_spacing"
             android:visibility="gone"
-            style="@style/AppTheme.TagContainer"/>
+            style="@style/AppTheme.FlexboxLayout"/>
 
         <!-- RATE + POPULARITY -->
         <LinearLayout
@@ -432,13 +431,13 @@
                 android:layout_centerHorizontal="true"
                 android:text="@string/label_keyword"
                 style="@style/AppTheme.MovieCategoryTitle"/>
-            <co.lujun.androidtagview.TagContainerLayout
-                android:id="@+id/keyword_tagcontainer"
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/keyword_flexboxlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/movie_keyword_label_textview"
                 android:layout_marginTop="@dimen/small_line_spacing"
-                style="@style/AppTheme.KeywordTagContainer"/>
+                style="@style/AppTheme.FlexboxLayout"/>
         </RelativeLayout>
 
         <!-- RELATED YOUTUBE -->

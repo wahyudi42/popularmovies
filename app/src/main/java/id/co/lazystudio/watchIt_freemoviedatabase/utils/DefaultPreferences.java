@@ -24,5 +24,6 @@ public class DefaultPreferences {
     public void setSecondRun(){
         SharedPreferences.Editor editor = _context.getSharedPreferences(PREF_NAME, 0).edit();
         editor.putBoolean(FIRST_RUN_KEY, false);
+        editor.apply();
     }
 }

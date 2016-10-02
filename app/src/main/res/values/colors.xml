@@ -10,4 +10,6 @@
     <color name="colorAccentDark">#FF3D00</color>
     <color name="placeholder">#4DBBDEFB</color>
     <color name="black_50">#80000000</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_700">#616161</color>
 </resources>

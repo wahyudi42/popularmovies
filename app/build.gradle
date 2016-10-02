@@ -38,7 +38,6 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.7'
-    compile 'me.gujun.android.taggroup:library:1.4@aar'
-    compile 'co.lujun:androidtagview:1.0.3'
     compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.google.android:flexbox:0.2.3'
 }

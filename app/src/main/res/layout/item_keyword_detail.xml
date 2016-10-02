@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Action"
-        android:background="@drawable/genre_detail"
+        android:background="@drawable/keyword_detail"
         android:textColor="@android:color/white"
-        android:id="@+id/genre_text_view" />
+        android:id="@+id/keyword_text_view" />
 </FrameLayout>

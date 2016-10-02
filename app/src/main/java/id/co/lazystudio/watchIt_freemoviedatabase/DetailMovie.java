@@ -1,11 +1,13 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -17,14 +19,13 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import co.lujun.androidtagview.TagContainerLayout;
-import co.lujun.androidtagview.TagView;
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.SummaryMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.VideoAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
@@ -246,25 +247,25 @@ public class DetailMovie extends AppCompatActivity {
         }
 
         if(mGenreList.size() > 0){
-            TagContainerLayout genreContainer = (TagContainerLayout) findViewById(R.id.genre_tagcontainer);
-            genreContainer.setVisibility(View.VISIBLE);
-            String[] tags = new String[mGenreList.size()];
+            FlexboxLayout tagFlexboxLayout = (FlexboxLayout) findViewById(R.id.genre_flexboxlayout);
+            tagFlexboxLayout.setVisibility(View.VISIBLE);
+
             for(int i = 0; i < mGenreList.size(); i++){
-                tags[i] = mGenreList.get(i).getName();
+                Genre genre = mGenreList.get(i);
+                View view = LayoutInflater.from(this).inflate(R.layout.item_genre_detail, tagFlexboxLayout, false);
+                TextView genreTextView =((TextView) view.findViewById(R.id.genre_text_view));
+                tagFlexboxLayout.addView(view);
+                genreTextView.setText(genre.getName());
+                view.setTag(i);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer index = (Integer) view.getTag();
+                        Genre genre = mGenreList.get(index);
+                        Log.e("genre clicked", genre.getId()+" - "+genre.getName());
+                    }
+                });
             }
-            genreContainer.setTags(tags);
-            genreContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
-                @Override
-                public void onTagClick(int position, String text) {
-                    Genre genre = mGenreList.get(position);
-                    Log.e("genre clicked", genre.getId()+" - "+genre.getName());
-                }
-
-                @Override
-                public void onTagLongClick(int position, String text) {
-
-                }
-            });
         }
 
         if(mCompanyList.size() > 0){
@@ -318,27 +319,26 @@ public class DetailMovie extends AppCompatActivity {
         }
 
         if(mKeywordList.size() > 0){
-            RelativeLayout keywordRelativeLayout = (RelativeLayout) findViewById(R.id.movie_keyword_relativelayout);
-            keywordRelativeLayout.setVisibility(View.VISIBLE);
+            findViewById(R.id.movie_keyword_relativelayout).setVisibility(View.VISIBLE);
 
-            TagContainerLayout keywordContainer = (TagContainerLayout) findViewById(R.id.keyword_tagcontainer);
-            String[] tags = new String[mKeywordList.size()];
+            FlexboxLayout keywordFlexboxLayout = (FlexboxLayout) findViewById(R.id.keyword_flexboxlayout);
+
             for(int i = 0; i < mKeywordList.size(); i++){
-                tags[i] = mKeywordList.get(i).getName();
+                Keyword keyword = mKeywordList.get(i);
+                View view = LayoutInflater.from(this).inflate(R.layout.item_keyword_detail, keywordFlexboxLayout, false);
+                TextView keywordTextView =((TextView) view.findViewById(R.id.keyword_text_view));
+                keywordFlexboxLayout.addView(view);
+                keywordTextView.setText(keyword.getName());
+                view.setTag(i);
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Integer index = (Integer) view.getTag();
+                        Keyword keyword = mKeywordList.get(index);
+                        Log.e("keyword clicked", keyword.getId()+" - "+keyword.getName());
+                    }
+                });
             }
-            keywordContainer.setTags(tags);
-            keywordContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
-                @Override
-                public void onTagClick(int position, String text) {
-                    Keyword keyword = mKeywordList.get(position);
-                    Log.e("keyword clicked", keyword.getId()+" - "+keyword.getName());
-                }
-
-                @Override
-                public void onTagLongClick(int position, String text) {
-
-                }
-            });
         }
 
         if(mSimilarList.size() > 0){
@@ -347,6 +347,16 @@ public class DetailMovie extends AppCompatActivity {
 
             RecyclerView similarRecyclerView = (RecyclerView) findViewById(R.id.movie_similar_recyclerview);
             similarRecyclerView.setAdapter(new SummaryMovieAdapter(this, mSimilarList, ListMovie.SIMILAR, mMovie.getId()));
+
+            findViewById(R.id.movie_similar_label_textview).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(DetailMovie.this, ListMovie.class);
+                    i.putExtra(ListMovie.SIMILAR, true);
+                    i.putExtra(ListMovie.KEY_MOVIE_ID, mMovie.getId());
+                    startActivity(i);
+                }
+            });
         }
 
         if(mVideo.size() > 0){
