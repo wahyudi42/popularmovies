@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 /**
  * Created by faqiharifian on 29/09/16.
  */
-public class ImageParser {
+public class ImageParser extends ErrorParser {
     @SerializedName("backdrops")
     private List<Image> backdrops;
     @SerializedName("posters")

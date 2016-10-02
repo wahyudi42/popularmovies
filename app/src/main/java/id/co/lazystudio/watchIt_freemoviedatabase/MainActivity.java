@@ -31,10 +31,11 @@ import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
-import id.co.lazystudio.watchIt_freemoviedatabase.utils.MySliderView;
+import id.co.lazystudio.watchIt_freemoviedatabase.view.MySliderView;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -175,19 +176,23 @@ public class MainActivity extends AppCompatActivity {
             nowPlaying.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    setComplete("now_playing");
                     pb.setVisibility(View.GONE);
-                    mNowPlayingList = response.body().getMovies();
-                    populateNowPlaying(context);
+                    if(response.body().getStatusCode() != 0){
+                        setComplete("now_playing", response.body());
+                    }else{
+                        setComplete("now_playing");
+                        mNowPlayingList = response.body().getMovies();
+                        populateNowPlaying(context);
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    pb.setVisibility(View.GONE);
+                    setComplete("now_playing", "Server Error Occured");
                 }
             });
         }else {
-            pb.setVisibility(View.GONE);
+            setComplete("now_playing", "No Internet Connection");
         }
     }
 
@@ -239,16 +244,22 @@ public class MainActivity extends AppCompatActivity {
             genre.enqueue(new Callback<GenreParser>() {
                 @Override
                 public void onResponse(Call<GenreParser> call, Response<GenreParser> response) {
-                    setComplete("genre");
-                    mGenres = response.body().getGenres();
-                    mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
+                    if(response.body().getStatusCode() != 0){
+                        setComplete("genre", response.body());
+                    }else {
+                        setComplete("genre");
+                        mGenres = response.body().getGenres();
+                        mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<GenreParser> call, Throwable t) {
+                    setComplete("genre", "Server Error Occured");
                 }
             });
         }else {
+            setComplete("genre", "No Internet Connection");
         }
     }
 
@@ -262,18 +273,24 @@ public class MainActivity extends AppCompatActivity {
             popular.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    setComplete("popular");
-                    mPopularList = response.body().getMovies();
-                    mPopularList.add(new Movie(-1));
+                    if(response.body().getStatusCode() != 0){
+                        setComplete("popular", response.body());
+                    }else {
+                        setComplete("popular");
+                        mPopularList = response.body().getMovies();
+                        mPopularList.add(new Movie(-1));
 
-                    mPopularRecyclerView.setAdapter(new SummaryMovieAdapter(context, mPopularList, ListMovie.POPULAR));
+                        mPopularRecyclerView.setAdapter(new SummaryMovieAdapter(context, mPopularList, ListMovie.POPULAR));
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
+                    setComplete("popular", "Server Error Occured");
                 }
             });
         }else {
+            setComplete("popular", "No Internet Connection");
         }
     }
 
@@ -287,18 +304,24 @@ public class MainActivity extends AppCompatActivity {
             topRated.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    setComplete("top_rated");
-                    mTopRatedList = response.body().getMovies();
-                    mTopRatedList.add(new Movie(-1));
+                    if(response.body().getStatusCode() != 0){
+                        setComplete("top_rated", response.body());
+                    }else {
+                        setComplete("top_rated");
+                        mTopRatedList = response.body().getMovies();
+                        mTopRatedList.add(new Movie(-1));
 
-                    mTopRatedRecyclerView.setAdapter(new SummaryMovieAdapter(context, mTopRatedList, ListMovie.TOP_RATED));
+                        mTopRatedRecyclerView.setAdapter(new SummaryMovieAdapter(context, mTopRatedList, ListMovie.TOP_RATED));
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
+                    setComplete("top_rated", "Server Error Occured");
                 }
             });
         }else {
+            setComplete("top_rated", "No Internet Connection");
         }
     }
 
@@ -309,8 +332,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setComplete(String process){
-        processList.remove(process);
-        if(processList.isEmpty())
-            mainProgressBar.setVisibility(View.GONE);
+        Utils.setProcessComplete(mainProgressBar, processList, process);
+    }
+
+    private void setComplete(String process, String error){
+        Utils.setProcessError(findViewById(R.id.error_textview), error);
+        setComplete(process);
+    }
+
+    private void setComplete(String process, ErrorParser error){
+        Utils.setProcessError(findViewById(R.id.error_textview), error);
+        setComplete(process);
     }
 }

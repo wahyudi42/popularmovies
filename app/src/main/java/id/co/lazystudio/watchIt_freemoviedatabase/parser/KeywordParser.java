@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Keyword;
 /**
  * Created by faqiharifian on 29/09/16.
  */
-public class KeywordParser {
+public class KeywordParser extends ErrorParser {
     @SerializedName("keywords")
     private List<Keyword> keywords;
 

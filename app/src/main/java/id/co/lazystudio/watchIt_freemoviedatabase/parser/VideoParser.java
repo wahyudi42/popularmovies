@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Video;
 /**
  * Created by faqiharifian on 29/09/16.
  */
-public class VideoParser {
+public class VideoParser extends ErrorParser {
     @SerializedName("results")
     private List<Video> videos;
 

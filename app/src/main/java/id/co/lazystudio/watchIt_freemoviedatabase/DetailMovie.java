@@ -37,6 +37,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Keyword;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Video;
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
@@ -53,6 +54,7 @@ public class DetailMovie extends AppCompatActivity {
     private List<Keyword> mKeywordList = new ArrayList<>();
     private List<Video> mVideo = new ArrayList<>();
     private List<Movie> mSimilarList = new ArrayList<>();
+    private ProgressBar detailProgressBar;
 
     ImageView backdropImageView;
 
@@ -83,6 +85,8 @@ public class DetailMovie extends AppCompatActivity {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
+        detailProgressBar = (ProgressBar) findViewById(R.id.detail_movie_progressbar);
+
         backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
 
         final ScrollView detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
@@ -105,7 +109,6 @@ public class DetailMovie extends AppCompatActivity {
     }
 
     private void getMovie(){
-        final ProgressBar pb = (ProgressBar) findViewById(R.id.detail_movie_progressbar);
         if(Utils.isInternetConnected(this)) {
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
@@ -116,27 +119,31 @@ public class DetailMovie extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieParser> call, Response<MovieParser> response) {
                     MovieParser movieParser = response.body();
-                    mMovie = response.body();
-                    mCollection = movieParser.getCollection();
-                    mCompanyList = movieParser.getCompanies();
-                    mGenreList = movieParser.getGenres();
-                    mBackdropList = movieParser.getBackdrops();
-                    mPosterList = movieParser.getPosters();
-                    mKeywordList = movieParser.getKeywords();
-                    mVideo = movieParser.getVideos();
-                    mSimilarList = movieParser.getSimilars();
-                    pb.setVisibility(View.GONE);
-                    populateView();
+                    if(movieParser.getStatusCode() != 0){
+                        setComplete(movieParser);
+                    }else{
+                        mMovie = response.body();
+                        mCollection = movieParser.getCollection();
+                        mCompanyList = movieParser.getCompanies();
+                        mGenreList = movieParser.getGenres();
+                        mBackdropList = movieParser.getBackdrops();
+                        mPosterList = movieParser.getPosters();
+                        mKeywordList = movieParser.getKeywords();
+                        mVideo = movieParser.getVideos();
+                        mSimilarList = movieParser.getSimilars();
+                        populateView();
+                        setComplete();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieParser> call, Throwable t) {
                     t.printStackTrace();
-                    pb.setVisibility(View.GONE);
+                    setComplete("Server Error Occured");
                 }
             });
         }else {
-            pb.setVisibility(View.GONE);
+            setComplete("No Internet Connection");
         }
     }
 
@@ -366,6 +373,20 @@ public class DetailMovie extends AppCompatActivity {
             videoGridView.setAdapter(new VideoAdapter(this, mVideo));
 
         }
+    }
+
+    private void setComplete(){
+        Utils.setProcessComplete(detailProgressBar);
+    }
+
+    private void setComplete(String error){
+        setComplete();
+        Utils.setProcessError(null, error);
+    }
+
+    private void setComplete(ErrorParser error){
+        setComplete();
+        Utils.setProcessError(null, error);
     }
 
     public static int getColorWithAlpha(float alpha, int baseColor) {

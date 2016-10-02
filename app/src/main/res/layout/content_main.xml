@@ -79,8 +79,7 @@
             <RelativeLayout
                 android:id="@+id/error_relativelayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary">
+                android:layout_height="wrap_content">
 
                 <me.zhanghai.android.materialprogressbar.MaterialProgressBar
                     android:id="@+id/main_progressbar"
@@ -92,14 +91,15 @@
                     style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
 
                 <TextView
-                    android:id="@+id/no_internet_textview"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/error_textview"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/smaller_margin"
-                    android:layout_marginBottom="@dimen/smaller_margin"
-                    android:text="@string/error_no_internet"
+                    android:gravity="center"
+                    android:paddingTop="@dimen/small_margin"
+                    android:paddingBottom="@dimen/small_margin"
                     android:layout_centerInParent="true"
                     android:textColor="@android:color/white"
+                    android:background="@color/colorAccent"
                     android:visibility="gone"/>
             </RelativeLayout>
 

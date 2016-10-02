@@ -4,10 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
+
 /**
  * Created by faqiharifian on 25/09/16.
  */
-public class Configuration {
+public class Configuration extends ErrorParser {
     @SerializedName("images")
     private Image images;
 

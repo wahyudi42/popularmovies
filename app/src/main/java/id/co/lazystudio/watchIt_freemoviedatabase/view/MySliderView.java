@@ -1,4 +1,4 @@
-package id.co.lazystudio.watchIt_freemoviedatabase.utils;
+package id.co.lazystudio.watchIt_freemoviedatabase.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;

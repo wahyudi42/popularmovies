@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.TmdbConfigurationPreference;
 
 /**
  * Created by faqiharifian on 23/09/16.
  */
-public class Movie implements Parcelable {
+public class Movie extends ErrorParser implements Parcelable {
     //    genres, collection, productionCompanies, productionCountries
     @SerializedName("adult")
     private boolean adult;

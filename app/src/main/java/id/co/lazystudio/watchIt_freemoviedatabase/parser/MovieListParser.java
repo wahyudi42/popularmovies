@@ -9,7 +9,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 /**
  * Created by faqiharifian on 25/09/16.
  */
-public class MovieListParser {
+public class MovieListParser extends ErrorParser {
     @SerializedName("page")
     private int page;
     @SerializedName("results")
