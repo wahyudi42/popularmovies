@@ -1,6 +1,7 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import id.co.lazystudio.watchIt_freemoviedatabase.ListMovie;
 import id.co.lazystudio.watchIt_freemoviedatabase.R;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 
@@ -43,7 +45,7 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
         return mGenreList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         TextView genreTextView;
         public ViewHolder(View v){
             super(v);
@@ -55,6 +57,12 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
                 @Override
                 public void onClick(View view) {
                     Log.e("clicked", String.valueOf(genre.getId() +" - "+ genre.getName()));
+
+                    Intent i = new Intent(mContext, ListMovie.class);
+                    i.putExtra(ListMovie.GENRE, true);
+                    i.putExtra(ListMovie.KEY_ID, genre.getId());
+                    i.putExtra(ListMovie.KEY_TITLE, genre.getName());
+                    mContext.startActivity(i);
                 }
             });
         }

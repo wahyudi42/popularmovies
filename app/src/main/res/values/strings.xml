@@ -20,5 +20,6 @@
     <string name="label_revenue">Revenue</string>
     <string name="label_overview">Overview</string>
     <string name="label_similar">Similar</string>
-    <string name="label_video">Related Youtube Videos</string>
+    <string name="label_video">Youtube Videos</string>
+    <string name="list_movie_similar_title">Similar to </string>
 </resources>

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -108,6 +109,16 @@ public class DetailMovie extends AppCompatActivity {
         populateView();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
+    }
+
     private void getMovie(){
         if(Utils.isInternetConnected(this)) {
             TmdbService tmdbService =
@@ -148,6 +159,7 @@ public class DetailMovie extends AppCompatActivity {
     }
 
     private void populateView(){
+        /* BACKDROP */
         backdropImageView.post(new Runnable() {
             @Override
             public void run() {
@@ -171,6 +183,7 @@ public class DetailMovie extends AppCompatActivity {
                     }
                 });
 
+        /* POSTER */
         final ImageView posterImageView = (ImageView) findViewById(R.id.poster_imageview);
         posterImageView.post(new Runnable() {
             @Override
@@ -211,6 +224,7 @@ public class DetailMovie extends AppCompatActivity {
                     }
                 });
 
+        /* TITLE + RATE + POPULARITY + BUDGET + REVENUE */
         TextView titleTextView = ((TextView) findViewById(R.id.movie_title_textview));
         titleTextView.setText(mMovie.getTitle());
         ((TextView) findViewById(R.id.movie_releasedate_textview)).setText(mMovie.getReleaseDate());
@@ -229,6 +243,7 @@ public class DetailMovie extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.movie_popularity_textview)).setText(mMovie.getPopularity());
 
+        /* TAGLINE */
         if(mMovie.getTagline() != null) {
             if(!mMovie.getTagline().equals("")) {
                 final RelativeLayout taglineRelativeLayout = (RelativeLayout) findViewById(R.id.movie_tagline_relativelayout);
@@ -241,10 +256,10 @@ public class DetailMovie extends AppCompatActivity {
                         taglineTextView.setMaxWidth(taglineRelativeLayout.getWidth() - (2 * getResources().getDimensionPixelSize(R.dimen.tag_width)));
                     }
                 });
-
             }
         }
 
+        /* OVERVIEW */
         if(mMovie.getOverview() != null){
             if(!mMovie.getOverview().equals("")){
                 findViewById(R.id.movie_overview_relativelayout).setVisibility(View.VISIBLE);
@@ -253,6 +268,7 @@ public class DetailMovie extends AppCompatActivity {
             }
         }
 
+        /* GENRE */
         if(mGenreList.size() > 0){
             FlexboxLayout tagFlexboxLayout = (FlexboxLayout) findViewById(R.id.genre_flexboxlayout);
             tagFlexboxLayout.setVisibility(View.VISIBLE);
@@ -270,26 +286,17 @@ public class DetailMovie extends AppCompatActivity {
                         Integer index = (Integer) view.getTag();
                         Genre genre = mGenreList.get(index);
                         Log.e("genre clicked", genre.getId()+" - "+genre.getName());
+                        Intent i = new Intent(DetailMovie.this, ListMovie.class);
+                        i.putExtra(ListMovie.GENRE, true);
+                        i.putExtra(ListMovie.KEY_ID, genre.getId());
+                        i.putExtra(ListMovie.KEY_TITLE, genre.getName());
+                        startActivity(i);
                     }
                 });
             }
         }
 
-        if(mCompanyList.size() > 0){
-//            RelativeLayout companyRelativeLayout = (RelativeLayout) findViewById(R.id.movie_productioncompany_container_relativelayout);
-//            companyRelativeLayout.setVisibility(View.VISIBLE);
-//
-//            TextView companyTextView = (TextView) findViewById(R.id.movie_productioncompany_textview);
-//            companyTextView.setText(mCompanyList.get(0).getName());
-//            ImageView companyImageView = (ImageView) findViewById(R.id.movie_productioncompany_imageview);
-//
-//            Picasso.with(this)
-//                    .load(mCompanyList.get(0).getLogoPath(this, 0))
-//                    .error(R.drawable.no_image_land)
-//                    .into(companyImageView);
-//            Log.e("company", mCompanyList.get(0).getLogoPath(this, 0));
-        }
-
+        /* COLLECTION */
         if(mCollection != null){
             final RelativeLayout collectionRelativeLayout = (RelativeLayout) findViewById(R.id.movie_collection_relativelayout);
             collectionRelativeLayout.setVisibility(View.VISIBLE);
@@ -323,8 +330,20 @@ public class DetailMovie extends AppCompatActivity {
                             });
                 }
             });
+
+            collectionRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(DetailMovie.this, ListMovie.class);
+                    i.putExtra(ListMovie.COLLECTION, true);
+                    i.putExtra(ListMovie.KEY_ID, mCollection.getId());
+                    i.putExtra(ListMovie.KEY_TITLE, mCollection.getName());
+                    startActivity(i);
+                }
+            });
         }
 
+        /* KEYWORD */
         if(mKeywordList.size() > 0){
             findViewById(R.id.movie_keyword_relativelayout).setVisibility(View.VISIBLE);
 
@@ -343,29 +362,37 @@ public class DetailMovie extends AppCompatActivity {
                         Integer index = (Integer) view.getTag();
                         Keyword keyword = mKeywordList.get(index);
                         Log.e("keyword clicked", keyword.getId()+" - "+keyword.getName());
+                        Intent i = new Intent(DetailMovie.this, ListMovie.class);
+                        i.putExtra(ListMovie.KEYWORD, true);
+                        i.putExtra(ListMovie.KEY_ID, keyword.getId());
+                        i.putExtra(ListMovie.KEY_TITLE, keyword.getName());
+                        startActivity(i);
                     }
                 });
             }
         }
 
+        /* SIMILAR */
         if(mSimilarList.size() > 0){
             findViewById(R.id.movie_similar_relativelayout).setVisibility(View.VISIBLE);
             mSimilarList.add(new Movie(-1));
 
             RecyclerView similarRecyclerView = (RecyclerView) findViewById(R.id.movie_similar_recyclerview);
-            similarRecyclerView.setAdapter(new SummaryMovieAdapter(this, mSimilarList, ListMovie.SIMILAR, mMovie.getId()));
+            similarRecyclerView.setAdapter(new SummaryMovieAdapter(this, mSimilarList, ListMovie.SIMILAR, mMovie));
 
             findViewById(R.id.movie_similar_label_textview).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(DetailMovie.this, ListMovie.class);
                     i.putExtra(ListMovie.SIMILAR, true);
-                    i.putExtra(ListMovie.KEY_MOVIE_ID, mMovie.getId());
+                    i.putExtra(ListMovie.KEY_ID, mMovie.getId());
+                    i.putExtra(ListMovie.KEY_TITLE, mMovie.getTitle());
                     startActivity(i);
                 }
             });
         }
 
+        /* VIDEO */
         if(mVideo.size() > 0){
             findViewById(R.id.movie_video_relativelayout).setVisibility(View.VISIBLE);
             final GridView videoGridView = (GridView) findViewById(R.id.movie_video_gridview);

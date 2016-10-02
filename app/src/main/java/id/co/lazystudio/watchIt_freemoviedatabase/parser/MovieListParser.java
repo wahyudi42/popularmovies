@@ -18,13 +18,18 @@ public class MovieListParser extends ErrorParser {
     private int totalPages;
     @SerializedName("total_results")
     private int totalResult;
+    @SerializedName("parts")
+    private List<Movie> parts;
 
     public int getPage() {
         return page;
     }
 
     public List<Movie> getMovies() {
-        return results;
+        if(parts != null)
+            return parts;
+        else
+            return results;
     }
 
     public int getTotalPages() {

@@ -28,6 +28,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     Context mContext;
     String mType;
     int id = -1;
+    String title;
 
     public SummaryMovieAdapter(Context context, List<Movie> movies, String type){
         mContext = context;
@@ -36,12 +37,13 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
         mType = type;
     }
 
-    public SummaryMovieAdapter(Context context, List<Movie> movies, String type, int id){
+    public SummaryMovieAdapter(Context context, List<Movie> movies, String type, Movie movie){
         mContext = context;
         mMovies = movies;
         mMovies.add(new Movie(-1));
         mType = type;
-        this.id = id;
+        this.id = movie.getId();
+        this.title = movie.getTitle();
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,7 +74,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
         return mMovies.size()-1;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView posterImageView;
         ProgressBar progressBar;
 
@@ -121,8 +123,10 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                     if (movie.getId() == -1){
                         Intent i = new Intent(context, ListMovie.class);
                         i.putExtra(type, true);
-                        if(id != -1)
-                            i.putExtra(ListMovie.KEY_MOVIE_ID, id);
+                        if(id != -1) {
+                            i.putExtra(ListMovie.KEY_ID, id);
+                            i.putExtra(ListMovie.KEY_TITLE, title);
+                        }
                         context.startActivity(i);
                     }else {
                         Log.e("clicked", movie.getId() + " - " + movie.getTitle());

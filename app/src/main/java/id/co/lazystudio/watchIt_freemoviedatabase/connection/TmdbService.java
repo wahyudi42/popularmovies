@@ -39,4 +39,20 @@ public interface TmdbService {
     @Headers("Content-Type: application/json")
     @GET("movie/{id}?api_key="+API_KEY+"&append_to_response=images,videos,keywords,similar")
     Call<MovieParser> getMovie(@Path("id") int id);
+
+    @Headers("Content-Type: application/json")
+    @GET("genre/{genre_id}/movies?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesGenre(@Path("genre_id") int idGenre);
+
+    @Headers("Content-Type: application/json")
+    @GET("collection/{collection_id}?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesCollection(@Path("collection_id") int idCollection);
+
+    @Headers("Content-Type: application/json")
+    @GET("keyword/{keyword_id}/movies?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesKeyword(@Path("keyword_id") int idKeyword);
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/{movie_id}/similar?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesSimilar(@Path("movie_id") int idMovie);
 }
