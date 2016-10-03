@@ -32,7 +32,6 @@ import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Genre;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
@@ -58,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar mainProgressBar;
 
     TextView mNotificationTextView;
+
+    boolean isSuccess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,8 +183,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     pb.setVisibility(View.GONE);
-                    if(response.body().getStatusCode() != 0){
-                        setComplete("now_playing", response.body());
+                    if(response.code() != 200){
+                        isSuccess = false;
+                        setComplete("now_playing", "Server Error Occurred");
                         mNowPlayingRelativeLayout.setVisibility(View.GONE);
                     }else{
                         setComplete("now_playing");
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("now_playing", "Server Error Occured");
+                    setComplete("now_playing", "Server Error Occurred");
                     pb.setVisibility(View.GONE);
                     mNowPlayingRelativeLayout.setVisibility(View.GONE);
                 }
@@ -254,8 +256,9 @@ public class MainActivity extends AppCompatActivity {
             genre.enqueue(new Callback<GenreParser>() {
                 @Override
                 public void onResponse(Call<GenreParser> call, Response<GenreParser> response) {
-                    if(response.body().getStatusCode() != 0){
-                        setComplete("genre", response.body());
+                    if(response.code() != 200){
+                        isSuccess = false;
+                        setComplete("genre", "Server Error Occurred");
                     }else {
                         setComplete("genre");
                         mGenreRecyclerView.setVisibility(View.VISIBLE);
@@ -266,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<GenreParser> call, Throwable t) {
-                    setComplete("genre", "Server Error Occured");
+                    setComplete("genre", "Server Error Occurred");
                 }
             });
         }else {
@@ -284,9 +287,11 @@ public class MainActivity extends AppCompatActivity {
             popular.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    if(response.body().getStatusCode() != 0){
-                        setComplete("popular", response.body());
+                    if(response.code() != 200){
+                        isSuccess = false;
+                        setComplete("popular", "Server Error Occurred");
                     }else {
+                        findViewById(R.id.content_container).setVisibility(View.VISIBLE);
                         setComplete("popular");
                         mPopularList = response.body().getMovies();
                         mPopularList.add(new Movie(-1));
@@ -297,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("popular", "Server Error Occured");
+                    setComplete("popular", "Server Error Occurred");
                 }
             });
         }else {
@@ -315,9 +320,11 @@ public class MainActivity extends AppCompatActivity {
             topRated.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    if(response.body().getStatusCode() != 0){
-                        setComplete("top_rated", response.body());
+                    if(response.code() != 200){
+                        isSuccess = false;
+                        setComplete("top_rated", "Server Error Occurred");
                     }else {
+                        findViewById(R.id.content_container).setVisibility(View.VISIBLE);
                         setComplete("top_rated");
                         mTopRatedList = response.body().getMovies();
                         mTopRatedList.add(new Movie(-1));
@@ -328,7 +335,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("top_rated", "Server Error Occured");
+                    setComplete("top_rated", "Server Error Occurred");
                 }
             });
         }else {
@@ -344,15 +351,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void setComplete(String process){
         Utils.setProcessComplete(mainProgressBar, processList, process);
+        if(!isSuccess){
+            mNowPlayingRelativeLayout.setVisibility(View.GONE);
+            findViewById(R.id.content_container).setVisibility(View.GONE);
+            mGenreRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     private void setComplete(String process, String error){
-        Utils.setProcessError(mNotificationTextView, error);
-        findViewById(R.id.content_container).setVisibility(View.GONE);
-        setComplete(process);
-    }
-
-    private void setComplete(String process, ErrorParser error){
         Utils.setProcessError(mNotificationTextView, error);
         findViewById(R.id.content_container).setVisibility(View.GONE);
         setComplete(process);

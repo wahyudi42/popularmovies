@@ -9,7 +9,11 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 /**
  * Created by faqiharifian on 25/09/16.
  */
-public class MovieListParser extends ErrorParser {
+public class MovieListParser {
+    @SerializedName("status_code")
+    private int statusCode;
+    @SerializedName("status_message")
+    private String statusMessage;
     @SerializedName("page")
     private int page;
     @SerializedName("results")
@@ -38,5 +42,13 @@ public class MovieListParser extends ErrorParser {
 
     public int getTotalResult() {
         return totalResult;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
     }
 }

@@ -38,7 +38,6 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Keyword;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Video;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
@@ -109,7 +108,7 @@ public class DetailMovie extends AppCompatActivity {
         });
 
         getMovie();
-        populateView();
+        firstPopulateView();
     }
 
     @Override
@@ -133,8 +132,8 @@ public class DetailMovie extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieParser> call, Response<MovieParser> response) {
                     MovieParser movieParser = response.body();
-                    if(movieParser.getStatusCode() != 0){
-                        setComplete(movieParser);
+                    if(response.code() != 200){
+                        setComplete("Server Error Occurred");
                     }else{
                         mMovie = response.body();
                         mCollection = movieParser.getCollection();
@@ -153,7 +152,7 @@ public class DetailMovie extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<MovieParser> call, Throwable t) {
                     t.printStackTrace();
-                    setComplete("Server Error Occured");
+                    setComplete("Server Error Occurred");
                 }
             });
         }else {
@@ -161,7 +160,7 @@ public class DetailMovie extends AppCompatActivity {
         }
     }
 
-    private void populateView(){
+    private void firstPopulateView(){
         /* BACKDROP */
         backdropImageView.post(new Runnable() {
             @Override
@@ -227,11 +226,19 @@ public class DetailMovie extends AppCompatActivity {
                     }
                 });
 
-        /* TITLE + RATE + POPULARITY + BUDGET + REVENUE */
         TextView titleTextView = ((TextView) findViewById(R.id.movie_title_textview));
         titleTextView.setText(mMovie.getTitle());
-        ((TextView) findViewById(R.id.movie_releasedate_textview)).setText(mMovie.getReleaseDate());
-        ((TextView) findViewById(R.id.movie_runtime_textview)).setText(mMovie.getRuntime());
+    }
+
+    private void populateView(){
+        findViewById(R.id.detail_container).setVisibility(View.VISIBLE);
+        /* TITLE + RATE + POPULARITY + BUDGET + REVENUE */
+        TextView releaseDateTextView = ((TextView) findViewById(R.id.movie_releasedate_textview));
+        releaseDateTextView.setVisibility(View.VISIBLE);
+        releaseDateTextView.setText(mMovie.getReleaseDate());
+        TextView runtimeTextView = ((TextView) findViewById(R.id.movie_runtime_textview));
+        runtimeTextView.setVisibility(View.VISIBLE);
+        runtimeTextView.setText(mMovie.getRuntime());
         TextView rateAvgTextView = ((TextView) findViewById(R.id.movie_rateaverage_textview));
         rateAvgTextView.setText(mMovie.getVoteAverage());
         TextView rateCountTextView = ((TextView) findViewById(R.id.movie_ratecount_textview));
@@ -410,11 +417,6 @@ public class DetailMovie extends AppCompatActivity {
     }
 
     private void setComplete(String error){
-        setComplete();
-        Utils.setProcessError(mNotificationTextView, error);
-    }
-
-    private void setComplete(ErrorParser error){
         setComplete();
         Utils.setProcessError(mNotificationTextView, error);
     }

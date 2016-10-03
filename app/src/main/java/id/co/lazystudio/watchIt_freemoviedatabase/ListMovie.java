@@ -17,7 +17,6 @@ import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
@@ -142,14 +141,19 @@ public class ListMovie extends AppCompatActivity {
             movieListCall.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    setComplete();
-                    mMovieList = response.body().getMovies();
-                    listMovieGridView.setAdapter(new ListMovieAdapter(context, mMovieList));
+                    if(response.code() != 200){
+                        setComplete("Server Error Occurred");
+                    }else {
+                        setComplete();
+                        mMovieList = response.body().getMovies();
+                        listMovieGridView.setAdapter(new ListMovieAdapter(context, mMovieList));
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
                     listProgressBar.setVisibility(View.GONE);
+                    setComplete("Server Error Occurred");
                 }
             });
         }else {
@@ -162,11 +166,6 @@ public class ListMovie extends AppCompatActivity {
     }
 
     private void setComplete(String error){
-        Utils.setProcessError(mNotificationTextView, error);
-        setComplete();
-    }
-
-    private void setComplete(ErrorParser error){
         Utils.setProcessError(mNotificationTextView, error);
         setComplete();
     }

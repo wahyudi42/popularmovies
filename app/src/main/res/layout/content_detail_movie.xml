@@ -71,7 +71,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="@style/AppTheme.TextSecondary"
-                        android:layout_below="@id/movie_title_textview"/>
+                        android:layout_below="@id/movie_title_textview"
+                        android:visibility="invisible"/>
                     <TextView
                         android:id="@+id/movie_runtime_textview"
                         android:layout_width="wrap_content"
@@ -79,19 +80,22 @@
                         style="@style/AppTheme.TextSecondary"
                         android:layout_below="@id/movie_title_textview"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_toRightOf="@+id/movie_releasedate_textview" />
+                        android:layout_toRightOf="@+id/movie_releasedate_textview"
+                        android:visibility="invisible"/>
                 </RelativeLayout>
             </FrameLayout>
         </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:orientation="vertical"
-        android:background="?android:colorBackground">
+        android:background="?android:colorBackground"
+        android:visibility="gone">
         <!-- TAGLINE -->
         <RelativeLayout
             android:layout_width="match_parent"

@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import id.co.lazystudio.watchIt_freemoviedatabase.parser.ErrorParser;
-
 /**
  * Created by faqiharifian on 25/09/16.
  */
@@ -40,14 +38,5 @@ public class Utils {
             ((TextView) view).setText(error);
         }
         Log.e("connection error", error);
-    }
-
-    public static void setProcessError(View view, ErrorParser error){
-        if(view != null){
-            view.setVisibility(View.VISIBLE);
-            ((TextView) view).setText("Server Error Occured");
-        }
-        Log.e("connection error", "Server Error Occured");
-        Log.e("connection error", String.valueOf(error.getStatusCode())+" - "+String.valueOf(error.getStatusMessage()));
     }
 }
