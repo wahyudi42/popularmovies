@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -74,6 +77,23 @@ public class DetailMovie extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
+        final SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
+        }else {
+            tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark)));
+        }
+
+        RelativeLayout.LayoutParams toolbarParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
+        toolbarParams.setMargins(0, getStatusBarHeight(), 0, 0);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white, getTheme())));
         else
@@ -86,26 +106,28 @@ public class DetailMovie extends AppCompatActivity {
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        detailProgressBar = (ProgressBar) findViewById(R.id.detail_movie_progressbar);
-
-        mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
-
-        backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
-
         final ScrollView detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
         detailScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 float alpha = (float) detailScrollView.getScrollY() / backdropImageView.getBottom();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
                     toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white, getTheme())));
                     toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary, getTheme())));
                 }else {
+                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimaryDark)));
                     toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white)));
                     toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary)));
                 }
             }
         });
+
+        detailProgressBar = (ProgressBar) findViewById(R.id.detail_movie_progressbar);
+
+        mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
+
+        backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
 
         getMovie();
         firstPopulateView();
@@ -425,5 +447,14 @@ public class DetailMovie extends AppCompatActivity {
         int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
         int rgb = 0x00ffffff & baseColor;
         return a + rgb;
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }
