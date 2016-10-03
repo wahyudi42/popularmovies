@@ -7,6 +7,7 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF6E40</color>
+    <color name="colorAccent_50">#BFFF6E40</color>
     <color name="colorAccentDark">#FF3D00</color>
     <color name="placeholder">#4DBBDEFB</color>
     <color name="black_50">#80000000</color>

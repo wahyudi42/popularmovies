@@ -3,6 +3,7 @@ package id.co.lazystudio.watchIt_freemoviedatabase;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,6 +43,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Keyword;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Video;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieParser;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.FabVisibilityChangeListener;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -61,6 +63,10 @@ public class DetailMovie extends AppCompatActivity {
     private TextView mNotificationTextView;
 
     ImageView backdropImageView;
+    SystemBarTintManager tintManager;
+
+    FloatingActionButton refreshFab;
+    FabVisibilityChangeListener fabListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +88,12 @@ public class DetailMovie extends AppCompatActivity {
             w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
 
-        final SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setNavigationBarTintEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
-        }else {
-            tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark)));
-        }
 
-        RelativeLayout.LayoutParams toolbarParams = (RelativeLayout.LayoutParams) toolbar.getLayoutParams();
-        toolbarParams.setMargins(0, getStatusBarHeight(), 0, 0);
+        RelativeLayout.LayoutParams toolbarParams = (RelativeLayout.LayoutParams) findViewById(R.id.stub_statusbar).getLayoutParams();
+        toolbarParams.height = getStatusBarHeight();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white, getTheme())));
@@ -129,6 +130,9 @@ public class DetailMovie extends AppCompatActivity {
 
         backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
 
+        refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
+        fabListener = new FabVisibilityChangeListener();
+
         getMovie();
         firstPopulateView();
     }
@@ -145,6 +149,12 @@ public class DetailMovie extends AppCompatActivity {
 
     private void getMovie(){
         if(Utils.isInternetConnected(this)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
+            }else {
+                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark)));
+            }
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -441,6 +451,22 @@ public class DetailMovie extends AppCompatActivity {
     private void setComplete(String error){
         setComplete();
         Utils.setProcessError(mNotificationTextView, error);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            tintManager.setTintColor(getResources().getColor(R.color.colorAccent, getTheme()));
+        else
+            tintManager.setTintColor(getResources().getColor(R.color.colorAccent));
+        fabListener.setFabShouldBeShown(true);
+        refreshFab.show(fabListener);
+        refreshFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabListener.setFabShouldBeShown(false);
+                refreshFab.hide(fabListener);
+                mNotificationTextView.setVisibility(View.GONE);
+                detailProgressBar.setVisibility(View.VISIBLE);
+                getMovie();
+            }
+        });
     }
 
     public static int getColorWithAlpha(float alpha, int baseColor) {

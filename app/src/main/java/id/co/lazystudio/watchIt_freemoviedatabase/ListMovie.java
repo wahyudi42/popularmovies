@@ -1,7 +1,9 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.FabVisibilityChangeListener;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +45,9 @@ public class ListMovie extends AppCompatActivity {
 
     TextView mNotificationTextView;
 
+    FloatingActionButton refreshFab;
+    FabVisibilityChangeListener fabListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +55,17 @@ public class ListMovie extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
+            else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white, getTheme()));
+        else
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 
         listProgressBar = (ProgressBar) findViewById(R.id.list_movie_progressbar);
         mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
@@ -95,6 +112,10 @@ public class ListMovie extends AppCompatActivity {
 
         // Instance of ImageAdapter Class
         listMovieGridView.setAdapter(new ListMovieAdapter(this, mMovieList));
+
+        refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
+        fabListener = new FabVisibilityChangeListener();
+
         getMovieList(this);
     }
 
@@ -152,7 +173,6 @@ public class ListMovie extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    listProgressBar.setVisibility(View.GONE);
                     setComplete("Server Error Occurred");
                 }
             });
@@ -168,5 +188,17 @@ public class ListMovie extends AppCompatActivity {
     private void setComplete(String error){
         Utils.setProcessError(mNotificationTextView, error);
         setComplete();
+        fabListener.setFabShouldBeShown(true);
+        refreshFab.show(fabListener);
+        refreshFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabListener.setFabShouldBeShown(false);
+                refreshFab.hide(fabListener);
+                mNotificationTextView.setVisibility(View.GONE);
+                listProgressBar.setVisibility(View.VISIBLE);
+                getMovieList(ListMovie.this);
+            }
+        });
     }
 }

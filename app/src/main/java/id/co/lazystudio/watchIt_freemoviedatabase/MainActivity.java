@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+                mNowPlayingSliderLayout.setCurrentPosition(0, false);
             }
         });
     }
