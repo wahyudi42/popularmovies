@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,7 +22,6 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.GenreAdapter;
@@ -35,6 +33,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.GenreParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.sync.WatchItSyncAdapter;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.FabVisibilityChangeListener;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import id.co.lazystudio.watchIt_freemoviedatabase.view.MySliderView;
 import retrofit2.Call;
@@ -50,13 +49,18 @@ public class MainActivity extends AppCompatActivity {
     SliderLayout mNowPlayingSliderLayout;
     RelativeLayout mNowPlayingRelativeLayout;
 
-    List<String> processList = new ArrayList<>(Arrays.asList("now_playing", "genre", "popular", "top_rated"));
+    List<String> processList = new ArrayList<>();
 
     RecyclerView mGenreRecyclerView, mPopularRecyclerView, mTopRatedRecyclerView;
 
     ProgressBar mainProgressBar;
 
     TextView mNotificationTextView;
+
+    View contentContainer;
+
+    FloatingActionButton refreshFab;
+    FabVisibilityChangeListener fabListener;
 
     boolean isSuccess = true;
 
@@ -88,60 +92,19 @@ public class MainActivity extends AppCompatActivity {
         WatchItSyncAdapter.initializeSyncAdapter(this);
 
         mNowPlayingRelativeLayout = (RelativeLayout) findViewById(R.id.now_playing_relative_layout);
-        mNowPlayingRelativeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mNowPlayingRelativeLayout.getWidth(), mNowPlayingRelativeLayout.getWidth() * 9 / 16);
-                mNowPlayingRelativeLayout.setLayoutParams(params);
-            }
-        });
 
         mNowPlayingSliderLayout = (SliderLayout) findViewById(R.id.now_playing_slider);
-        mNowPlayingSliderLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mNowPlayingSliderLayout.getWidth(), mNowPlayingSliderLayout.getWidth() * 9 / 16);
-                mNowPlayingSliderLayout.setLayoutParams(params);
-            }
-        });
 
         mGenreRecyclerView = (RecyclerView) findViewById(R.id.genre_recyclerview);
 
-        mPopularRecyclerView = (RecyclerView) findViewById(R.id.popular_recyclerview);
-        mPopularRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout parent = (LinearLayout) mPopularRecyclerView.getParent();
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
-                mPopularRecyclerView.setLayoutParams(params);
+        contentContainer = findViewById(R.id.content_container);
 
-                findViewById(R.id.popular_title_relativelayout).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.e("view all clicked", "popular");
-                        viewAll(ListMovie.POPULAR);
-                    }
-                });
-            }
-        });
+        mPopularRecyclerView = (RecyclerView) findViewById(R.id.popular_recyclerview);
 
         mTopRatedRecyclerView = (RecyclerView) findViewById(R.id.toprated_recyclerview);
-        mTopRatedRecyclerView.post(new Runnable() {
-            @Override
-            public void run() {
-                LinearLayout parent = (LinearLayout) mTopRatedRecyclerView.getParent();
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
-                mTopRatedRecyclerView.setLayoutParams(params);
 
-                findViewById(R.id.toprated_title_relativelayout).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.e("view all clicked", "top rated");
-                        viewAll(ListMovie.TOP_RATED);
-                    }
-                });
-            }
-        });
+        refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
+        fabListener = new FabVisibilityChangeListener();
 
         getNowPlaying(this);
         getGenres(this);
@@ -149,31 +112,15 @@ public class MainActivity extends AppCompatActivity {
         getTopRated(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private void getNowPlaying(final Context context){
         final ProgressBar pb = (ProgressBar) findViewById(R.id.now_playing_progress_bar);
         if(Utils.isInternetConnected(context)) {
+            processList.add("now_playing");
+
+            pb.setVisibility(View.VISIBLE);
+
+            mNowPlayingRelativeLayout.setVisibility(View.GONE);
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -184,9 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     pb.setVisibility(View.GONE);
                     if(response.code() != 200){
-                        isSuccess = false;
                         setComplete("now_playing", "Server Error Occurred");
-                        mNowPlayingRelativeLayout.setVisibility(View.GONE);
                     }else{
                         setComplete("now_playing");
                         mNowPlayingList = response.body().getMovies();
@@ -204,50 +149,71 @@ public class MainActivity extends AppCompatActivity {
         }else {
             setComplete("now_playing", "No Internet Connection");
             pb.setVisibility(View.GONE);
-            mNowPlayingRelativeLayout.setVisibility(View.GONE);
         }
     }
 
     private void populateNowPlaying(final Context context){
-        int to = 5;
-        for(int i = 0; i <= to; i++){
-            Movie nowPlaying = null;
-            MySliderView textSliderView = null;
-            if(i < to) {
-                nowPlaying = mNowPlayingList.get(i);
-                String imagePath = nowPlaying.getBackdropPath(context, 0);
-                textSliderView = new MySliderView(context, i);
-                textSliderView
-                        .description(nowPlaying.getTitle())
-                        .image(imagePath);
-            }else{
-                textSliderView = new MySliderView(context, -1);
-                textSliderView.image(R.drawable.more_land);
+        mNowPlayingRelativeLayout.setVisibility(View.VISIBLE);
+
+        mNowPlayingRelativeLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(mNowPlayingRelativeLayout.getWidth(), mNowPlayingRelativeLayout.getWidth() * 9 / 16);
+                mNowPlayingRelativeLayout.setLayoutParams(params);
             }
-            textSliderView.error(R.drawable.no_image_land);
-            textSliderView.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-                @Override
-                public void onSliderClick(BaseSliderView slider) {
-                    Integer index = (Integer) slider.getView().getTag();
-                    if(index == -1){
-                        viewAll(ListMovie.NOW_PLAYING);
+        });
+
+        mNowPlayingSliderLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mNowPlayingSliderLayout.getWidth(), mNowPlayingSliderLayout.getWidth() * 9 / 16);
+                mNowPlayingSliderLayout.setLayoutParams(params);
+
+                int to = 5;
+                for(int i = 0; i <= to; i++){
+                    Movie nowPlaying = null;
+                    MySliderView textSliderView = null;
+                    if(i < to) {
+                        nowPlaying = mNowPlayingList.get(i);
+                        String imagePath = nowPlaying.getBackdropPath(context, 0);
+                        textSliderView = new MySliderView(context, i);
+                        textSliderView
+                                .description(nowPlaying.getTitle())
+                                .image(imagePath);
                     }else{
-                        Movie movie = mNowPlayingList.get(index);
-                        Intent i = new Intent(context, DetailMovie.class);
-                        i.putExtra(DetailMovie.MOVIE_KEY, movie);
-                        startActivity(i);
+                        textSliderView = new MySliderView(context, -1);
+                        textSliderView.image(R.drawable.more_land);
                     }
+                    textSliderView.error(R.drawable.no_image_land);
+                    textSliderView.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
+                        @Override
+                        public void onSliderClick(BaseSliderView slider) {
+                            Integer index = (Integer) slider.getView().getTag();
+                            if(index == -1){
+                                viewAll(ListMovie.NOW_PLAYING);
+                            }else{
+                                Movie movie = mNowPlayingList.get(index);
+                                Intent i = new Intent(context, DetailMovie.class);
+                                i.putExtra(DetailMovie.MOVIE_KEY, movie);
+                                startActivity(i);
+                            }
+                        }
+                    });
+
+                    mNowPlayingSliderLayout.addSlider(textSliderView);
                 }
-            });
 
-            mNowPlayingSliderLayout.addSlider(textSliderView);
-        }
-
-        mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+                mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+            }
+        });
     }
 
     private void getGenres(final Context context){
         if(Utils.isInternetConnected(context)) {
+            processList.add("genre");
+
+            mGenreRecyclerView.setVisibility(View.VISIBLE);
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -257,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<GenreParser> call, Response<GenreParser> response) {
                     if(response.code() != 200){
-                        isSuccess = false;
                         setComplete("genre", "Server Error Occurred");
                     }else {
                         setComplete("genre");
@@ -279,6 +244,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void getPopular(final Context context){
         if(Utils.isInternetConnected(context)) {
+            processList.add("popular");
+
+            contentContainer.setVisibility(View.INVISIBLE);
+
+            mPopularRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    LinearLayout parent = (LinearLayout) mPopularRecyclerView.getParent();
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
+                    mPopularRecyclerView.setLayoutParams(params);
+
+                    findViewById(R.id.popular_title_relativelayout).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.e("view all clicked", "popular");
+                            viewAll(ListMovie.POPULAR);
+                        }
+                    });
+                }
+            });
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -288,10 +274,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     if(response.code() != 200){
-                        isSuccess = false;
                         setComplete("popular", "Server Error Occurred");
                     }else {
-                        findViewById(R.id.content_container).setVisibility(View.VISIBLE);
+                        contentContainer.setVisibility(View.VISIBLE);
                         setComplete("popular");
                         mPopularList = response.body().getMovies();
                         mPopularList.add(new Movie(-1));
@@ -312,6 +297,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void getTopRated(final Context context){
         if(Utils.isInternetConnected(context)) {
+            processList.add("top_rated");
+
+            contentContainer.setVisibility(View.INVISIBLE);
+
+            mTopRatedRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    LinearLayout parent = (LinearLayout) mTopRatedRecyclerView.getParent();
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, parent.getWidth() / 2);
+                    mTopRatedRecyclerView.setLayoutParams(params);
+
+                    findViewById(R.id.toprated_title_relativelayout).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.e("view all clicked", "top rated");
+                            viewAll(ListMovie.TOP_RATED);
+                        }
+                    });
+                }
+            });
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -353,14 +359,31 @@ public class MainActivity extends AppCompatActivity {
         Utils.setProcessComplete(mainProgressBar, processList, process);
         if(!isSuccess){
             mNowPlayingRelativeLayout.setVisibility(View.GONE);
-            findViewById(R.id.content_container).setVisibility(View.GONE);
+            contentContainer.setVisibility(View.GONE);
             mGenreRecyclerView.setVisibility(View.GONE);
         }
     }
 
     private void setComplete(String process, String error){
+        isSuccess = false;
         Utils.setProcessError(mNotificationTextView, error);
         findViewById(R.id.content_container).setVisibility(View.GONE);
         setComplete(process);
+        fabListener.setFabShouldBeShown(true);
+        refreshFab.show(fabListener);
+        refreshFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isSuccess = true;
+                fabListener.setFabShouldBeShown(false);
+                refreshFab.hide(fabListener);
+                mNotificationTextView.setVisibility(View.GONE);
+                mainProgressBar.setVisibility(View.VISIBLE);
+                getNowPlaying(MainActivity.this);
+                getGenres(MainActivity.this);
+                getPopular(MainActivity.this);
+                getTopRated(MainActivity.this);
+            }
+        });
     }
 }

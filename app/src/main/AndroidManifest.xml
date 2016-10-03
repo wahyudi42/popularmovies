@@ -20,8 +20,8 @@
         <activity
             android:name=".SplashScreen"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,25 +30,25 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ListMovie"
             android:label="@string/title_activity_list_movie"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.watchIt_freemoviedatabase.MainActivity" />
         </activity>
         <activity
             android:name=".DetailMovie"
+            android:fitsSystemWindows="true"
             android:label="@string/title_activity_detail_movie"
             android:parentActivityName=".ListMovie"
-            android:theme="@style/AppTheme.Detail"
             android:screenOrientation="portrait"
-            android:fitsSystemWindows="true">
+            android:theme="@style/AppTheme.Detail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.watchIt_freemoviedatabase.ListMovie" />

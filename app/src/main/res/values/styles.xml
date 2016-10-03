@@ -13,8 +13,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Detail" parent="AppTheme.NoActionBar">
-    </style>
+    <style name="AppTheme.Detail" parent="AppTheme.NoActionBar"></style>
 
     <style name="ToolbarColoredBackArrow" parent="AppTheme">
         <item name="android:textColorSecondary">@android:color/white</item>
@@ -54,12 +53,12 @@
     </style>
 
     <!--<style name="AppTheme.GenreFlexboxLayout" parent="AppTheme.FlexboxLayout">-->
-        <!--<item name=""-->
+    <!--<item name=""-->
     <!--</style>-->
 
     <!--<style name="AppTheme.KeywordTagContainer" parent="AppTheme.FlexboxLayout">-->
-        <!--<item name="tag_background_color">@color/gray_500</item>-->
-        <!--<item name="tag_border_color">@color/gray_500</item>-->
+    <!--<item name="tag_background_color">@color/gray_500</item>-->
+    <!--<item name="tag_border_color">@color/gray_500</item>-->
     <!--</style>-->
 
     <style name="AppTheme.MovieCollectionTitle" parent="AppTheme.MovieCategoryTitle">
@@ -70,6 +69,7 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:background">@color/black_50</item>
+        <item name="android:layout_marginLeft">0dp</item>
     </style>
 
 </resources>
