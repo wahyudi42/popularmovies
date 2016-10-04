@@ -68,7 +68,7 @@ public class VideoAdapter extends BaseAdapter {
 
                     @Override
                     public void onError() {
-
+                        v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
                     }
                 });
 

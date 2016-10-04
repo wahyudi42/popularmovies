@@ -50,7 +50,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
         int verticalMargin = mContext.getResources().getDimensionPixelSize(R.dimen.small_line_spacing);
         RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(
                 (parent.getHeight() - 2 * verticalMargin) * 2 / 3,
-                RecyclerView.LayoutParams.MATCH_PARENT);
+                parent.getHeight() - 2 * verticalMargin);
         params.setMargins(
                 mContext.getResources().getDimensionPixelSize(R.dimen.smaller_margin),
                 verticalMargin,
@@ -77,18 +77,23 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView posterImageView;
         ProgressBar progressBar;
+        View parentView;
 
         public ViewHolder(View view){
             super(view);
+            parentView = view;
             posterImageView = (ImageView) view.findViewById(R.id.poster_imageview);
             progressBar = (ProgressBar) view.findViewById(R.id.poster_progressbar);
         }
 
         public void bind(final Context context, final Movie movie, final String type, final int id){
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) parentView.getLayoutParams();
             if(movie.getId() == -1){
                 Picasso.with(context)
                         .load(R.drawable.more_port)
                         .error(R.drawable.no_image_port)
+                        .resize(params.width, params.height)
+                        .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -97,13 +102,15 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
 
                             @Override
                             public void onError() {
-
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
             }else{
                 Picasso.with(context)
                         .load(movie.getPosterPath(context, 0))
                         .error(R.drawable.no_image_port)
+                        .resize(params.width, params.height)
+                        .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -112,7 +119,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
 
                             @Override
                             public void onError() {
-
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
             }

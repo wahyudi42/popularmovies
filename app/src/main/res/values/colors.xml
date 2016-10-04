@@ -9,7 +9,7 @@
     <color name="colorAccent">#FF6E40</color>
     <color name="colorAccent_50">#BFFF6E40</color>
     <color name="colorAccentDark">#FF3D00</color>
-    <color name="placeholder">#4DBBDEFB</color>
+    <color name="placeholder">#BBDEFB</color>
     <color name="black_50">#80000000</color>
     <color name="gray_500">#9E9E9E</color>
     <color name="gray_700">#616161</color>

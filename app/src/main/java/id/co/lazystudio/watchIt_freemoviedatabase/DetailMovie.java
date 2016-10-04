@@ -213,7 +213,7 @@ public class DetailMovie extends AppCompatActivity {
 
                     @Override
                     public void onError() {
-
+                        findViewById(R.id.backdrop_progressbar).setVisibility(View.GONE);
                     }
                 });
 
@@ -254,7 +254,7 @@ public class DetailMovie extends AppCompatActivity {
 
                     @Override
                     public void onError() {
-
+                        findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
                     }
                 });
 
@@ -367,7 +367,10 @@ public class DetailMovie extends AppCompatActivity {
 
                                 @Override
                                 public void onError() {
-
+                                    findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
+                                    TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
+                                    collectionTextView.setVisibility(View.VISIBLE);
+                                    collectionTextView.setText(mCollection.getName());
                                 }
                             });
                 }

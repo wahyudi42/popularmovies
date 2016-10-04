@@ -88,34 +88,37 @@ public class ListMovieAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Movie movie = mMovieList.get(position);
+        final Movie movie = mMovieList.get(position);
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View v = inflater.inflate(R.layout.item_list_movie, parent, false);
 
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
+
         imageView.post(new Runnable() {
             @Override
             public void run() {
-                RelativeLayout posterRelativeLayout = (RelativeLayout) v.findViewById(R.id.poster_relativelayout);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, posterRelativeLayout.getWidth() * 3 / 2);
+                final RelativeLayout posterRelativeLayout = (RelativeLayout) v.findViewById(R.id.poster_relativelayout);
+                final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, posterRelativeLayout.getWidth() * 3 / 2);
                 imageView.setLayoutParams(params);
             }
         });
 
-        Picasso.with(mContext)
-                .load(movie.getPosterPath(mContext, 0))
-                .error(R.drawable.no_image_port)
-                .into(imageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
-                    }
+                Picasso.with(mContext)
+                        .load(movie.getPosterPath(mContext, 0))
+                        .error(R.drawable.no_image_port)
+                        .fit()
+                        .centerCrop()
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
+                            }
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                            @Override
+                            public void onError() {
+                                v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
+                            }
+                        });
 
         TextView title = (TextView) v.findViewById(R.id.title_textview);
         title.setText(movie.getTitle());
@@ -129,5 +132,12 @@ public class ListMovieAdapter extends BaseAdapter {
             }
         });
         return v;
+    }
+
+    public class ViewHolder{
+        private View view;
+        public ViewHolder(View view){
+
+        }
     }
 }
