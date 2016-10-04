@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -43,7 +45,12 @@ public class ListMovie extends AppCompatActivity {
     private String mType;
     private int mId = 0;
 
+    private int mPage = 1;
+    private int mTotalPage = 0;
+    private boolean loadingMore = true;
+
     TextView mNotificationTextView;
+    ListMovieAdapter listMovieAdapter;
 
     FloatingActionButton refreshFab;
     FabVisibilityChangeListener fabListener;
@@ -111,7 +118,22 @@ public class ListMovie extends AppCompatActivity {
         listMovieGridView = (GridView) findViewById(R.id.movies_gridview);
 
         // Instance of ImageAdapter Class
-        listMovieGridView.setAdapter(new ListMovieAdapter(this, mMovieList));
+        listMovieAdapter = new ListMovieAdapter(this, mMovieList);
+        listMovieGridView.setAdapter(listMovieAdapter);
+        listMovieGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastInScreen = firstVisibleItem + visibleItemCount;
+                if ((lastInScreen == totalItemCount) && !(loadingMore) && mPage < mTotalPage) {
+                    getMovieList(ListMovie.this);
+                }
+            }
+        });
 
         refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
         fabListener = new FabVisibilityChangeListener();
@@ -131,43 +153,55 @@ public class ListMovie extends AppCompatActivity {
 
     private void getMovieList(final Context context){
         if(Utils.isInternetConnected(context)) {
+            loadingMore = true;
+            Log.e("page", mPage+"");
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
             Call<MovieListParser> movieListCall;
-            switch (mType){
+            switch (mType) {
                 case POPULAR:
-                    movieListCall = tmdbService.getPopular();
+                    movieListCall = tmdbService.getPopular(mPage);
                     break;
                 case TOP_RATED:
-                    movieListCall = tmdbService.getTopRated();
+                    movieListCall = tmdbService.getTopRated(mPage);
                     break;
                 case GENRE:
-                    movieListCall = tmdbService.getMoviesGenre(mId);
+                    movieListCall = tmdbService.getMoviesGenre(mId, mPage);
                     break;
                 case COLLECTION:
                     movieListCall = tmdbService.getMoviesCollection(mId);
+                    mPage = 9999;
                     break;
                 case KEYWORD:
-                    movieListCall = tmdbService.getMoviesKeyword(mId);
+                    movieListCall = tmdbService.getMoviesKeyword(mId, mPage);
                     break;
                 case SIMILAR:
-                    movieListCall = tmdbService.getMoviesSimilar(mId);
+                    movieListCall = tmdbService.getMoviesSimilar(mId, mPage);
                     break;
                 default:
-                    movieListCall = tmdbService.getNowPlaying();
+                    movieListCall = tmdbService.getNowPlaying(mPage);
                     break;
             }
 
             movieListCall.enqueue(new Callback<MovieListParser>() {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    if(response.code() != 200){
+                    if (response.code() != 200) {
                         setComplete("Server Error Occurred");
-                    }else {
+                    } else {
+                        if(mType.equals(COLLECTION)){
+                            listMovieAdapter.setCollection();
+                            mMovieList.addAll(response.body().getParts());
+                        }else {
+                            listMovieAdapter.setTotalItem(response.body().getTotalResult());
+                            mMovieList.addAll(response.body().getMovies());
+                            mTotalPage = response.body().getTotalPages();
+                        }
                         setComplete();
-                        mMovieList = response.body().getMovies();
-                        listMovieGridView.setAdapter(new ListMovieAdapter(context, mMovieList));
+                        if(mPage <= 2 && mPage < mTotalPage){
+                            getMovieList(context);
+                        }
                     }
                 }
 
@@ -182,7 +216,10 @@ public class ListMovie extends AppCompatActivity {
     }
 
     private void setComplete() {
+        loadingMore = false;
         Utils.setProcessComplete(listProgressBar);
+        ++mPage;
+        listMovieAdapter.notifyDataSetChanged();
     }
 
     private void setComplete(String error){

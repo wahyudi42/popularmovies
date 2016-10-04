@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie;
@@ -24,12 +25,50 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
  */
 public class ListMovieAdapter extends BaseAdapter {
     Context mContext;
-    List<Movie> mMovieList;
+    List<Movie> mAllMovieList, mMovieList;
+    int totalItem = 0;
+
+    int currentPage = 0;
 
     // Constructor
     public ListMovieAdapter(Context c, List<Movie> movies){
         mContext = c;
-        mMovieList = movies;
+        mAllMovieList = movies;
+        mMovieList = new ArrayList<>();
+
+        int maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
+
+        for(int i = 0; i < maxItemIndex; i++){
+            mMovieList.add(mAllMovieList.get(i));
+        }
+    }
+
+    public void setCollection(){
+        mMovieList = mAllMovieList;
+    }
+
+    public void setTotalItem(int totalItem){
+        this.totalItem = totalItem;
+        mMovieList = new ArrayList<>();
+
+        int maxItemIndex;
+        if(mMovieList.size() < totalItem){
+            maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
+        }else{
+            maxItemIndex = totalItem;
+        }
+
+        for(int i = 0; i < maxItemIndex; i++){
+            mMovieList.add(mAllMovieList.get(i));
+        }
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 
     @Override
@@ -49,11 +88,9 @@ public class ListMovieAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View v= inflater.inflate(R.layout.item_list_movie, parent, false);
-
         Movie movie = mMovieList.get(position);
-
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View v = inflater.inflate(R.layout.item_list_movie, parent, false);
 
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
         imageView.post(new Runnable() {
@@ -91,7 +128,6 @@ public class ListMovieAdapter extends BaseAdapter {
                 mContext.startActivity(i);
             }
         });
-
         return v;
     }
 }

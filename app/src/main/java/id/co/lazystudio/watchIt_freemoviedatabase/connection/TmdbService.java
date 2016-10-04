@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by faqiharifian on 23/09/16.
@@ -29,12 +30,25 @@ public interface TmdbService {
     Call<MovieListParser> getNowPlaying();
 
     @Headers("Content-Type: application/json")
+    @GET("movie/now_playing?api_key="+API_KEY)
+    Call<MovieListParser> getNowPlaying(@Query("page") int page);
+
+    @Headers("Content-Type: application/json")
     @GET("movie/popular?api_key="+API_KEY)
     Call<MovieListParser> getPopular();
+
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/popular?api_key="+API_KEY)
+    Call<MovieListParser> getPopular(@Query("page") int page);
 
     @Headers("Content-Type: application/json")
     @GET("movie/top_rated?api_key="+API_KEY)
     Call<MovieListParser> getTopRated();
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/top_rated?api_key="+API_KEY)
+    Call<MovieListParser> getTopRated(@Query("page") int page);
 
     @Headers("Content-Type: application/json")
     @GET("movie/{id}?api_key="+API_KEY+"&append_to_response=images,videos,keywords,similar")
@@ -45,6 +59,10 @@ public interface TmdbService {
     Call<MovieListParser> getMoviesGenre(@Path("genre_id") int idGenre);
 
     @Headers("Content-Type: application/json")
+    @GET("genre/{genre_id}/movies?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesGenre(@Path("genre_id") int idGenre, @Query("page") int page);
+
+    @Headers("Content-Type: application/json")
     @GET("collection/{collection_id}?api_key="+API_KEY)
     Call<MovieListParser> getMoviesCollection(@Path("collection_id") int idCollection);
 
@@ -53,6 +71,14 @@ public interface TmdbService {
     Call<MovieListParser> getMoviesKeyword(@Path("keyword_id") int idKeyword);
 
     @Headers("Content-Type: application/json")
+    @GET("keyword/{keyword_id}/movies?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesKeyword(@Path("keyword_id") int idKeyword, @Query("page") int page);
+
+    @Headers("Content-Type: application/json")
     @GET("movie/{movie_id}/similar?api_key="+API_KEY)
     Call<MovieListParser> getMoviesSimilar(@Path("movie_id") int idMovie);
+
+    @Headers("Content-Type: application/json")
+    @GET("movie/{movie_id}/similar?api_key="+API_KEY)
+    Call<MovieListParser> getMoviesSimilar(@Path("movie_id") int idMovie, @Query("page") int page);
 }

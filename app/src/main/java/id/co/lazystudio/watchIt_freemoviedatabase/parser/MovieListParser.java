@@ -51,4 +51,8 @@ public class MovieListParser {
     public String getStatusMessage() {
         return statusMessage;
     }
+
+    public List<Movie> getParts() {
+        return parts;
+    }
 }

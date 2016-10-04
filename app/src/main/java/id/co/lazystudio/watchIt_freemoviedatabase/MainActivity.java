@@ -357,12 +357,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setComplete(String process){
-        Utils.setProcessComplete(mainProgressBar, processList, process);
         if(!isSuccess){
             mNowPlayingRelativeLayout.setVisibility(View.GONE);
             contentContainer.setVisibility(View.GONE);
             mGenreRecyclerView.setVisibility(View.GONE);
         }
+        Utils.setProcessComplete(mainProgressBar, processList, process);
     }
 
     private void setComplete(String process, String error){
