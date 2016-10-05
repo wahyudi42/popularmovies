@@ -32,17 +32,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@color/placeholder">
-                <ImageView
-                    android:id="@+id/poster_imageview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"/>
-
                 <ProgressBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/poster_progressbar"
                     android:layout_centerInParent="true" />
+
+                <ImageView
+                    android:id="@+id/poster_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"/>
 
             </RelativeLayout>
 
@@ -348,15 +348,15 @@
                 android:layout_height="wrap_content"
                 android:background="@color/placeholder"
                 android:layout_marginTop="@dimen/small_line_spacing">
-                <ImageView
-                    android:id="@+id/movie_collection_imageview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
                 <ProgressBar
                     android:id="@+id/movie_collection_progressbar"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@+id/movie_collection_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
                 <TextView
                     android:id="@+id/movie_collection_textview"
                     android:layout_width="match_parent"

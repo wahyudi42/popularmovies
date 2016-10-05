@@ -22,4 +22,5 @@
     <string name="label_similar">Similar</string>
     <string name="label_video">Youtube Videos</string>
     <string name="list_movie_similar_title">Similar to </string>
+    <string name="title_activity_list_poster">ListPosterActivity</string>
 </resources>

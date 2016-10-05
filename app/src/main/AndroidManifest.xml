@@ -87,6 +87,16 @@
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
+
+        <activity
+            android:name=".ListPosterActivity"
+            android:label="@string/title_activity_list_poster"
+            android:parentActivityName=".DetailMovie"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie" />
+        </activity>
     </application>
 
 </manifest>

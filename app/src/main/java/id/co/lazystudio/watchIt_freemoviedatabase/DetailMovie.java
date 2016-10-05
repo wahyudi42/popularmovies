@@ -218,12 +218,9 @@ public class DetailMovie extends AppCompatActivity {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) posterImageView.getLayoutParams();
                 params.height = posterImageView.getWidth() * 3 / 2;
 
-                int margin = getResources().getDimensionPixelSize(R.dimen.line_spacing);
-
                 LinearLayout container = (LinearLayout) findViewById(R.id.content_container);
                 RelativeLayout.LayoutParams containerParams = (RelativeLayout.LayoutParams) container.getLayoutParams();
                 containerParams.setMargins(0, -((params.height / 3)), 0, 0);
-//                containerParams.setMargins(0, -((params.height / 3)+margin), 0, 0);
 
                 FrameLayout movieFrameLayout = (FrameLayout) findViewById(R.id.movie_title_framelayout);
                 LinearLayout.LayoutParams titleParams = (LinearLayout.LayoutParams) movieFrameLayout.getLayoutParams();
@@ -231,8 +228,16 @@ public class DetailMovie extends AppCompatActivity {
 
                 View titleView = findViewById(R.id.movie_title_view);
                 RelativeLayout.LayoutParams viewParams = (RelativeLayout.LayoutParams)titleView.getLayoutParams();
-                viewParams.height = movieFrameLayout.getHeight();
+                viewParams.height = movieFrameLayout.getHeight()*2;
                 viewParams.setMargins(0, (params.height / 3), 0, 0);
+
+                posterImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(DetailMovie.this, ListPosterActivity.class);
+                        startActivity(i);
+                    }
+                });
             }
         });
 
@@ -431,16 +436,6 @@ public class DetailMovie extends AppCompatActivity {
                     similarRecyclerView.setAdapter(new SummaryMovieAdapter(DetailMovie.this, mSimilarList, ListMovie.SIMILAR, mMovie));
                 }
             });
-
-
-//            similarRecyclerView.post(new Runnable() {
-//                @Override
-//                public void run() {
-//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) similarRecyclerView.getLayoutParams();
-//                    params.height = similarRecyclerView.getWidth() / 2;
-//                    Log.e("width", similarRecyclerView.getWidth()+"");
-//                }
-//            });
 
             findViewById(R.id.movie_similar_label_textview).setOnClickListener(new View.OnClickListener() {
                 @Override
