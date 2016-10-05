@@ -3,7 +3,6 @@ package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,16 +70,6 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.View
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false);
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
         final TextView title = (TextView) v.findViewById(R.id.title_textview);
-
-        v.post(new Runnable() {
-            @Override
-            public void run() {
-
-                Log.e("v width", v.getWidth()+"");
-                Log.e("text height", title.getHeight()+"");
-            }
-        });
-
 
         imageView.post(new Runnable() {
             @Override

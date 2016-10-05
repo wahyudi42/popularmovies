@@ -54,8 +54,8 @@ public class DetailMovie extends AppCompatActivity {
     private Collection mCollection = null;
     private List<Company> mCompanyList = new ArrayList<>();
     private List<Genre> mGenreList = new ArrayList<>();
-    private List<Image> mBackdropList = new ArrayList<>();
-    private List<Image> mPosterList = new ArrayList<>();
+    private ArrayList<Image> mBackdropList = new ArrayList<>();
+    private ArrayList<Image> mPosterList = new ArrayList<>();
     private List<Keyword> mKeywordList = new ArrayList<>();
     private List<Video> mVideo = new ArrayList<>();
     private List<Movie> mSimilarList = new ArrayList<>();
@@ -164,8 +164,8 @@ public class DetailMovie extends AppCompatActivity {
                         mCollection = movieParser.getCollection();
                         mCompanyList = movieParser.getCompanies();
                         mGenreList = movieParser.getGenres();
-                        mBackdropList = movieParser.getBackdrops();
-                        mPosterList = movieParser.getPosters();
+                        mBackdropList = (ArrayList<Image>) movieParser.getBackdrops();
+                        mPosterList = (ArrayList<Image>) movieParser.getPosters();
                         mKeywordList = movieParser.getKeywords();
                         mVideo = movieParser.getVideos();
                         mSimilarList = movieParser.getSimilars();
@@ -235,6 +235,8 @@ public class DetailMovie extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent i = new Intent(DetailMovie.this, ListPosterActivity.class);
+                        i.putParcelableArrayListExtra(ListPosterActivity.KEY_POSTER_LIST, mPosterList);
+                        i.putExtra(ListPosterActivity.KEY_TITLE, mMovie.getTitle());
                         startActivity(i);
                     }
                 });
@@ -428,8 +430,6 @@ public class DetailMovie extends AppCompatActivity {
             parent.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.e("width", similarRecyclerView.getWidth()+"");
-
                     RelativeLayout.LayoutParams similarParams = new RelativeLayout.LayoutParams(similarRecyclerView.getWidth(), similarRecyclerView.getWidth() / 2);
                     similarParams.addRule(RelativeLayout.BELOW, R.id.movie_similar_label_textview);
                     similarRecyclerView.setLayoutParams(similarParams);

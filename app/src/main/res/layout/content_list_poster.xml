@@ -9,4 +9,12 @@
     tools:context="id.co.lazystudio.watchIt_freemoviedatabase.ListPosterActivity"
     tools:showIn="@layout/activity_list_poster">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_poster_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager">
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

@@ -15,6 +15,10 @@
         app:theme="@style/ToolbarColoredBackArrow"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <include layout="@layout/content_list_poster" />
+    <include layout="@layout/content_list_poster"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        />
 
 </RelativeLayout>
