@@ -24,4 +24,8 @@
     <string name="list_movie_similar_title">Similar to </string>
     <string name="title_activity_list_poster">Posters of</string>
     <string name="title_activity_list_backdrop">Backdrops of</string>
+
+    <string name="title_activity_show_image">ShowImageActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

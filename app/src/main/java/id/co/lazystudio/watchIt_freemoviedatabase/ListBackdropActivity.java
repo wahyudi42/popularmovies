@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListBackdropAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
@@ -18,7 +18,7 @@ public class ListBackdropActivity extends AppCompatActivity {
     public static final String KEY_TITLE = "title";
     private RecyclerView mListBackdropRecyclerView;
     private ListBackdropAdapter mListBackdropAdapter;
-    private List<Image> mBackdropList;
+    private ArrayList<Image> mBackdropList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

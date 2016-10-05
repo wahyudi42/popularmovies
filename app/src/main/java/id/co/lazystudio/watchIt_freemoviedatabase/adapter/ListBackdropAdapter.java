@@ -3,6 +3,7 @@ package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +18,10 @@ import android.widget.RelativeLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.R;
+import id.co.lazystudio.watchIt_freemoviedatabase.ShowImageActivity;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 
 /**
@@ -28,9 +30,9 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 
 public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapter.ViewHolder>{
     private Context mContext;
-    private List<Image> mImageList;
+    private ArrayList<Image> mImageList;
 
-    public ListBackdropAdapter(Context context, List<Image> images){
+    public ListBackdropAdapter(Context context, ArrayList<Image> images){
         mContext = context;
         mImageList = images;
     }
@@ -110,7 +112,10 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
 //                    i.putExtra(ImageViewActivity.KEY_IMAGE_ERROR, R.drawable.no_image_land);
 //                    mContext.startActivity(i);
 //                    showImage(image.getBackdropPath(mContext, -1));
-//                    mContext.startActivity(new Intent(mContext, ViewImageActivity.class));
+                    Intent i = new Intent(mContext, ShowImageActivity.class);
+                    i.putParcelableArrayListExtra(ShowImageActivity.KEY_IMAGE_LIST, mImageList);
+                    i.putExtra(ShowImageActivity.KEY_TYPE, ShowImageActivity.TYPE_BACKDROP);
+                    mContext.startActivity(i);
                 }
             });
         }
