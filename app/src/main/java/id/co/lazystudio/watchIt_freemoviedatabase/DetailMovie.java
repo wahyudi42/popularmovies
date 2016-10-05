@@ -192,6 +192,16 @@ public class DetailMovie extends AppCompatActivity {
             public void run() {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) backdropImageView.getLayoutParams();
                 params.height = backdropImageView.getWidth() * 9 / 16;
+
+                backdropImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(DetailMovie.this, ListBackdropActivity.class);
+                        i.putParcelableArrayListExtra(ListBackdropActivity.KEY_BACKDROP_LIST, mBackdropList);
+                        i.putExtra(ListBackdropActivity.KEY_TITLE, mMovie.getTitle());
+                        startActivity(i);
+                    }
+                });
             }
         });
 

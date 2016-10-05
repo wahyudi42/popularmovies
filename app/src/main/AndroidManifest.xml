@@ -97,6 +97,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie" />
         </activity>
+        <activity
+            android:name=".ListBackdropActivity"
+            android:label="@string/title_activity_list_backdrop"
+            android:parentActivityName=".DetailMovie"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie" />
+        </activity>
     </application>
 
 </manifest>

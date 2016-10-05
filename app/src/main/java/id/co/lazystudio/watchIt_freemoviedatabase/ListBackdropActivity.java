@@ -10,25 +10,25 @@ import android.view.MenuItem;
 
 import java.util.List;
 
-import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListPosterAdapter;
+import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListBackdropAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
 
-public class ListPosterActivity extends AppCompatActivity {
-    public static final String KEY_POSTER_LIST = "poster_list";
+public class ListBackdropActivity extends AppCompatActivity {
+    public static final String KEY_BACKDROP_LIST = "backdrop_list";
     public static final String KEY_TITLE = "title";
-    private RecyclerView mListPosterRecyclerView;
-    private ListPosterAdapter mListPosterAdapter;
-    private List<Image> mPosterList;
+    private RecyclerView mListBackdropRecyclerView;
+    private ListBackdropAdapter mListBackdropAdapter;
+    private List<Image> mBackdropList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_poster);
+        setContentView(R.layout.activity_list_backdrop);
 
         Bundle args = getIntent().getExtras();
-        mPosterList = args.getParcelableArrayList(KEY_POSTER_LIST);
+        mBackdropList = args.getParcelableArrayList(KEY_BACKDROP_LIST);
 
-        String title = getResources().getString(R.string.title_activity_list_poster)+
+        String title = getResources().getString(R.string.title_activity_list_backdrop)+
                 " "+args.getString(KEY_TITLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -46,15 +46,15 @@ public class ListPosterActivity extends AppCompatActivity {
             }
         }
 
-        mListPosterRecyclerView = (RecyclerView) findViewById(R.id.list_poster_recyclerview);
+        mListBackdropRecyclerView = (RecyclerView) findViewById(R.id.list_backdrop_recyclerview);
 
-        mListPosterAdapter = new ListPosterAdapter(this, mPosterList);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
 
-        mListPosterRecyclerView.setAdapter(mListPosterAdapter);
+        mListBackdropAdapter = new ListBackdropAdapter(this, mBackdropList);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        mListBackdropRecyclerView.setAdapter(mListBackdropAdapter);
 
-        mListPosterRecyclerView.setLayoutManager(layoutManager);
+        mListBackdropRecyclerView.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -66,4 +66,5 @@ public class ListPosterActivity extends AppCompatActivity {
         }
         return true;
     }
+
 }
