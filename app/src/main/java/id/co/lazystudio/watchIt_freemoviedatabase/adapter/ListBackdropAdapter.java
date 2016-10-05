@@ -109,7 +109,8 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
 //                    i.putExtra(ImageViewActivity.KEY_IMAGE, image.getBackdropPath(mContext, -1));
 //                    i.putExtra(ImageViewActivity.KEY_IMAGE_ERROR, R.drawable.no_image_land);
 //                    mContext.startActivity(i);
-                    showImage(image.getBackdropPath(mContext, -1));
+//                    showImage(image.getBackdropPath(mContext, -1));
+//                    mContext.startActivity(new Intent(mContext, ViewImageActivity.class));
                 }
             });
         }
