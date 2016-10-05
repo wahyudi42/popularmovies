@@ -1,10 +1,15 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,6 +38,12 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poster, parent, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            v.setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
+        else
+            v.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
 
         imageView.post(new Runnable() {
@@ -71,7 +82,7 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
             posterProgressBar = (ProgressBar) view.findViewById(R.id.poster_progressbar);
         }
 
-        public void bind(Image image){
+        public void bind(final Image image){
             Picasso.with(mContext)
                     .load(image.getPosterPath(mContext, 0))
                     .error(R.drawable.no_image_port)
@@ -88,6 +99,40 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
                             posterProgressBar.setVisibility(View.GONE);
                         }
                     });
+
+            parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Intent i = new Intent(mContext, ImageViewActivity.class);
+//                    i.putExtra(ImageViewActivity.KEY_IMAGE, image.getPosterPath(mContext, -1));
+//                    i.putExtra(ImageViewActivity.KEY_IMAGE_ERROR, R.drawable.no_image_port);
+//                    mContext.startActivity(i);
+                    showImage(image.getPosterPath(mContext, -1));
+                }
+            });
         }
+    }
+
+    public void showImage(String imageURL) {
+        Dialog builder = new Dialog(mContext);
+//        builder.setContentView(R.layout.activity_image_view);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(mContext);
+        Picasso.with(mContext)
+                .load(imageURL)
+                .into(imageView);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 }

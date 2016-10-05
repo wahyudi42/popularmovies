@@ -19,18 +19,24 @@ public class Image implements Parcelable {
 
     public String getBackdropPath(Context context,int sizeIndex) {
         TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+
+        int index = sizeIndex == -1 ? conf.getBackdropSizes().size() - 1 : sizeIndex;
+
         StringBuilder imagePath = new StringBuilder();
         imagePath.append(conf.getBaseUrl());
-        imagePath.append(conf.getBackdropSizes().get(sizeIndex));
+        imagePath.append(conf.getBackdropSizes().get(index));
         imagePath.append(path);
         return imagePath.toString();
     }
 
     public String getPosterPath(Context context,int sizeIndex){
         TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
+
+        int index = sizeIndex == -1 ? conf.getPosterSizes().size() - 1 : sizeIndex;
+
         StringBuilder imagePath = new StringBuilder();
         imagePath.append(conf.getBaseUrl());
-        imagePath.append(conf.getPosterSizes().get(sizeIndex));
+        imagePath.append(conf.getPosterSizes().get(index));
         imagePath.append(path);
         return imagePath.toString();
     }

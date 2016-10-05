@@ -118,16 +118,20 @@ public class Movie extends ErrorParser implements Parcelable {
     public String getPosterPath(Context context, int sizeIndex) {
         TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
 
+        int index = sizeIndex == -1 ? conf.getPosterSizes().size() - 1 : sizeIndex;
+
         return conf.getBaseUrl()+
-                conf.getPosterSizes().get(sizeIndex)+
+                conf.getPosterSizes().get(index)+
                 posterPath;
     }
 
     public String getBackdropPath(Context context, int sizeIndex) {
         TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
 
+        int index = sizeIndex == -1 ? conf.getBackdropSizes().size() - 1 : sizeIndex;
+
         return conf.getBaseUrl()+
-                conf.getBackdropSizes().get(sizeIndex)+
+                conf.getBackdropSizes().get(index)+
                 backdropPath;
     }
 

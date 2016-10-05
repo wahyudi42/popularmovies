@@ -1,10 +1,15 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,6 +38,12 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_backdrop, parent, false);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
+        else
+            view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+
         final ImageView backdropImageView = (ImageView) view.findViewById(R.id.backdrop_imageview);
 
         backdropImageView.post(new Runnable() {
@@ -73,7 +84,7 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
             backdropProgressBar = (ProgressBar) view.findViewById(R.id.backdrop_progressbar);
         }
 
-        public void bind(Image image){
+        public void bind(final Image image){
             Picasso.with(mContext)
                     .load(image.getBackdropPath(mContext, 0))
                     .error(R.drawable.no_image_land)
@@ -90,6 +101,40 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
                             backdropProgressBar.setVisibility(View.GONE);
                         }
                     });
+
+            parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Intent i = new Intent(mContext, ImageViewActivity.class);
+//                    i.putExtra(ImageViewActivity.KEY_IMAGE, image.getBackdropPath(mContext, -1));
+//                    i.putExtra(ImageViewActivity.KEY_IMAGE_ERROR, R.drawable.no_image_land);
+//                    mContext.startActivity(i);
+                    showImage(image.getBackdropPath(mContext, -1));
+                }
+            });
         }
+    }
+
+    public void showImage(String imageURL) {
+        Dialog builder = new Dialog(mContext);
+//        builder.setContentView(R.layout.activity_image_view);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView imageView = new ImageView(mContext);
+        Picasso.with(mContext)
+                .load(imageURL)
+                .into(imageView);
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 }
