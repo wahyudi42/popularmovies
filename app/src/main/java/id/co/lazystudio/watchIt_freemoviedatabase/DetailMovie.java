@@ -100,24 +100,17 @@ public class DetailMovie extends AppCompatActivity {
         else
             toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white)));
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
-            else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
-
         final ScrollView detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
         detailScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
                 float alpha = (float) detailScrollView.getScrollY() / backdropImageView.getBottom();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
+                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary, getTheme())));
                     toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white, getTheme())));
                     toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary, getTheme())));
                 }else {
-                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimaryDark)));
+                    tintManager.setTintColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary)));
                     toolbar.setTitleTextColor(getColorWithAlpha(alpha, getResources().getColor(android.R.color.white)));
                     toolbar.setBackgroundColor(getColorWithAlpha(alpha, getResources().getColor(R.color.colorPrimary)));
                 }
@@ -150,9 +143,9 @@ public class DetailMovie extends AppCompatActivity {
     private void getMovie(){
         if(Utils.isInternetConnected(this)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark, getTheme())));
+                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary, getTheme())));
             }else {
-                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimaryDark)));
+                tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary)));
             }
 
             TmdbService tmdbService =
@@ -422,8 +415,32 @@ public class DetailMovie extends AppCompatActivity {
             findViewById(R.id.movie_similar_relativelayout).setVisibility(View.VISIBLE);
             mSimilarList.add(new Movie(-1));
 
-            RecyclerView similarRecyclerView = (RecyclerView) findViewById(R.id.movie_similar_recyclerview);
-            similarRecyclerView.setAdapter(new SummaryMovieAdapter(this, mSimilarList, ListMovie.SIMILAR, mMovie));
+            final RecyclerView similarRecyclerView = (RecyclerView) findViewById(R.id.movie_similar_recyclerview);
+
+
+            final RelativeLayout parent = (RelativeLayout)similarRecyclerView.getParent();
+
+            parent.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.e("width", similarRecyclerView.getWidth()+"");
+
+                    RelativeLayout.LayoutParams similarParams = new RelativeLayout.LayoutParams(similarRecyclerView.getWidth(), similarRecyclerView.getWidth() / 2);
+                    similarParams.addRule(RelativeLayout.BELOW, R.id.movie_similar_label_textview);
+                    similarRecyclerView.setLayoutParams(similarParams);
+                    similarRecyclerView.setAdapter(new SummaryMovieAdapter(DetailMovie.this, mSimilarList, ListMovie.SIMILAR, mMovie));
+                }
+            });
+
+
+//            similarRecyclerView.post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) similarRecyclerView.getLayoutParams();
+//                    params.height = similarRecyclerView.getWidth() / 2;
+//                    Log.e("width", similarRecyclerView.getWidth()+"");
+//                }
+//            });
 
             findViewById(R.id.movie_similar_label_textview).setOnClickListener(new View.OnClickListener() {
                 @Override
