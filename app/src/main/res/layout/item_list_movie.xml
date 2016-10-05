@@ -4,6 +4,7 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_margin="@dimen/smaller_margin"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
@@ -15,17 +16,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/placeholder">
-                <ImageView
-                    android:id="@+id/poster_imageview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"/>
 
                 <ProgressBar
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/poster_progressbar"
                     android:layout_centerInParent="true" />
+                <ImageView
+                    android:id="@+id/poster_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"/>
 
             </RelativeLayout>
             <TextView

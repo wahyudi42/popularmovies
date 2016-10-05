@@ -92,7 +92,8 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                 Picasso.with(context)
                         .load(R.drawable.more_port)
                         .error(R.drawable.no_image_port)
-                        .resize(params.width, params.height)
+                        .fit()
+//                        .resize(params.width, params.height)
                         .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override
@@ -109,7 +110,8 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                 Picasso.with(context)
                         .load(movie.getPosterPath(context, 0))
                         .error(R.drawable.no_image_port)
-                        .resize(params.width, params.height)
+                        .fit()
+//                        .resize(params.width, params.height)
                         .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override

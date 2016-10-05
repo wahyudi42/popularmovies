@@ -5,12 +5,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -21,6 +21,7 @@ import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListMovieAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbClient;
 import id.co.lazystudio.watchIt_freemoviedatabase.connection.TmdbService;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
+import id.co.lazystudio.watchIt_freemoviedatabase.listener.EndlessRecyclerViewScrollListener;
 import id.co.lazystudio.watchIt_freemoviedatabase.parser.MovieListParser;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.FabVisibilityChangeListener;
 import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
@@ -41,7 +42,6 @@ public class ListMovie extends AppCompatActivity {
 
     List<Movie> mMovieList = new ArrayList<>();
     private ProgressBar listProgressBar;
-    private GridView listMovieGridView;
     private String mType;
     private int mId = 0;
 
@@ -50,7 +50,9 @@ public class ListMovie extends AppCompatActivity {
     private boolean loadingMore = true;
 
     TextView mNotificationTextView;
-    ListMovieAdapter listMovieAdapter;
+
+    ListMovieAdapter mListMovieAdapter;
+    RecyclerView mListMovieRecyclerView;
 
     FloatingActionButton refreshFab;
     FabVisibilityChangeListener fabListener;
@@ -115,21 +117,16 @@ public class ListMovie extends AppCompatActivity {
             mType = SIMILAR;
         }
 
-        listMovieGridView = (GridView) findViewById(R.id.movies_gridview);
+        mListMovieRecyclerView = (RecyclerView) findViewById(R.id.list_movie_recyclerview);
 
-        // Instance of ImageAdapter Class
-        listMovieAdapter = new ListMovieAdapter(this, mMovieList);
-        listMovieGridView.setAdapter(listMovieAdapter);
-        listMovieGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
+        mListMovieRecyclerView.setLayoutManager(layoutManager);
+        mListMovieAdapter = new ListMovieAdapter(this, mMovieList);
+        mListMovieRecyclerView.setAdapter(mListMovieAdapter);
+        mListMovieRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
-            public void onScrollStateChanged(AbsListView absListView, int i) {
-
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int lastInScreen = firstVisibleItem + visibleItemCount;
-                if ((lastInScreen == totalItemCount) && !(loadingMore) && mPage < mTotalPage) {
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (!(loadingMore) && mPage < mTotalPage) {
                     getMovieList(ListMovie.this);
                 }
             }
@@ -191,10 +188,10 @@ public class ListMovie extends AppCompatActivity {
                         setComplete("Server Error Occurred");
                     } else {
                         if(mType.equals(COLLECTION)){
-                            listMovieAdapter.setCollection();
+                            mListMovieAdapter.setCollection();
                             mMovieList.addAll(response.body().getParts());
                         }else {
-                            listMovieAdapter.setTotalItem(response.body().getTotalResult());
+                            mListMovieAdapter.setTotalItem(response.body().getTotalResult());
                             mMovieList.addAll(response.body().getMovies());
                             mTotalPage = response.body().getTotalPages();
                         }
@@ -219,7 +216,7 @@ public class ListMovie extends AppCompatActivity {
         loadingMore = false;
         Utils.setProcessComplete(listProgressBar);
         ++mPage;
-        listMovieAdapter.notifyDataSetChanged();
+        mListMovieAdapter.notifyDataSetChanged();
     }
 
     private void setComplete(String error){

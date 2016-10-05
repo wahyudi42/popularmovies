@@ -2,11 +2,13 @@ package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,19 +23,20 @@ import id.co.lazystudio.watchIt_freemoviedatabase.R;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
 
 /**
- * Created by faqiharifian on 27/09/16.
+ * Created by faqiharifian on 04/10/16.
  */
-public class ListMovieAdapter extends BaseAdapter {
+
+public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.ViewHolder> {
     Context mContext;
     List<Movie> mAllMovieList, mMovieList;
     int totalItem = 0;
 
     int currentPage = 0;
 
-    // Constructor
     public ListMovieAdapter(Context c, List<Movie> movies){
         mContext = c;
         mAllMovieList = movies;
+
         mMovieList = new ArrayList<>();
 
         int maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
@@ -63,36 +66,21 @@ public class ListMovieAdapter extends BaseAdapter {
         }
     }
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-    }
-
     @Override
-    public int getCount() {
-        return mMovieList.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mMovieList.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-       return (long) mMovieList.get(position).getId();
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        final Movie movie = mMovieList.get(position);
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View v = inflater.inflate(R.layout.item_list_movie, parent, false);
-
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list_movie, parent, false);
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
+        final TextView title = (TextView) v.findViewById(R.id.title_textview);
+
+        v.post(new Runnable() {
+            @Override
+            public void run() {
+
+                Log.e("v width", v.getWidth()+"");
+                Log.e("text height", title.getHeight()+"");
+            }
+        });
+
 
         imageView.post(new Runnable() {
             @Override
@@ -102,42 +90,61 @@ public class ListMovieAdapter extends BaseAdapter {
                 imageView.setLayoutParams(params);
             }
         });
-
-                Picasso.with(mContext)
-                        .load(movie.getPosterPath(mContext, 0))
-                        .error(R.drawable.no_image_port)
-                        .fit()
-                        .centerCrop()
-                        .into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
-                            }
-
-                            @Override
-                            public void onError() {
-                                v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
-                            }
-                        });
-
-        TextView title = (TextView) v.findViewById(R.id.title_textview);
-        title.setText(movie.getTitle());
-
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(mContext, DetailMovie.class);
-                i.putExtra(DetailMovie.MOVIE_KEY, mMovieList.get(position));
-                mContext.startActivity(i);
-            }
-        });
-        return v;
+        return new ViewHolder(v);
     }
 
-    public class ViewHolder{
-        private View view;
-        public ViewHolder(View view){
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        Movie movie = mMovieList.get(position);
+        holder.bind(movie);
+    }
 
+    @Override
+    public int getItemCount() {
+        return mMovieList.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        private View parentView;
+        private ImageView posterImageView;
+        private TextView titleTextView;
+        private ProgressBar progressBar;
+        public ViewHolder(View view){
+            super(view);
+            parentView = view;
+            posterImageView = (ImageView) view.findViewById(R.id.poster_imageview);
+            titleTextView = (TextView) view.findViewById(R.id.title_textview);
+            progressBar = (ProgressBar) view.findViewById(R.id.poster_progressbar);
+        }
+
+        public void bind(final Movie movie){
+            Picasso.with(mContext)
+                    .load(movie.getPosterPath(mContext, 0))
+                    .error(R.drawable.no_image_port)
+                    .fit()
+                    .centerCrop()
+                    .into(posterImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            parentView.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            parentView.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
+                        }
+                    });
+
+            titleTextView.setText(movie.getTitle());
+
+            parentView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(mContext, DetailMovie.class);
+                    i.putExtra(DetailMovie.MOVIE_KEY, movie);
+                    mContext.startActivity(i);
+                }
+            });
         }
     }
 }
