@@ -3,20 +3,17 @@ package id.co.lazystudio.watchIt_freemoviedatabase;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ViewPagerAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import id.co.lazystudio.watchIt_freemoviedatabase.view.HackyViewPager;
 
 public class ShowImageActivity extends AppCompatActivity {
     public static final String KEY_IMAGE_LIST = "image_list";
@@ -68,6 +65,8 @@ public class ShowImageActivity extends AppCompatActivity {
         }
     };
 
+    ViewPager imageViewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,34 +88,35 @@ public class ShowImageActivity extends AppCompatActivity {
                 R.drawable.no_image_land :
                 R.drawable.no_image_port;
 
-//        mContentView = findViewById(R.id.image_viewpager);
-        mContentView = findViewById(R.id.show_image_photoview);
+        mContentView = findViewById(R.id.image_viewpager);
+//        mContentView = findViewById(R.id.show_image_photoview);
 
-        PhotoView photoView = (PhotoView) mContentView;
-
-        final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
-
-        Picasso.with(this)
-                .load(imageUrl)
-                .error(imageErrorUrl)
-                .into(photoView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        attacher.update();
-                    }
-
-                    @Override
-                    public void onError() {
-                        attacher.update();
-                    }
-                });
+//        PhotoView photoView = (PhotoView) mContentView;
+//
+//        final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
+//
+//        Picasso.with(this)
+//                .load(imageUrl)
+//                .error(imageErrorUrl)
+//                .into(photoView, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        attacher.update();
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        attacher.update();
+//                    }
+//                });
 
 
 //        ViewPager imageViewPager = (ViewPager) mContentView;
-//
-//        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type);
-//
-//        imageViewPager.setAdapter(imageAdapter);
+        imageViewPager = (HackyViewPager) mContentView;
+
+        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type);
+
+        imageViewPager.setAdapter(imageAdapter);
     }
 
     @Override

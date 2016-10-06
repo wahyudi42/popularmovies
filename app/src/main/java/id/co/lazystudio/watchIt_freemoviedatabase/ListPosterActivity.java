@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListPosterAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
@@ -18,7 +18,7 @@ public class ListPosterActivity extends AppCompatActivity {
     public static final String KEY_TITLE = "title";
     private RecyclerView mListPosterRecyclerView;
     private ListPosterAdapter mListPosterAdapter;
-    private List<Image> mPosterList;
+    private ArrayList<Image> mPosterList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

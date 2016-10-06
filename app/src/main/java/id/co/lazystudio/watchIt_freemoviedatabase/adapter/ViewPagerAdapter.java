@@ -2,11 +2,13 @@ package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -39,10 +41,14 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public View instantiateItem(ViewGroup container, int position) {
-        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_show_image, container, false);
+//        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_show_image, container, false);
 
-        PhotoView photoView = (PhotoView) view.findViewById(R.id.show_image_photoview);
-        final ProgressBar imageProgressBar = (ProgressBar) view.findViewById(R.id.show_image_progressbar);
+//        ViewPager.LayoutParams params = new ViewPager.LayoutParams()
+        PhotoView photoView = new PhotoView(container.getContext());
+//        PhotoView photoView = (PhotoView) view.findViewById(R.id.show_image_photoview);
+//        final ProgressBar imageProgressBar = (ProgressBar) view.findViewById(R.id.show_image_progressbar);
+
+        container.addView(photoView, ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.MATCH_PARENT);
 
         final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
 
@@ -56,24 +62,25 @@ public class ViewPagerAdapter extends PagerAdapter {
 
         Log.e("image url", imageUrl);
 
-//        Picasso.with(mContext)
-//                .load(imageUrl)
-//                .error(imageErrorUrl)
-//                .into(photoView, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        attacher.update();
+        Picasso.with(mContext)
+                .load(imageUrl)
+                .error(imageErrorUrl)
+                .into(photoView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        attacher.update();
 //                        imageProgressBar.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        attacher.update();
-//                        imageProgressBar.setVisibility(View.GONE);
-//                    }
-//                });
+                    }
 
-        return view;
+                    @Override
+                    public void onError() {
+                        attacher.update();
+//                        imageProgressBar.setVisibility(View.GONE);
+                    }
+                });
+
+//        return view;
+        return photoView;
     }
 
     @Override
