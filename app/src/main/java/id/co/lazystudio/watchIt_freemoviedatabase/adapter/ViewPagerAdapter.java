@@ -2,13 +2,11 @@ package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -56,24 +54,24 @@ public class ViewPagerAdapter extends PagerAdapter {
                 R.drawable.no_image_land :
                 R.drawable.no_image_port;
 
-        Picasso.with(mContext)
-                .load(imageUrl)
-                .error(imageErrorUrl)
-                .fit()
-                .centerCrop()
-                .into(photoView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        attacher.update();
-                        imageProgressBar.setVisibility(View.GONE);
-                    }
+        Log.e("image url", imageUrl);
 
-                    @Override
-                    public void onError() {
-                        attacher.update();
-                        imageProgressBar.setVisibility(View.GONE);
-                    }
-                });
+//        Picasso.with(mContext)
+//                .load(imageUrl)
+//                .error(imageErrorUrl)
+//                .into(photoView, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        attacher.update();
+//                        imageProgressBar.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+//                        attacher.update();
+//                        imageProgressBar.setVisibility(View.GONE);
+//                    }
+//                });
 
         return view;
     }

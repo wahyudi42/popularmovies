@@ -4,9 +4,13 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     tools:context="id.co.lazystudio.watchIt_freemoviedatabase.ShowImageActivity">
-    <android.support.v4.view.ViewPager
-        android:id="@+id/image_viewpager"
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/image_viewpager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:keepScreenOn="true" />-->
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/show_image_photoview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:keepScreenOn="true" />
+        android:layout_height="match_parent" />
 </FrameLayout>

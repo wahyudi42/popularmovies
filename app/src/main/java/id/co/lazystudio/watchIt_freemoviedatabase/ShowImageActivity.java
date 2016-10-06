@@ -3,19 +3,24 @@ package id.co.lazystudio.watchIt_freemoviedatabase;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ViewPagerAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class ShowImageActivity extends AppCompatActivity {
     public static final String KEY_IMAGE_LIST = "image_list";
+    public static final String KEY_IMAGE = "image";
     public static final String KEY_TYPE = "type";
     public static final String TYPE_BACKDROP = ViewPagerAdapter.TYPE_BACKDROP;
     public static final String TYPE_POSTER = ViewPagerAdapter.TYPE_POSTER;
@@ -74,13 +79,44 @@ public class ShowImageActivity extends AppCompatActivity {
         mImageList = args.getParcelableArrayList(KEY_IMAGE_LIST);
         String type = args.getString(KEY_TYPE);
 
-        mContentView = findViewById(R.id.image_viewpager);
+        Image image = args.getParcelable(KEY_IMAGE);
 
-        ViewPager imageViewPager = (ViewPager) mContentView;
+        String imageUrl = type.equals(TYPE_BACKDROP) ?
+                image.getBackdropPath(this, -1) :
+                image.getPosterPath(this, -1);
 
-        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type);
+        int imageErrorUrl = type.equals(TYPE_BACKDROP) ?
+                R.drawable.no_image_land :
+                R.drawable.no_image_port;
 
-        imageViewPager.setAdapter(imageAdapter);
+//        mContentView = findViewById(R.id.image_viewpager);
+        mContentView = findViewById(R.id.show_image_photoview);
+
+        PhotoView photoView = (PhotoView) mContentView;
+
+        final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
+
+        Picasso.with(this)
+                .load(imageUrl)
+                .error(imageErrorUrl)
+                .into(photoView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        attacher.update();
+                    }
+
+                    @Override
+                    public void onError() {
+                        attacher.update();
+                    }
+                });
+
+
+//        ViewPager imageViewPager = (ViewPager) mContentView;
+//
+//        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type);
+//
+//        imageViewPager.setAdapter(imageAdapter);
     }
 
     @Override

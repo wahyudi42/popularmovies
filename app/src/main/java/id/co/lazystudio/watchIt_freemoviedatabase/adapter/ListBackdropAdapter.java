@@ -114,6 +114,7 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
 //                    showImage(image.getBackdropPath(mContext, -1));
                     Intent i = new Intent(mContext, ShowImageActivity.class);
                     i.putParcelableArrayListExtra(ShowImageActivity.KEY_IMAGE_LIST, mImageList);
+                    i.putExtra(ShowImageActivity.KEY_IMAGE, image);
                     i.putExtra(ShowImageActivity.KEY_TYPE, ShowImageActivity.TYPE_BACKDROP);
                     mContext.startActivity(i);
                 }
