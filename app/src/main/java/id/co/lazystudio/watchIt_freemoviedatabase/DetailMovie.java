@@ -63,6 +63,7 @@ public class DetailMovie extends AppCompatActivity {
     private TextView mNotificationTextView;
 
     ImageView backdropImageView;
+    ImageView posterImageView;
     SystemBarTintManager tintManager;
 
     FloatingActionButton refreshFab;
@@ -171,6 +172,26 @@ public class DetailMovie extends AppCompatActivity {
                         mSimilarList = movieParser.getSimilars();
                         populateView();
                         setComplete();
+
+                        backdropImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(DetailMovie.this, ListBackdropActivity.class);
+                                i.putParcelableArrayListExtra(ListBackdropActivity.KEY_BACKDROP_LIST, mBackdropList);
+                                i.putExtra(ListBackdropActivity.KEY_TITLE, mMovie.getTitle());
+                                startActivity(i);
+                            }
+                        });
+
+                        posterImageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(DetailMovie.this, ListPosterActivity.class);
+                                i.putParcelableArrayListExtra(ListPosterActivity.KEY_POSTER_LIST, mPosterList);
+                                i.putExtra(ListPosterActivity.KEY_TITLE, mMovie.getTitle());
+                                startActivity(i);
+                            }
+                        });
                     }
                 }
 
@@ -192,16 +213,6 @@ public class DetailMovie extends AppCompatActivity {
             public void run() {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) backdropImageView.getLayoutParams();
                 params.height = backdropImageView.getWidth() * 9 / 16;
-
-                backdropImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(DetailMovie.this, ListBackdropActivity.class);
-                        i.putParcelableArrayListExtra(ListBackdropActivity.KEY_BACKDROP_LIST, mBackdropList);
-                        i.putExtra(ListBackdropActivity.KEY_TITLE, mMovie.getTitle());
-                        startActivity(i);
-                    }
-                });
             }
         });
 
@@ -221,7 +232,7 @@ public class DetailMovie extends AppCompatActivity {
                 });
 
         /* POSTER */
-        final ImageView posterImageView = (ImageView) findViewById(R.id.poster_imageview);
+        posterImageView = (ImageView) findViewById(R.id.poster_imageview);
         posterImageView.post(new Runnable() {
             @Override
             public void run() {
@@ -240,16 +251,6 @@ public class DetailMovie extends AppCompatActivity {
                 RelativeLayout.LayoutParams viewParams = (RelativeLayout.LayoutParams)titleView.getLayoutParams();
                 viewParams.height = movieFrameLayout.getHeight()*2;
                 viewParams.setMargins(0, (params.height / 3), 0, 0);
-
-                posterImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent i = new Intent(DetailMovie.this, ListPosterActivity.class);
-                        i.putParcelableArrayListExtra(ListPosterActivity.KEY_POSTER_LIST, mPosterList);
-                        i.putExtra(ListPosterActivity.KEY_TITLE, mMovie.getTitle());
-                        startActivity(i);
-                    }
-                });
             }
         });
 

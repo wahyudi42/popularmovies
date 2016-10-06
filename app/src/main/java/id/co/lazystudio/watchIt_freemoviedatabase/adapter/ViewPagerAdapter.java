@@ -1,5 +1,6 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -27,11 +28,26 @@ public class ViewPagerAdapter extends PagerAdapter {
     private List<Image> mImageList;
     private Context mContext;
     private String mType;
+    Dialog dialog;
 
-    public ViewPagerAdapter(Context context, List<Image> images, String type){
+    public ViewPagerAdapter(Context context, List<Image> images, String type, Dialog dialog){
         mContext = context;
         mImageList = images;
         mType = type;
+
+
+//        int transparent;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+//            transparent = mContext.getResources().getColor(android.R.color.transparent, mContext.getTheme());
+//        else
+//            transparent = mContext.getResources().getColor(android.R.color.transparent);
+
+        this.dialog = dialog;
+//        dialog = new Dialog(mContext);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setCancelable(false);
+//        dialog.setContentView(R.layout.progress_dialog);
+//        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(transparent));
     }
 
     @Override
@@ -47,6 +63,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         PhotoView photoView = new PhotoView(container.getContext());
 //        PhotoView photoView = (PhotoView) view.findViewById(R.id.show_image_photoview);
 //        final ProgressBar imageProgressBar = (ProgressBar) view.findViewById(R.id.show_image_progressbar);
+
 
         container.addView(photoView, ViewPager.LayoutParams.MATCH_PARENT, ViewPager.LayoutParams.MATCH_PARENT);
 
@@ -70,12 +87,14 @@ public class ViewPagerAdapter extends PagerAdapter {
                     public void onSuccess() {
                         attacher.update();
 //                        imageProgressBar.setVisibility(View.GONE);
+                        dialog.dismiss();
                     }
 
                     @Override
                     public void onError() {
                         attacher.update();
 //                        imageProgressBar.setVisibility(View.GONE);
+                        dialog.dismiss();
                     }
                 });
 

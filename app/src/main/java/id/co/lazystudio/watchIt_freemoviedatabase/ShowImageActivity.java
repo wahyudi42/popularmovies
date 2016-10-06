@@ -1,6 +1,9 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -8,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 
 import java.util.List;
 
@@ -66,6 +70,7 @@ public class ShowImageActivity extends AppCompatActivity {
     };
 
     ViewPager imageViewPager;
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +119,39 @@ public class ShowImageActivity extends AppCompatActivity {
 //        ViewPager imageViewPager = (ViewPager) mContentView;
         imageViewPager = (HackyViewPager) mContentView;
 
-        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type);
+        int transparent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            transparent = this.getResources().getColor(android.R.color.transparent, this.getTheme());
+        else
+            transparent = this.getResources().getColor(android.R.color.transparent);
+
+        dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.progress_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(transparent));
+
+        ViewPagerAdapter imageAdapter = new ViewPagerAdapter(this, mImageList, type, dialog);
 
         imageViewPager.setAdapter(imageAdapter);
+
+        imageViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                dialog.show();
+                delayedHide(100);
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
