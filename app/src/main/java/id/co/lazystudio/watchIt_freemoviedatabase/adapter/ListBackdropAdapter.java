@@ -42,9 +42,9 @@ public class ListBackdropAdapter extends RecyclerView.Adapter<ListBackdropAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_backdrop, parent, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
+            ((ViewGroup)view).getChildAt(0).setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
         else
-            view.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+            ((ViewGroup)view).getChildAt(0).setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
 
         final ImageView backdropImageView = (ImageView) view.findViewById(R.id.backdrop_imageview);
 

@@ -47,13 +47,15 @@ public class GenreAdapter extends RecyclerView.Adapter<GenreAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         TextView genreTextView;
+        View parentView;
         public ViewHolder(View v){
             super(v);
+            parentView = v;
             genreTextView = (TextView) v.findViewById(R.id.genre_text_view);
         }
 
         public void bind(final Genre genre){
-            itemView.setOnClickListener(new View.OnClickListener() {
+            parentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Log.e("clicked", String.valueOf(genre.getId() +" - "+ genre.getName()));

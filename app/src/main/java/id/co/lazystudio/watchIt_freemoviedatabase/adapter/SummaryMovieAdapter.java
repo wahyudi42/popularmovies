@@ -126,7 +126,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                         });
             }
 
-            posterImageView.setOnClickListener(new View.OnClickListener() {
+            parentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (movie.getId() == -1){

@@ -214,6 +214,8 @@ public class DetailMovie extends AppCompatActivity {
             public void run() {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) backdropImageView.getLayoutParams();
                 params.height = backdropImageView.getWidth() * 9 / 16;
+
+                Utils.createRipple(backdropImageView);
             }
         });
 
@@ -252,6 +254,8 @@ public class DetailMovie extends AppCompatActivity {
                 RelativeLayout.LayoutParams viewParams = (RelativeLayout.LayoutParams)titleView.getLayoutParams();
                 viewParams.height = movieFrameLayout.getHeight()*2;
                 viewParams.setMargins(0, (params.height / 3), 0, 0);
+
+                Utils.createRipple(posterImageView);
             }
         });
 
@@ -335,11 +339,12 @@ public class DetailMovie extends AppCompatActivity {
                 TextView genreTextView =((TextView) view.findViewById(R.id.genre_text_view));
                 tagFlexboxLayout.addView(view);
                 genreTextView.setText(genre.getName());
-                view.setTag(i);
+                genreTextView.setTag(i);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Integer index = (Integer) view.getTag();
+                        View genreTextView = view.findViewById(R.id.genre_text_view);
+                        Integer index = (Integer) genreTextView.getTag();
                         Genre genre = mGenreList.get(index);
                         Log.e("genre clicked", genre.getId()+" - "+genre.getName());
                         Intent i = new Intent(DetailMovie.this, ListMovie.class);
@@ -390,9 +395,10 @@ public class DetailMovie extends AppCompatActivity {
                 }
             });
 
-            collectionRelativeLayout.setOnClickListener(new View.OnClickListener() {
+            collectionRelativeLayout.getChildAt(0).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.e("collection", mCollection.getName());
                     Intent i = new Intent(DetailMovie.this, ListMovie.class);
                     i.putExtra(ListMovie.COLLECTION, true);
                     i.putExtra(ListMovie.KEY_ID, mCollection.getId());
@@ -414,11 +420,12 @@ public class DetailMovie extends AppCompatActivity {
                 TextView keywordTextView =((TextView) view.findViewById(R.id.keyword_text_view));
                 keywordFlexboxLayout.addView(view);
                 keywordTextView.setText(keyword.getName());
-                view.setTag(i);
+                keywordTextView.setTag(i);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Integer index = (Integer) view.getTag();
+                        View keywordTextView = view.findViewById(R.id.keyword_text_view);
+                        Integer index = (Integer) keywordTextView.getTag();
                         Keyword keyword = mKeywordList.get(index);
                         Log.e("keyword clicked", keyword.getId()+" - "+keyword.getName());
                         Intent i = new Intent(DetailMovie.this, ListMovie.class);

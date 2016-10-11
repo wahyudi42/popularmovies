@@ -42,9 +42,9 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_poster, parent, false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            v.setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
+            ((ViewGroup)v).getChildAt(0).setBackgroundColor(mContext.getResources().getColor(android.R.color.white, mContext.getTheme()));
         else
-            v.setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
+            ((ViewGroup)v).getChildAt(0).setBackgroundColor(mContext.getResources().getColor(android.R.color.white));
 
         final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
 

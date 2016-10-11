@@ -50,7 +50,7 @@ public class VideoAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View v = inflater.inflate(R.layout.item_poster, viewGroup, false);
 
-
+        ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
         GridView.LayoutParams params = new GridView.LayoutParams(GridView.LayoutParams.MATCH_PARENT,
                 GridView.LayoutParams.WRAP_CONTENT);
         v.setLayoutParams(params);
@@ -60,7 +60,7 @@ public class VideoAdapter extends BaseAdapter {
         Picasso.with(mContext)
                 .load(video.getImageUrl())
                 .error(R.drawable.no_image_land)
-                .into((ImageView) v.findViewById(R.id.poster_imageview), new Callback() {
+                .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
                         v.findViewById(R.id.poster_progressbar).setVisibility(View.GONE);
@@ -72,7 +72,7 @@ public class VideoAdapter extends BaseAdapter {
                     }
                 });
 
-        v.setOnClickListener(new View.OnClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + video.getKey()));

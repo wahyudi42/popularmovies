@@ -2,12 +2,14 @@ package id.co.lazystudio.watchIt_freemoviedatabase.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
@@ -87,5 +89,15 @@ public class Utils {
         int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
         int rgb = 0x00ffffff & baseColor;
         return a + rgb;
+    }
+
+    public static void createRipple(View view){
+        MaterialRippleLayout.on(view)
+                .rippleOverlay(true)
+                .rippleColor(Color.BLACK)
+                .rippleAlpha((float)0.25)
+                .rippleDelayClick(true)
+                .rippleDuration(250)
+                .create();
     }
 }

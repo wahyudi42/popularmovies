@@ -126,7 +126,7 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.View
 
             titleTextView.setText(movie.getTitle());
 
-            parentView.setOnClickListener(new View.OnClickListener() {
+            ((ViewGroup)parentView).getChildAt(0).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(mContext, DetailMovie.class);
