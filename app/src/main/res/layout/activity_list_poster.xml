@@ -18,6 +18,7 @@
     <include layout="@layout/content_list_poster"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ad_view"
         android:layout_below="@+id/toolbar"
         />
 
@@ -28,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
+        ads:adSize="BANNER"
         ads:adUnitId="@string/admob_banner_main_unit_id" />
 
 </RelativeLayout>

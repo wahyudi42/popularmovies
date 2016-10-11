@@ -8,7 +8,7 @@
         android:id="@+id/image_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/banner_height"
+        android:layout_above="@+id/ad_view"
         android:keepScreenOn="true" />
 
     <com.google.android.gms.ads.AdView
@@ -18,6 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        ads:adSize="SMART_BANNER"
+        ads:adSize="BANNER"
         ads:adUnitId="@string/admob_banner_main_unit_id" />
 </RelativeLayout>

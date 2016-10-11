@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
@@ -63,12 +62,24 @@ public class Utils {
         // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addKeyword("movie")
+                .addKeyword("film")
+                .addKeyword("image")
+                .addKeyword("picture")
+                .addKeyword("theater")
+                .addKeyword("video")
+                .addKeyword("music")
+                .addKeyword("audio")
+                .addKeyword("media")
+                .addKeyword("player")
+                .addKeyword("game")
+                .addKeyword("record")
                 .build();
 
         // Start loading the ad in the background.
         mAdView.loadAd(adRequest);
 
-        int paddingBottom = AdSize.SMART_BANNER.getHeightInPixels(context);
-        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), paddingBottom);
+//        int paddingBottom = AdSize.SMART_BANNER.getHeightInPixels(context);
+//        view.setPadding(view.getPaddingLeft(), view.getPaddingTop(), view.getPaddingRight(), paddingBottom);
     }
 }

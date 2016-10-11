@@ -5,7 +5,6 @@
     android:id="@+id/content_list_poster"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/banner_height"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="id.co.lazystudio.watchIt_freemoviedatabase.ListPosterActivity"
     tools:showIn="@layout/activity_list_poster">

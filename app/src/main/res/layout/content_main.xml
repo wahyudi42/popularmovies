@@ -107,7 +107,7 @@
                 android:id="@+id/content_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="@dimen/banner_height"
+                android:layout_marginBottom="@dimen/banner_height"
                 android:scrollbars="none"
                 android:visibility="invisible">
 
