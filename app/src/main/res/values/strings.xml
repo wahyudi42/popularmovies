@@ -36,4 +36,12 @@
     <string name="admob_banner_image_unit_id">ca-app-pub-2463683303519296/7867048562</string>
     <string name="admob_banner_backdrop_unit_id">ca-app-pub-2463683303519296/9343781765</string>
     <string name="admob_banner_poster_unit_id">ca-app-pub-2463683303519296/1820514962</string>
+
+    <string name="app_tagline">Updated Movies Here!</string>
+    <string name="app_author" translatable="false">by Lazy Studio</string>
+
+    <string name="splash_no_internet_title_dialog">Connection Failed</string>
+    <string name="splash_no_internet_message_dialog">Please Check Your Internet Connection</string>
+    <string name="splash_no_internet_positive_dialog">Try Again</string>
+    <string name="splash_no_internet_negative_dialog">Exit</string>
 </resources>
