@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListBackdropAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 
 public class ListBackdropActivity extends AppCompatActivity {
     public static final String KEY_BACKDROP_LIST = "backdrop_list";
@@ -55,6 +56,7 @@ public class ListBackdropActivity extends AppCompatActivity {
         mListBackdropRecyclerView.setAdapter(mListBackdropAdapter);
 
         mListBackdropRecyclerView.setLayoutManager(layoutManager);
+        Utils.initializeAd(this, findViewById(R.id.content_list_backdrop));
     }
 
     @Override

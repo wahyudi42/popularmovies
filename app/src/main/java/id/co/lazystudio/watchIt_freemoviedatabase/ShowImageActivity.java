@@ -17,6 +17,7 @@ import java.util.List;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ViewPagerAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 import id.co.lazystudio.watchIt_freemoviedatabase.view.HackyViewPager;
 
 public class ShowImageActivity extends AppCompatActivity {
@@ -152,6 +153,7 @@ public class ShowImageActivity extends AppCompatActivity {
 
             }
         });
+        Utils.initializeAd(this, mContentView);
     }
 
     @Override

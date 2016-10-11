@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import id.co.lazystudio.watchIt_freemoviedatabase.adapter.ListPosterAdapter;
 import id.co.lazystudio.watchIt_freemoviedatabase.entity.Image;
+import id.co.lazystudio.watchIt_freemoviedatabase.utils.Utils;
 
 public class ListPosterActivity extends AppCompatActivity {
     public static final String KEY_POSTER_LIST = "poster_list";
@@ -55,6 +56,7 @@ public class ListPosterActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
 
         mListPosterRecyclerView.setLayoutManager(layoutManager);
+        Utils.initializeAd(this, findViewById(R.id.content_list_poster));
     }
 
     @Override

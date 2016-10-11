@@ -30,5 +30,10 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
-    <string name="banner_ad_unit_id">ca-app-pub-2463683303519296/6721719363</string>
+    <string name="admob_banner_main_unit_id">ca-app-pub-2463683303519296/6721719363</string>
+    <string name="admob_banner_list_movie_unit_id">ca-app-pub-2463683303519296/4913582169</string>
+    <string name="admob_banner_detail_unit_id">ca-app-pub-2463683303519296/6390315362</string>
+    <string name="admob_banner_image_unit_id">ca-app-pub-2463683303519296/7867048562</string>
+    <string name="admob_banner_backdrop_unit_id">ca-app-pub-2463683303519296/9343781765</string>
+    <string name="admob_banner_poster_unit_id">ca-app-pub-2463683303519296/1820514962</string>
 </resources>

@@ -19,9 +19,7 @@ import android.widget.TextView;
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         getGenres(this);
         getPopular(this);
         getTopRated(this);
-        initializeAd();
+        Utils.initializeAd(this, contentContainer);
     }
 
     private void getNowPlaying(final Context context){
@@ -392,24 +390,5 @@ public class MainActivity extends AppCompatActivity {
                 getTopRated(MainActivity.this);
             }
         });
-    }
-
-    private void initializeAd(){
-        // Initialize the Mobile Ads SDK.
-        MobileAds.initialize(this, "ca-app-pub-2463683303519296~5244986163");
-
-        // Gets the ad view defined in layout/ad_fragment.xml with ad unit ID set in
-        // values/strings.xml.
-        mAdView = (AdView) findViewById(R.id.ad_view);
-
-        // Create an ad request. Check your logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-
-        // Start loading the ad in the background.
-        mAdView.loadAd(adRequest);
     }
 }

@@ -129,6 +129,7 @@ public class DetailMovie extends AppCompatActivity {
 
         getMovie();
         firstPopulateView();
+        Utils.initializeAd(this, detailScrollView);
     }
 
     @Override
@@ -257,6 +258,8 @@ public class DetailMovie extends AppCompatActivity {
         Picasso.with(this)
                 .load(mMovie.getPosterPath(this, 0))
                 .error(R.drawable.no_image_port)
+                .fit()
+                .centerCrop()
                 .into(posterImageView, new Callback() {
                     @Override
                     public void onSuccess() {

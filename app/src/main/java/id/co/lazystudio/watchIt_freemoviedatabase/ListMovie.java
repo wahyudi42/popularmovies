@@ -136,6 +136,7 @@ public class ListMovie extends AppCompatActivity {
         fabListener = new FabVisibilityChangeListener();
 
         getMovieList(this);
+        Utils.initializeAd(this, findViewById(R.id.list_container));
     }
 
     @Override

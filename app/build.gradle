@@ -19,6 +19,7 @@ android {
     }
     buildTypes.each {
         it.buildConfigField 'String', 'TMDB_API_KEY', TmdbApiKey
+        it.buildConfigField 'String', 'ADMOB_APP_ID', AdMobAppId
     }
 }
 
