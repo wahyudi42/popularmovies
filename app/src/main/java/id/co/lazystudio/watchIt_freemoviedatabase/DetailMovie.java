@@ -368,36 +368,28 @@ public class DetailMovie extends AppCompatActivity {
 
             final ImageView collectionImageView = (ImageView) findViewById(R.id.movie_collection_imageview);
 
-            collectionImageView.post(new Runnable() {
-                @Override
-                public void run() {
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) collectionImageView.getLayoutParams();
-                    params.width = collectionRelativeLayout.getWidth();
-                    params.height = collectionRelativeLayout.getWidth() / 3;
-                    Picasso.with(DetailMovie.this)
-                            .load(mCollection.getBackdropPath(DetailMovie.this, 0))
-                            .error(R.drawable.no_image_land)
-                            .fit()
-                            .centerCrop()
-                            .into(collectionImageView, new Callback() {
-                                @Override
-                                public void onSuccess() {
-                                    findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
-                                    TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
-                                    collectionTextView.setVisibility(View.VISIBLE);
-                                    collectionTextView.setText(mCollection.getName());
-                                }
+            Picasso.with(DetailMovie.this)
+                    .load(mCollection.getBackdropPath(DetailMovie.this, 0))
+                    .error(R.drawable.no_image_land)
+                    .fit()
+                    .centerCrop()
+                    .into(collectionImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
+                            TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
+                            collectionTextView.setVisibility(View.VISIBLE);
+                            collectionTextView.setText(mCollection.getName());
+                        }
 
-                                @Override
-                                public void onError() {
-                                    findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
-                                    TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
-                                    collectionTextView.setVisibility(View.VISIBLE);
-                                    collectionTextView.setText(mCollection.getName());
-                                }
-                            });
-                }
-            });
+                        @Override
+                        public void onError() {
+                            findViewById(R.id.movie_collection_progressbar).setVisibility(View.GONE);
+                            TextView collectionTextView = (TextView) findViewById(R.id.movie_collection_textview);
+                            collectionTextView.setVisibility(View.VISIBLE);
+                            collectionTextView.setText(mCollection.getName());
+                        }
+                    });
 
             collectionRelativeLayout.getChildAt(0).setOnClickListener(new View.OnClickListener() {
                 @Override
