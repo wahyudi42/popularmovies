@@ -1,6 +1,7 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ public class ListMovie extends AppCompatActivity {
     private int mPage = 1;
     private int mTotalPage = 0;
     private boolean loadingMore = true;
+
+    private boolean isSuccess = true;
 
     TextView mNotificationTextView;
 
@@ -136,7 +140,6 @@ public class ListMovie extends AppCompatActivity {
         fabListener = new FabVisibilityChangeListener();
 
         getMovieList(this);
-        Utils.initializeAd(this, findViewById(R.id.list_container));
     }
 
     @Override
@@ -151,6 +154,8 @@ public class ListMovie extends AppCompatActivity {
 
     private void getMovieList(final Context context){
         if(Utils.isInternetConnected(context)) {
+            Utils.initializeAd(this, findViewById(R.id.list_container));
+
             loadingMore = true;
             Log.e("page", mPage+"");
             TmdbService tmdbService =
@@ -186,8 +191,10 @@ public class ListMovie extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     if (response.code() != 200) {
-                        setComplete("Server Error Occurred");
+                        setComplete(400);
+                        isSuccess = false;
                     } else {
+                        isSuccess = true;
                         if(mType.equals(COLLECTION)){
                             mListMovieAdapter.setCollection();
                             mMovieList.addAll(response.body().getParts());
@@ -196,7 +203,10 @@ public class ListMovie extends AppCompatActivity {
                             mMovieList.addAll(response.body().getMovies());
                             mTotalPage = response.body().getTotalPages();
                         }
-                        setComplete();
+                        if(mMovieList.size() > 0)
+                            setComplete();
+                        else
+                            setComplete(200);
                         if(mPage <= 2 && mPage < mTotalPage){
                             getMovieList(context);
                         }
@@ -205,35 +215,47 @@ public class ListMovie extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("Server Error Occurred");
+                    setComplete(400);
                 }
             });
         }else {
-            setComplete("No Internet Connection");
+            setComplete(-1);
         }
     }
 
     private void setComplete() {
         loadingMore = false;
         Utils.setProcessComplete(listProgressBar);
-        ++mPage;
+        if(isSuccess)
+            ++mPage;
         mListMovieAdapter.notifyDataSetChanged();
     }
 
-    private void setComplete(String error){
-        Utils.setProcessError(mNotificationTextView, error);
-        setComplete();
-        fabListener.setFabShouldBeShown(true);
-        refreshFab.show(fabListener);
-        refreshFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fabListener.setFabShouldBeShown(false);
-                refreshFab.hide(fabListener);
-                mNotificationTextView.setVisibility(View.GONE);
-                listProgressBar.setVisibility(View.VISIBLE);
-                getMovieList(ListMovie.this);
+    private void setComplete(int error){
+        if(mPage > 1) {
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        }else{
+            Utils.setProcessError(this, mNotificationTextView, error);
+            setComplete();
+            if(error != 200) {
+                fabListener.setFabShouldBeShown(true);
+                refreshFab.show(fabListener);
+                refreshFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                fabListener.setFabShouldBeShown(false);
+//                refreshFab.hide(fabListener);
+//                mNotificationTextView.setVisibility(View.GONE);
+//                listProgressBar.setVisibility(View.VISIBLE);
+//                getMovieList(ListMovie.this);
+
+                        Intent i = getIntent();
+                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        finish();
+                        startActivity(i);
+                    }
+                });
             }
-        });
+        }
     }
 }

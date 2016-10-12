@@ -51,24 +51,28 @@ public class SplashScreen extends AppCompatActivity {
 
         final ImageView background = (ImageView)findViewById(R.id.splash_background);
 
+        background.post(new Runnable() {
+            @Override
+            public void run() {
+                Picasso.with(SplashScreen.this)
+                        .load(R.drawable.splash_background)
+                        .fit()
+                        .centerCrop()
+                        .into(background, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                background.setColorFilter(Utils.getColorWithAlpha((float)0.5, colorFilter));
+                                findViewById(R.id.container).setVisibility(View.VISIBLE);
+                                loadData();
+                            }
 
-        Picasso.with(this)
-                .load(R.drawable.splash_background)
-                .fit()
-                .centerCrop()
-                .into(background, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        background.setColorFilter(Utils.getColorWithAlpha((float)0.5, colorFilter));
-                        findViewById(R.id.container).setVisibility(View.VISIBLE);
-                        loadData();
-                    }
+                            @Override
+                            public void onError() {
 
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+                            }
+                        });
+            }
+        });
     }
 
     private void loadData(){

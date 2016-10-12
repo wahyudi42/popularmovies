@@ -110,16 +110,12 @@ public class MainActivity extends AppCompatActivity {
         fabListener = new FabVisibilityChangeListener();
 
         getNowPlaying(this);
-        getGenres(this);
-        getPopular(this);
-        getTopRated(this);
-        Utils.initializeAd(this, contentContainer);
     }
 
     private void getNowPlaying(final Context context){
         final ProgressBar pb = (ProgressBar) findViewById(R.id.now_playing_progress_bar);
         if(Utils.isInternetConnected(context)) {
-            processList.add("now_playing");
+            Utils.initializeAd(this, contentContainer);
 
             pb.setVisibility(View.VISIBLE);
 
@@ -135,9 +131,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     pb.setVisibility(View.GONE);
                     if(response.code() != 200){
-                        setComplete("now_playing", "Server Error Occurred");
+                        setComplete(400);
                     }else{
-                        setComplete("now_playing");
                         mNowPlayingList = response.body().getMovies();
                         populateNowPlaying(context);
                     }
@@ -145,13 +140,13 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("now_playing", "Server Error Occurred");
+                    setComplete(400);
                     pb.setVisibility(View.GONE);
                     mNowPlayingRelativeLayout.setVisibility(View.GONE);
                 }
             });
         }else {
-            setComplete("now_playing", "No Internet Connection");
+            setComplete(-1);
             pb.setVisibility(View.GONE);
         }
     }
@@ -209,13 +204,14 @@ public class MainActivity extends AppCompatActivity {
 
                 mNowPlayingSliderLayout.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
                 mNowPlayingSliderLayout.setCurrentPosition(0, false);
+
+                getGenres(MainActivity.this);
             }
         });
     }
 
     private void getGenres(final Context context){
         if(Utils.isInternetConnected(context)) {
-            processList.add("genre");
 
             mGenreRecyclerView.setVisibility(View.VISIBLE);
 
@@ -228,28 +224,28 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<GenreParser> call, Response<GenreParser> response) {
                     if(response.code() != 200){
-                        setComplete("genre", "Server Error Occurred");
+                        setComplete(400);
                     }else {
-                        setComplete("genre");
                         mGenreRecyclerView.setVisibility(View.VISIBLE);
                         mGenres = response.body().getGenres();
                         mGenreRecyclerView.setAdapter(new GenreAdapter(context, mGenres));
+
+                        getPopular(MainActivity.this);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<GenreParser> call, Throwable t) {
-                    setComplete("genre", "Server Error Occurred");
+                    setComplete(400);
                 }
             });
         }else {
-            setComplete("genre", "No Internet Connection");
+            setComplete(-1);
         }
     }
 
     private void getPopular(final Context context){
         if(Utils.isInternetConnected(context)) {
-            processList.add("popular");
 
             contentContainer.setVisibility(View.INVISIBLE);
 
@@ -279,30 +275,30 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     if(response.code() != 200){
-                        setComplete("popular", "Server Error Occurred");
+                        setComplete(400);
                     }else {
                         contentContainer.setVisibility(View.VISIBLE);
-                        setComplete("popular");
                         mPopularList = response.body().getMovies();
                         mPopularList.add(new Movie(-1));
 
                         mPopularRecyclerView.setAdapter(new SummaryMovieAdapter(context, mPopularList, ListMovie.POPULAR));
+
+                        getTopRated(MainActivity.this);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("popular", "Server Error Occurred");
+                    setComplete(400);
                 }
             });
         }else {
-            setComplete("popular", "No Internet Connection");
+            setComplete(-1);
         }
     }
 
     private void getTopRated(final Context context){
         if(Utils.isInternetConnected(context)) {
-            processList.add("top_rated");
 
             contentContainer.setVisibility(View.INVISIBLE);
 
@@ -333,24 +329,25 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     if(response.code() != 200){
                         isSuccess = false;
-                        setComplete("top_rated", "Server Error Occurred");
+                        setComplete(400);
                     }else {
                         findViewById(R.id.content_container).setVisibility(View.VISIBLE);
-                        setComplete("top_rated");
                         mTopRatedList = response.body().getMovies();
                         mTopRatedList.add(new Movie(-1));
 
                         mTopRatedRecyclerView.setAdapter(new SummaryMovieAdapter(context, mTopRatedList, ListMovie.TOP_RATED));
+
+                        setComplete();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete("top_rated", "Server Error Occurred");
+                    setComplete(400);
                 }
             });
         }else {
-            setComplete("top_rated", "No Internet Connection");
+            setComplete(-1);
         }
     }
 
@@ -360,20 +357,20 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    private void setComplete(String process){
+    private void setComplete(){
         if(!isSuccess){
             mNowPlayingRelativeLayout.setVisibility(View.GONE);
             contentContainer.setVisibility(View.GONE);
             mGenreRecyclerView.setVisibility(View.GONE);
         }
-        Utils.setProcessComplete(mainProgressBar, processList, process);
+        Utils.setProcessComplete(mainProgressBar);
     }
 
-    private void setComplete(String process, String error){
+    private void setComplete(int error){
         isSuccess = false;
-        Utils.setProcessError(mNotificationTextView, error);
+        Utils.setProcessError(this, mNotificationTextView, error);
         findViewById(R.id.content_container).setVisibility(View.GONE);
-        setComplete(process);
+        setComplete();
         fabListener.setFabShouldBeShown(true);
         refreshFab.show(fabListener);
         refreshFab.setOnClickListener(new View.OnClickListener() {
@@ -385,9 +382,6 @@ public class MainActivity extends AppCompatActivity {
                 mNotificationTextView.setVisibility(View.GONE);
                 mainProgressBar.setVisibility(View.VISIBLE);
                 getNowPlaying(MainActivity.this);
-                getGenres(MainActivity.this);
-                getPopular(MainActivity.this);
-                getTopRated(MainActivity.this);
             }
         });
     }

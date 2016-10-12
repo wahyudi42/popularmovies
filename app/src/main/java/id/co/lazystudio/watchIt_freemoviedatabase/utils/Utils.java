@@ -42,12 +42,27 @@ public class Utils {
             setProcessComplete(view);
     }
 
-    public static void setProcessError(View view, String error){
+    public static void setProcessError(Context context, View view, int type){
+        String text;
+        TextView textView = (TextView) view;
+        switch (type){
+            case 400:
+                text = context.getResources().getString(R.string.error_server_error);
+                break;
+            case 200:
+                text = context.getResources().getString(R.string.error_not_found);
+                textView.setBackgroundColor(Color.TRANSPARENT);
+                textView.setTextColor(Utils.getColorWithAlpha(0.87f, Color.BLACK));
+                break;
+            default:
+                text = context.getResources().getString(R.string.error_no_internet);
+                break;
+        }
         if(view != null){
             view.setVisibility(View.VISIBLE);
-            ((TextView) view).setText(error);
+            ((TextView) view).setText(text);
         }
-        Log.e("connection error", error);
+        Log.e("connection error", text);
     }
 
 

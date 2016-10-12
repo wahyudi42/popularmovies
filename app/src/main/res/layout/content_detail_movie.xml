@@ -348,12 +348,12 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_line_spacing"
                 style="@style/AppTheme.Ripple">
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/placeholder"
-                    android:layout_marginTop="@dimen/small_line_spacing">
+                    android:background="@color/placeholder">
                     <ProgressBar
                         android:id="@+id/movie_collection_progressbar"
                         android:layout_centerInParent="true"

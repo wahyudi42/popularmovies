@@ -10,6 +10,8 @@
     <string name="toprated_title">Top Rated</string>
     <string name="title_activity_list_movie">ListMovie</string>
     <string name="error_no_internet">No Internet Connection</string>
+    <string name="error_not_found">Record Not Found</string>
+    <string name="error_server_error">Server Error Occurred</string>
     <string name="title_activity_detail_movie">DetailMovie</string>
     <string name="label_rate">Rate</string>
     <string name="label_popularity">Popularity</string>

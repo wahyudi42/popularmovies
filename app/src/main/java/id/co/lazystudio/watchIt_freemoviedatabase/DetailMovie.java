@@ -61,6 +61,7 @@ public class DetailMovie extends AppCompatActivity {
     private List<Movie> mSimilarList = new ArrayList<>();
     private ProgressBar detailProgressBar;
     private TextView mNotificationTextView;
+    private ScrollView detailScrollView;
 
     ImageView backdropImageView;
     ImageView posterImageView;
@@ -101,7 +102,7 @@ public class DetailMovie extends AppCompatActivity {
         else
             toolbar.setTitleTextColor(getColorWithAlpha(0, getResources().getColor(android.R.color.white)));
 
-        final ScrollView detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
+        detailScrollView = ((ScrollView) findViewById(R.id.movie_detail_scrollview));
         detailScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
@@ -129,7 +130,6 @@ public class DetailMovie extends AppCompatActivity {
 
         getMovie();
         firstPopulateView();
-        Utils.initializeAd(this, detailScrollView);
     }
 
     @Override
@@ -144,6 +144,8 @@ public class DetailMovie extends AppCompatActivity {
 
     private void getMovie(){
         if(Utils.isInternetConnected(this)) {
+            Utils.initializeAd(this, detailScrollView);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 tintManager.setTintColor(getColorWithAlpha(0, getResources().getColor(R.color.colorPrimary, getTheme())));
             }else {
@@ -160,7 +162,7 @@ public class DetailMovie extends AppCompatActivity {
                 public void onResponse(Call<MovieParser> call, Response<MovieParser> response) {
                     MovieParser movieParser = response.body();
                     if(response.code() != 200){
-                        setComplete("Server Error Occurred");
+                        setComplete(400);
                     }else{
                         mMovie = response.body();
                         mCollection = movieParser.getCollection();
@@ -199,11 +201,11 @@ public class DetailMovie extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<MovieParser> call, Throwable t) {
                     t.printStackTrace();
-                    setComplete("Server Error Occurred");
+                    setComplete(400);
                 }
             });
         }else {
-            setComplete("No Internet Connection");
+            setComplete(-1);
         }
     }
 
@@ -484,9 +486,9 @@ public class DetailMovie extends AppCompatActivity {
         Utils.setProcessComplete(detailProgressBar);
     }
 
-    private void setComplete(String error){
+    private void setComplete(int error){
         setComplete();
-        Utils.setProcessError(mNotificationTextView, error);
+        Utils.setProcessError(this, mNotificationTextView, error);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             tintManager.setTintColor(getResources().getColor(R.color.colorAccent, getTheme()));
         else
