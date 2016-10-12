@@ -238,7 +238,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_line_spacing">
+            android:layout_marginTop="@dimen/smaller_line_spacing">
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -330,7 +330,7 @@
                 android:id="@+id/movie_overview_textview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_line_spacing"
+                android:layout_marginTop="@dimen/smaller_line_spacing"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
                 android:layout_below="@id/movie_overview_label_textview"/>
@@ -348,7 +348,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_line_spacing"
+                android:layout_marginTop="@dimen/smaller_line_spacing"
                 style="@style/AppTheme.Ripple">
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -422,7 +422,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/movie_keyword_label_textview"
-                android:layout_marginTop="@dimen/small_line_spacing"
+                android:layout_marginTop="@dimen/smaller_line_spacing"
                 style="@style/AppTheme.FlexboxLayout"/>
         </RelativeLayout>
 

@@ -1,7 +1,6 @@
 package id.co.lazystudio.watchIt_freemoviedatabase;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -49,6 +47,7 @@ public class ListMovie extends AppCompatActivity {
 
     private int mPage = 1;
     private int mTotalPage = 0;
+    private int mTotalItem = 0;
     private boolean loadingMore = true;
 
     private boolean isSuccess = true;
@@ -125,7 +124,7 @@ public class ListMovie extends AppCompatActivity {
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         mListMovieRecyclerView.setLayoutManager(layoutManager);
-        mListMovieAdapter = new ListMovieAdapter(this, mMovieList);
+        mListMovieAdapter = new ListMovieAdapter(this, mMovieList, mType);
         mListMovieRecyclerView.setAdapter(mListMovieAdapter);
         mListMovieRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
@@ -157,7 +156,7 @@ public class ListMovie extends AppCompatActivity {
             Utils.initializeAd(this, findViewById(R.id.list_container));
 
             loadingMore = true;
-            Log.e("page", mPage+"");
+
             TmdbService tmdbService =
                     TmdbClient.getClient().create(TmdbService.class);
 
@@ -192,14 +191,13 @@ public class ListMovie extends AppCompatActivity {
                 public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
                     if (response.code() != 200) {
                         setComplete(400);
-                        isSuccess = false;
                     } else {
                         isSuccess = true;
                         if(mType.equals(COLLECTION)){
-                            mListMovieAdapter.setCollection();
                             mMovieList.addAll(response.body().getParts());
                         }else {
-                            mListMovieAdapter.setTotalItem(response.body().getTotalResult());
+                            mTotalItem = response.body().getTotalResult();
+                            mListMovieAdapter.setTotalItem(mTotalItem);
                             mMovieList.addAll(response.body().getMovies());
                             mTotalPage = response.body().getTotalPages();
                         }
@@ -228,10 +226,11 @@ public class ListMovie extends AppCompatActivity {
         Utils.setProcessComplete(listProgressBar);
         if(isSuccess)
             ++mPage;
-        mListMovieAdapter.notifyDataSetChanged();
+        mListMovieAdapter.updateData(mTotalItem);
     }
 
     private void setComplete(int error){
+        isSuccess = false;
         if(mPage > 1) {
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
         }else{
@@ -243,16 +242,11 @@ public class ListMovie extends AppCompatActivity {
                 refreshFab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                fabListener.setFabShouldBeShown(false);
-//                refreshFab.hide(fabListener);
-//                mNotificationTextView.setVisibility(View.GONE);
-//                listProgressBar.setVisibility(View.VISIBLE);
-//                getMovieList(ListMovie.this);
-
-                        Intent i = getIntent();
-                        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        finish();
-                        startActivity(i);
+                        fabListener.setFabShouldBeShown(false);
+                        refreshFab.hide(fabListener);
+                        mNotificationTextView.setVisibility(View.GONE);
+                        listProgressBar.setVisibility(View.VISIBLE);
+                        getMovieList(ListMovie.this);
                     }
                 });
             }

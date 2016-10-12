@@ -224,6 +224,8 @@ public class DetailMovie extends AppCompatActivity {
         Picasso.with(this)
                 .load(mMovie.getBackdropPath(this, 1))
                 .error(R.drawable.no_image_land)
+                .fit()
+                .centerCrop()
                 .into(backdropImageView, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -375,7 +377,7 @@ public class DetailMovie extends AppCompatActivity {
                     Picasso.with(DetailMovie.this)
                             .load(mCollection.getBackdropPath(DetailMovie.this, 0))
                             .error(R.drawable.no_image_land)
-                            .resize(collectionRelativeLayout.getWidth(), collectionRelativeLayout.getWidth()/3)
+                            .fit()
                             .centerCrop()
                             .into(collectionImageView, new Callback() {
                                 @Override

@@ -93,8 +93,8 @@
                 android:id="@+id/genre_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_line_spacing"
-                android:layout_marginBottom="@dimen/small_line_spacing"
+                android:layout_marginTop="@dimen/smaller_line_spacing"
+                android:layout_marginBottom="@dimen/smaller_line_spacing"
                 android:scrollbars="none"
                 android:orientation="horizontal"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
@@ -121,7 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="@dimen/line_spacing">
+                        android:layout_marginTop="@dimen/small_line_spacing">
                         <RelativeLayout
                             android:id="@+id/popular_title_relativelayout"
                             android:layout_width="match_parent"
@@ -159,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginTop="@dimen/line_spacing">
+                        android:layout_marginTop="@dimen/small_line_spacing">
                         <RelativeLayout
                             android:id="@+id/toprated_title_relativelayout"
                             android:layout_width="match_parent"

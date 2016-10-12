@@ -95,29 +95,7 @@ public class ShowImageActivity extends AppCompatActivity {
                 R.drawable.no_image_port;
 
         mContentView = findViewById(R.id.image_viewpager);
-//        mContentView = findViewById(R.id.show_image_photoview);
-
-//        PhotoView photoView = (PhotoView) mContentView;
-//
-//        final PhotoViewAttacher attacher = new PhotoViewAttacher(photoView);
-//
-//        Picasso.with(this)
-//                .load(imageUrl)
-//                .error(imageErrorUrl)
-//                .into(photoView, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        attacher.update();
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-//                        attacher.update();
-//                    }
-//                });
-
-
-//        ViewPager imageViewPager = (ViewPager) mContentView;
+        
         imageViewPager = (HackyViewPager) mContentView;
 
         int transparent;

@@ -86,14 +86,12 @@ public class ViewPagerAdapter extends PagerAdapter {
                     @Override
                     public void onSuccess() {
                         attacher.update();
-//                        imageProgressBar.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
 
                     @Override
                     public void onError() {
                         attacher.update();
-//                        imageProgressBar.setVisibility(View.GONE);
                         dialog.dismiss();
                     }
                 });

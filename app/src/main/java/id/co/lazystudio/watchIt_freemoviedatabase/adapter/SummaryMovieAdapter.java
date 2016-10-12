@@ -47,7 +47,7 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int verticalMargin = mContext.getResources().getDimensionPixelSize(R.dimen.small_line_spacing);
+        int verticalMargin = mContext.getResources().getDimensionPixelSize(R.dimen.smaller_line_spacing);
         RecyclerView.LayoutParams params = new RecyclerView.LayoutParams(
                 (parent.getHeight() - 2 * verticalMargin) * 2 / 3,
                 parent.getHeight() - 2 * verticalMargin);
@@ -93,7 +93,6 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                         .load(R.drawable.more_port)
                         .error(R.drawable.no_image_port)
                         .fit()
-//                        .resize(params.width, params.height)
                         .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override
@@ -111,7 +110,6 @@ public class SummaryMovieAdapter extends RecyclerView.Adapter<SummaryMovieAdapte
                         .load(movie.getPosterPath(context, 0))
                         .error(R.drawable.no_image_port)
                         .fit()
-//                        .resize(params.width, params.height)
                         .centerCrop()
                         .into(posterImageView, new Callback() {
                             @Override

@@ -1,16 +1,12 @@
 package id.co.lazystudio.watchIt_freemoviedatabase.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -105,11 +101,6 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
             parentView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent i = new Intent(mContext, ImageViewActivity.class);
-//                    i.putExtra(ImageViewActivity.KEY_IMAGE, image.getPosterPath(mContext, -1));
-//                    i.putExtra(ImageViewActivity.KEY_IMAGE_ERROR, R.drawable.no_image_port);
-//                    mContext.startActivity(i);
-//                    showImage(image.getPosterPath(mContext, -1));
                     Intent i = new Intent(mContext, ShowImageActivity.class);
                     i.putParcelableArrayListExtra(ShowImageActivity.KEY_IMAGE_LIST, mImageList);
                     i.putExtra(ShowImageActivity.KEY_IMAGE, image);
@@ -118,28 +109,5 @@ public class ListPosterAdapter extends RecyclerView.Adapter<ListPosterAdapter.Vi
                 }
             });
         }
-    }
-
-    public void showImage(String imageURL) {
-        Dialog builder = new Dialog(mContext);
-//        builder.setContentView(R.layout.activity_image_view);
-        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        builder.getWindow().setBackgroundDrawable(
-                new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                //nothing;
-            }
-        });
-
-        ImageView imageView = new ImageView(mContext);
-        Picasso.with(mContext)
-                .load(imageURL)
-                .into(imageView);
-        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        builder.show();
     }
 }

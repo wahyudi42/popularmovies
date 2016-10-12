@@ -60,6 +60,8 @@ public class VideoAdapter extends BaseAdapter {
         Picasso.with(mContext)
                 .load(video.getImageUrl())
                 .error(R.drawable.no_image_land)
+                .fit()
+                .centerCrop()
                 .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {

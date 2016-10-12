@@ -19,6 +19,7 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:paddingBottom="@dimen/banner_height"
+        android:layout_above="@+id/ad_view"
         android:layout_below="@+id/toolbar" />
 
     <View

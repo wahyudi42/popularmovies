@@ -26,43 +26,32 @@ import id.co.lazystudio.watchIt_freemoviedatabase.entity.Movie;
  */
 
 public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.ViewHolder> {
+    public static final String NOW_PLAYING = "now_playing";
+    public static final String POPULAR = "popular";
+    public static final String TOP_RATED = "top_rated";
+    public static final String GENRE = "genre";
+    public static final String COLLECTION = "collection";
+    public static final String KEYWORD = "keyword";
+    public static final String SIMILAR = "similar";
+
+    private String mType;
     Context mContext;
-    List<Movie> mAllMovieList, mMovieList;
+    List<Movie> mAllMovieList;
+    List<Movie> mMovieList = new ArrayList<>();
     int totalItem = 0;
 
     int currentPage = 0;
 
-    public ListMovieAdapter(Context c, List<Movie> movies){
+    public ListMovieAdapter(Context c, List<Movie> movies, String type){
         mContext = c;
+
         mAllMovieList = movies;
 
-        mMovieList = new ArrayList<>();
-
-        int maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
-
-        for(int i = 0; i < maxItemIndex; i++){
-            mMovieList.add(mAllMovieList.get(i));
-        }
-    }
-
-    public void setCollection(){
-        mMovieList = mAllMovieList;
+        mType = type;
     }
 
     public void setTotalItem(int totalItem){
         this.totalItem = totalItem;
-        mMovieList = new ArrayList<>();
-
-        int maxItemIndex;
-        if(mMovieList.size() < totalItem){
-            maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
-        }else{
-            maxItemIndex = totalItem;
-        }
-
-        for(int i = 0; i < maxItemIndex; i++){
-            mMovieList.add(mAllMovieList.get(i));
-        }
     }
 
     @Override
@@ -135,5 +124,26 @@ public class ListMovieAdapter extends RecyclerView.Adapter<ListMovieAdapter.View
                 }
             });
         }
+    }
+
+    public void updateData(int totalItem){
+        if(mType.equals(COLLECTION)){
+            mMovieList = mAllMovieList;
+        }else{
+            mMovieList = new ArrayList<>();
+
+            int maxItemIndex;
+            if(mAllMovieList.size() < totalItem){
+                maxItemIndex = ((int)(Math.floor(mAllMovieList.size() / 3))) * 3;
+            }else{
+                maxItemIndex = totalItem;
+            }
+
+            for(int i = 0; i < maxItemIndex; i++){
+                mMovieList.add(mAllMovieList.get(i));
+            }
+        }
+
+        super.notifyDataSetChanged();
     }
 }
