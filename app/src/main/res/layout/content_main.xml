@@ -2,203 +2,40 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="id.co.lazystudio.watchIt_freemoviedatabase.MainActivity"
+    tools:context="id.co.lazystudio.popularmovies.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <View
+    <TextView
+        android:id="@+id/notification_textview"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"/>
+        android:gravity="center"
+        android:paddingTop="@dimen/small_margin"
+        android:paddingBottom="@dimen/small_margin"
+        android:textColor="@android:color/white"
+        android:background="@color/colorAccent"
+        android:visibility="gone"/>
 
-    <android.support.v7.widget.CardView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_movie_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:background="@android:color/white"
-        app:cardCornerRadius="0dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:layout_below="@+id/notification_textview"
+        android:orientation="vertical"
+        android:scrollbars="vertical"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager">
+        </android.support.v7.widget.RecyclerView>
 
-            <!-- NOW PLAYING SLIDER -->
-            <RelativeLayout
-                android:id="@+id/now_playing_relative_layout"
-                android:layout_width="match_parent"
-                android:layout_height="200dp">
-                <ProgressBar
-                    android:id="@+id/now_playing_progress_bar"
-                    android:layout_centerInParent="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <com.daimajia.slider.library.SliderLayout
-                    android:id="@+id/now_playing_slider"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-                <com.daimajia.slider.library.Indicators.PagerIndicator
-                    android:id="@+id/custom_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    app:selected_color="@color/colorAccent"
-                    app:unselected_color="@color/colorPrimary"
-                    app:shape="oval"
-                    app:selected_padding_left="3dp"
-                    app:selected_padding_right="3dp"
-                    app:unselected_padding_left="3dp"
-                    app:unselected_padding_right="3dp"
-                    app:selected_width="8dp"
-                    app:selected_height="8dp"
-                    app:unselected_width="4dp"
-                    app:unselected_height="4dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_alignParentBottom="true"
-                    android:paddingBottom="@dimen/description_height"/>
-            </RelativeLayout>
-            <!-- /NOW PLAYING SLIDER -->
-
-            <RelativeLayout
-                android:id="@+id/error_relativelayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-                    android:id="@+id/main_progressbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:indeterminate="true"
-                    app:mpb_progressStyle="horizontal"
-                    app:mpb_useIntrinsicPadding="false"
-                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
-
-                <TextView
-                    android:id="@+id/notification_textview"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:gravity="center"
-                    android:paddingTop="@dimen/small_margin"
-                    android:paddingBottom="@dimen/small_margin"
-                    android:layout_centerInParent="true"
-                    android:textColor="@android:color/white"
-                    android:background="@color/colorAccent"
-                    android:visibility="gone"/>
-            </RelativeLayout>
-
-            <!-- GENRES -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/genre_recyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/smaller_line_spacing"
-                android:layout_marginBottom="@dimen/smaller_line_spacing"
-                android:scrollbars="none"
-                android:orientation="horizontal"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                android:visibility="gone">
-
-            </android.support.v7.widget.RecyclerView>
-            <!-- /GENRES -->
-
-            <ScrollView
-                android:id="@+id/content_container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/banner_height"
-                android:scrollbars="none"
-                android:visibility="invisible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!-- POPULAR -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/small_line_spacing">
-                        <RelativeLayout
-                            android:id="@+id/popular_title_relativelayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/popular_title_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/popular_title"
-                                style="@style/AppTheme.MovieCategoryTitle"/>
-                            <TextView
-                                android:id="@+id/popular_viewall_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:text="@string/view_all"
-                                style="@style/AppTheme.MovieViewAll"
-                                android:layout_alignBaseline="@+id/popular_title_textview" />
-                        </RelativeLayout>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/popular_recyclerview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:scrollbars="horizontal"
-                            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
-
-                        </android.support.v7.widget.RecyclerView>
-                    </LinearLayout>
-                    <!-- /POPULAR -->
-
-                    <!-- TOP RATED -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginTop="@dimen/small_line_spacing">
-                        <RelativeLayout
-                            android:id="@+id/toprated_title_relativelayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:id="@+id/toprated_title_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/toprated_title"
-                                style="@style/AppTheme.MovieCategoryTitle"/>
-                            <TextView
-                                android:id="@+id/toprated_viewall_textview"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentRight="true"
-                                android:text="@string/view_all"
-                                style="@style/AppTheme.MovieViewAll"
-                                android:layout_alignBaseline="@+id/toprated_title_textview" />
-                        </RelativeLayout>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/toprated_recyclerview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:scrollbars="horizontal"
-                            app:layoutManager="android.support.v7.widget.LinearLayoutManager">
-
-                        </android.support.v7.widget.RecyclerView>
-
-                    </LinearLayout>
-                    <!-- /TOP RATED -->
-
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-
-
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/list_movie_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        app:mpb_progressStyle="horizontal"
+        app:mpb_useIntrinsicPadding="false"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding" />
 </RelativeLayout>

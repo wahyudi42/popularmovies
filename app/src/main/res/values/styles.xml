@@ -19,8 +19,6 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppTheme.MovieCategoryTitle">
@@ -36,54 +34,8 @@
         <item name="android:alpha">0.54</item>
     </style>
 
-    <style name="AppTheme.MovieViewAll" parent="AppTheme.TextSecondary">
-        <item name="android:textSize">@dimen/view_all</item>
-        <item name="android:layout_marginRight">8dp</item>
-    </style>
-
     <style name="AppTheme.MovieDetailSecondary" parent="AppTheme.TextSecondary">
         <item name="android:textSize">10sp</item>
-    </style>
-
-    <style name="AppTheme.FlexboxLayout">
-        <item name="flexWrap">wrap</item>
-        <item name="justifyContent">center</item>
-        <item name="alignItems">center</item>
-        <item name="alignContent">center</item>
-    </style>
-
-    <!--<style name="AppTheme.GenreFlexboxLayout" parent="AppTheme.FlexboxLayout">-->
-    <!--<item name=""-->
-    <!--</style>-->
-
-    <!--<style name="AppTheme.KeywordTagContainer" parent="AppTheme.FlexboxLayout">-->
-    <!--<item name="tag_background_color">@color/gray_500</item>-->
-    <!--<item name="tag_border_color">@color/gray_500</item>-->
-    <!--</style>-->
-
-    <style name="AppTheme.MovieCollectionTitle" parent="AppTheme.MovieCategoryTitle">
-        <item name="android:textSize">@dimen/category_title</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:gravity">center</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:background">@color/black_50</item>
-        <item name="android:layout_marginLeft">0dp</item>
-    </style>
-
-    <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:background">@color/black_overlay</item>
     </style>
 
     <style name="AppTheme.Ripple" parent="AppTheme">

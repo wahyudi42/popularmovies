@@ -5,65 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie">
-    <com.nirhart.parallaxscroll.views.ParallaxScrollView
-        android:id="@+id/movie_detail_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/ad_view">
-        <RelativeLayout
+    tools:context="id.co.lazystudio.popularmovies.DetailMovie">
+    <RelativeLayout
+        android:id="@+id/backdrop_relativelayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/placeholder">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/backdrop_progressbar"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:id="@+id/backdrop_imageview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <RelativeLayout
-                android:id="@+id/backdrop_relativelayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/placeholder">
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/backdrop_progressbar"
-                    android:layout_centerInParent="true" />
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"/>
 
-                <ImageView
-                    android:id="@+id/backdrop_imageview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"/>
+    </RelativeLayout>
 
-            </RelativeLayout>
-
-            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-                android:id="@+id/detail_movie_progressbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                app:mpb_progressStyle="horizontal"
-                app:mpb_useIntrinsicPadding="false"
-                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal.NoPadding"
-                android:layout_alignBottom="@+id/backdrop_relativelayout" />
-
-            <include layout="@layout/content_detail_movie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/backdrop_relativelayout"/>
-        </RelativeLayout>
-    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+    <include layout="@layout/content_detail_movie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/backdrop_relativelayout"/>
 
     <View
         android:id="@+id/stub_statusbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/notification_textview"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_below="@id/stub_statusbar"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:background="@color/colorAccent_50"
-        android:visibility="gone"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -74,14 +44,4 @@
         app:theme="@style/ToolbarColoredBackArrow"
         app:popupTheme="@style/AppTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
-
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ad_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/admob_banner_main_unit_id" />
 </RelativeLayout>

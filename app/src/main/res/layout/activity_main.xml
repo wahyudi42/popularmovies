@@ -5,27 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="id.co.lazystudio.watchIt_freemoviedatabase.MainActivity">
-
+    tools:context="id.co.lazystudio.popularmovies.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/AppTheme.PopupOverlay">
-        <ImageView
-            android:id="@+id/app_name"
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:foregroundGravity="center|center_horizontal" />
-    </android.support.v7.widget.Toolbar>
+        app:theme="@style/ToolbarColoredBackArrow"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <include layout="@layout/content_main"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_below="@+id/toolbar"/>
+        android:layout_below="@+id/toolbar" />
 
     <View
         android:id="@+id/stub_actionbar"
@@ -37,21 +30,11 @@
         android:id="@+id/refresh_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/stub_actionbar"
         android:layout_margin="@dimen/fab_margin"
+        android:layout_below="@+id/stub_actionbar"
         android:padding="0dp"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_refresh"
         android:visibility="gone"/>
-
-    <com.google.android.gms.ads.AdView
-        xmlns:ads="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/ad_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/admob_banner_main_unit_id" />
 
 </RelativeLayout>

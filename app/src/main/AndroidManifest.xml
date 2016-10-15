@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="id.co.lazystudio.watchIt_freemoviedatabase">
+    package="id.co.lazystudio.popularmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-    <!-- Permissions required by the sync adapter -->
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
 
     <application
         android:allowBackup="true"
@@ -18,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SplashScreen"
+            android:name="id.co.lazystudio.popularmovies.SplashScreen"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -29,88 +24,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ListMovie"
+            android:name="id.co.lazystudio.popularmovies.MainActivity"
             android:label="@string/title_activity_list_movie"
-            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="id.co.lazystudio.watchIt_freemoviedatabase.MainActivity" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".DetailMovie"
+            android:name="id.co.lazystudio.popularmovies.DetailMovie"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_detail_movie"
-            android:parentActivityName=".ListMovie"
+            android:parentActivityName="id.co.lazystudio.popularmovies.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Detail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="id.co.lazystudio.watchIt_freemoviedatabase.ListMovie" />
+                android:value="id.co.lazystudio.popularmovies.MainActivity" />
         </activity>
-
-        <!-- SyncAdapter's dummy authentication service -->
-        <service
-            android:name=".sync.WatchItAuthenticatorService"
-            android:authorities="@string/content_authority">
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
-
-        <!-- The SyncAdapter service -->
-        <service
-            android:name=".sync.WatchItSyncService"
-            android:authorities="@string/content_authority"
-            android:exported="true"
-            android:process=":sync">
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/syncadapter" />
-        </service>
-
-        <provider
-            android:name=".data.WatchItProvider"
-            android:authorities="@string/content_authority"
-            android:exported="false"
-            android:syncable="true" />
-
-        <activity
-            android:name=".ListPosterActivity"
-            android:label="@string/title_activity_list_poster"
-            android:parentActivityName=".DetailMovie"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie" />
-        </activity>
-        <activity
-            android:name=".ListBackdropActivity"
-            android:label="@string/title_activity_list_backdrop"
-            android:parentActivityName=".DetailMovie"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="id.co.lazystudio.watchIt_freemoviedatabase.DetailMovie" />
-        </activity>
-        <activity
-            android:name=".ShowImageActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_show_image"
-            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

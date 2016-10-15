@@ -1,11 +1,9 @@
 <resources>
     <!-- SyncAdapter related -->
-    <string name="sync_account_type">watchIt_freemoviedatabase.lazystudio.co.id</string>
-    <string name="content_authority">id.co.lazystudio.watchIt_freemoviedatabase</string>
-    <string name="app_name">Watch It!</string>
-    <string name="action_settings">Settings</string>
-    <string name="view_all">View All</string>
-    <string name="now_playing_title">Now Playing</string>
+    <string name="app_name">Popular Movie!</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_popular">Popular</string>
+    <string name="action_sort_toprated">Top Rated</string>
     <string name="popular_title">Popular</string>
     <string name="toprated_title">Top Rated</string>
     <string name="title_activity_list_movie">ListMovie</string>
@@ -15,29 +13,7 @@
     <string name="title_activity_detail_movie">DetailMovie</string>
     <string name="label_rate">Rate</string>
     <string name="label_popularity">Popularity</string>
-    <string name="label_production_company">Produced By</string>
-    <string name="label_collection">Part of</string>
-    <string name="label_keyword">Keywords</string>
-    <string name="label_budget">Budget</string>
-    <string name="label_revenue">Revenue</string>
     <string name="label_overview">Overview</string>
-    <string name="label_similar">Similar</string>
-    <string name="label_video">Youtube Videos</string>
-    <string name="list_movie_similar_title">Similar to </string>
-    <string name="title_activity_list_poster">Posters of</string>
-    <string name="title_activity_list_backdrop">Backdrops of</string>
-
-    <string name="title_activity_show_image">ShowImageActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-
-    <string name="admob_banner_main_unit_id">ca-app-pub-2463683303519296/6721719363</string>
-    <string name="admob_banner_list_movie_unit_id">ca-app-pub-2463683303519296/4913582169</string>
-    <string name="admob_banner_detail_unit_id">ca-app-pub-2463683303519296/6390315362</string>
-    <string name="admob_banner_image_unit_id">ca-app-pub-2463683303519296/7867048562</string>
-    <string name="admob_banner_backdrop_unit_id">ca-app-pub-2463683303519296/9343781765</string>
-    <string name="admob_banner_poster_unit_id">ca-app-pub-2463683303519296/1820514962</string>
 
     <string name="app_tagline">Updated Movies Here!</string>
     <string name="app_author" translatable="false">by Lazy Studio</string>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="id.co.lazystudio.watchIt_freemoviedatabase.SplashScreen">
+    tools:context="id.co.lazystudio.popularmovies.SplashScreen">
 
     <ImageView
         android:id="@+id/splash_background"
