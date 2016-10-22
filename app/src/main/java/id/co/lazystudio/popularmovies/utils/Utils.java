@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -47,7 +46,6 @@ public class Utils {
             view.setVisibility(View.VISIBLE);
             ((TextView) view).setText(text);
         }
-        Log.e("connection error", text);
     }
 
     public static int getColorWithAlpha(float alpha, int baseColor) {

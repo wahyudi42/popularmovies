@@ -2,7 +2,6 @@ package id.co.lazystudio.popularmovies;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -19,7 +18,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import id.co.lazystudio.popularmovies.entity.Movie;
-import id.co.lazystudio.popularmovies.utils.FabVisibilityChangeListener;
 
 public class DetailMovie extends AppCompatActivity {
     public static final String MOVIE_KEY = "movie";
@@ -27,9 +25,6 @@ public class DetailMovie extends AppCompatActivity {
 
     ImageView backdropImageView;
     ImageView posterImageView;
-
-    FloatingActionButton refreshFab;
-    FabVisibilityChangeListener fabListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +49,6 @@ public class DetailMovie extends AppCompatActivity {
         toolbarParams.height = getStatusBarHeight();
 
         backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
-
-        refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
-        fabListener = new FabVisibilityChangeListener();
 
         populateView();
     }

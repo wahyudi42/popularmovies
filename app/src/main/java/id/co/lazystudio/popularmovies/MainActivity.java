@@ -1,20 +1,23 @@
 package id.co.lazystudio.popularmovies;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +28,6 @@ import id.co.lazystudio.popularmovies.connection.TmdbService;
 import id.co.lazystudio.popularmovies.entity.Movie;
 import id.co.lazystudio.popularmovies.listener.EndlessRecyclerViewScrollListener;
 import id.co.lazystudio.popularmovies.parser.MovieListParser;
-import id.co.lazystudio.popularmovies.utils.FabVisibilityChangeListener;
 import id.co.lazystudio.popularmovies.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,12 +40,11 @@ public class MainActivity extends AppCompatActivity {
     List<Movie> mMovieList = new ArrayList<>();
     private ProgressBar listProgressBar;
     private String mType;
-    private int mId = 0;
 
     private int mPage = 1;
     private int mTotalPage = 0;
     private int mTotalItem = 0;
-    private boolean loadingMore = true;
+    private boolean loadingMore = false;
 
     private boolean isSuccess = true;
 
@@ -52,8 +53,11 @@ public class MainActivity extends AppCompatActivity {
     ListMovieAdapter mListMovieAdapter;
     RecyclerView mListMovieRecyclerView;
 
-    FloatingActionButton refreshFab;
-    FabVisibilityChangeListener fabListener;
+    EndlessRecyclerViewScrollListener endlessListener;
+
+    BroadcastReceiver mNetworkReceiver;
+
+    IntentFilter mFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,17 +87,33 @@ public class MainActivity extends AppCompatActivity {
         mListMovieRecyclerView.setLayoutManager(layoutManager);
         mListMovieAdapter = new ListMovieAdapter(this, mMovieList);
         mListMovieRecyclerView.setAdapter(mListMovieAdapter);
-        mListMovieRecyclerView.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+
+        endlessListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (!(loadingMore) && mPage < mTotalPage) {
                     getMovieList(MainActivity.this);
                 }
             }
-        });
+        };
 
-        refreshFab = (FloatingActionButton) findViewById(R.id.refresh_fab);
-        fabListener = new FabVisibilityChangeListener();
+        mNetworkReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(Utils.isInternetConnected(context)){
+                    getMovieList(MainActivity.this);
+
+                    mListMovieRecyclerView.addOnScrollListener(endlessListener);
+                }else{
+                    mListMovieRecyclerView.removeOnScrollListener(endlessListener);
+                    setComplete(-1);
+                }
+            }
+        };
+
+        mFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+
+        registerReceiver(mNetworkReceiver, mFilter);
 
         getMovieList(this);
     }
@@ -134,47 +154,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getMovieList(final Context context){
-        if(Utils.isInternetConnected(context)) {
-            listProgressBar.setVisibility(View.VISIBLE);
+        if(!loadingMore) {
+            if (Utils.isInternetConnected(context)) {
 
-            loadingMore = true;
+                Log.e("page", mPage + "");
 
-            TmdbService tmdbService =
-                    TmdbClient.getClient().create(TmdbService.class);
+                mNotificationTextView.setVisibility(View.GONE);
+                listProgressBar.setVisibility(View.VISIBLE);
 
-            Call<MovieListParser> movieListCall;
-            if(mType.equals(TOP_RATED)){
-                movieListCall = tmdbService.getTopRated(mPage);
-            }else{
-                movieListCall = tmdbService.getPopular(mPage);
-            }
+                loadingMore = true;
 
-            movieListCall.enqueue(new Callback<MovieListParser>() {
-                @Override
-                public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                    if (response.code() != 200) {
-                        setComplete(400);
-                    } else {
-                        isSuccess = true;
-                        mTotalItem = response.body().getTotalResult();
-                        mListMovieAdapter.setTotalItem(mTotalItem);
-                        mMovieList.addAll(response.body().getMovies());
-                        mTotalPage = response.body().getTotalPages();
+                TmdbService tmdbService =
+                        TmdbClient.getClient().create(TmdbService.class);
 
-                        if(mMovieList.size() > 0)
-                            setComplete();
-                        else
-                            setComplete(200);
+                Call<MovieListParser> movieListCall;
+                if (mType.equals(TOP_RATED)) {
+                    movieListCall = tmdbService.getTopRated(mPage);
+                } else {
+                    movieListCall = tmdbService.getPopular(mPage);
+                }
+
+                movieListCall.enqueue(new Callback<MovieListParser>() {
+                    @Override
+                    public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
+                        if (response.code() != 200) {
+                            setComplete(400);
+                        } else {
+                            isSuccess = true;
+                            mTotalItem = response.body().getTotalResult();
+                            mListMovieAdapter.setTotalItem(mTotalItem);
+                            mMovieList.addAll(response.body().getMovies());
+                            mTotalPage = response.body().getTotalPages();
+
+                            if (mMovieList.size() > 0)
+                                setComplete();
+                            else
+                                setComplete(200);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Call<MovieListParser> call, Throwable t) {
-                    setComplete(400);
-                }
-            });
-        }else {
-            setComplete(-1);
+                    @Override
+                    public void onFailure(Call<MovieListParser> call, Throwable t) {
+                        setComplete(400);
+                    }
+                });
+            } else {
+                setComplete(-1);
+            }
         }
     }
 
@@ -187,26 +213,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setComplete(int error){
+        loadingMore = false;
         isSuccess = false;
-        if(mPage > 1) {
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-        }else{
-            Utils.setProcessError(this, mNotificationTextView, error);
-            setComplete();
-            if(error != 200) {
-                fabListener.setFabShouldBeShown(true);
-                refreshFab.show(fabListener);
-                refreshFab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        fabListener.setFabShouldBeShown(false);
-                        refreshFab.hide(fabListener);
-                        mNotificationTextView.setVisibility(View.GONE);
-                        listProgressBar.setVisibility(View.VISIBLE);
-                        getMovieList(MainActivity.this);
-                    }
-                });
-            }
-        }
+        Utils.setProcessError(this, mNotificationTextView, error);
+        setComplete();
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(mNetworkReceiver);
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceiver(mNetworkReceiver, mFilter);
+        super.onResume();
     }
 }
