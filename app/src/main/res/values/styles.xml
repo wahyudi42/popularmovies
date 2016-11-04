@@ -45,4 +45,6 @@
         <item name="mrl_rippleDelayClick">true</item>
         <item name="mrl_rippleDuration">250</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 </resources>

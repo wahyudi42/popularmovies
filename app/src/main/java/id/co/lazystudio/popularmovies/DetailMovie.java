@@ -2,6 +2,8 @@ package id.co.lazystudio.popularmovies;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -49,6 +51,15 @@ public class DetailMovie extends AppCompatActivity {
         toolbarParams.height = getStatusBarHeight();
 
         backdropImageView = (ImageView) findViewById(R.id.backdrop_imageview);
+
+        FloatingActionButton fabFavorite = (FloatingActionButton)findViewById(R.id.favorite_fab);
+        fabFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Favorite fab clicked", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
         populateView();
     }

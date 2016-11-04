@@ -22,4 +22,8 @@
     <string name="splash_no_internet_message_dialog">Please Check Your Internet Connection</string>
     <string name="splash_no_internet_positive_dialog">Try Again</string>
     <string name="splash_no_internet_negative_dialog">Exit</string>
+
+    <!-- version 2 -->
+    <string name="action_favorite">My Favorite</string>
+    <string name="title_activity_my_favorite">My Favorite</string>
 </resources>

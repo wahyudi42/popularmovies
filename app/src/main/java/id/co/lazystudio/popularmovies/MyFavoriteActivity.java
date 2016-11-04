@@ -13,7 +13,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -33,7 +32,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MyFavoriteActivity extends AppCompatActivity {
+
     public static final String POPULAR = "popular";
     public static final String TOP_RATED = "top_rated";
 
@@ -74,12 +74,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         toolbar.setTitleTextColor(Color.WHITE);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listProgressBar = (ProgressBar) findViewById(R.id.list_movie_progressbar);
         mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
 
         mType = POPULAR;
-        getSupportActionBar().setTitle(getResources().getString(R.string.popular_title));
+        getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_my_favorite));
 
         mListMovieRecyclerView = (RecyclerView) findViewById(R.id.list_movie_recyclerview);
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (!(loadingMore) && mPage < mTotalPage) {
-                    getMovieList(MainActivity.this);
+                    getMovieList(MyFavoriteActivity.this);
                 }
             }
         };
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(Utils.isInternetConnected(context)){
-                    getMovieList(MainActivity.this);
+                    getMovieList(MyFavoriteActivity.this);
 
                     mListMovieRecyclerView.addOnScrollListener(endlessListener);
                 }else{
@@ -115,45 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceiver(mNetworkReceiver, mFilter);
 
-        getMovieList(this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-            case R.id.sort_popular:
-                mType = POPULAR;
-                setSortOrder();
-                break;
-            case R.id.sort_toprated:
-                mType = TOP_RATED;
-                setSortOrder();
-                break;
-            case R.id.action_favorite:
-                Intent intent = new Intent(getBaseContext(), MyFavoriteActivity.class);
-                startActivity(intent);
-                break;
-        }
-        return true;
-    }
-
-    private void setSortOrder(){
-        if(mType.equals(TOP_RATED))
-            getSupportActionBar().setTitle(getResources().getString(R.string.toprated_title));
-        else
-            getSupportActionBar().setTitle(getResources().getString(R.string.popular_title));
-        mPage = 1;
-        mMovieList.clear();
-        mListMovieAdapter.updateData(0);
         getMovieList(this);
     }
 
@@ -206,6 +168,16 @@ public class MainActivity extends AppCompatActivity {
                 setComplete(-1);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 
     private void setComplete() {

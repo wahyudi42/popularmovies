@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="id.co.lazystudio.popularmovies.SplashScreen"
+            android:name=".SplashScreen"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="id.co.lazystudio.popularmovies.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_list_movie"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -35,12 +35,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="id.co.lazystudio.popularmovies.DetailMovie"
+            android:name=".DetailMovie"
             android:fitsSystemWindows="true"
             android:label="@string/title_activity_detail_movie"
-            android:parentActivityName="id.co.lazystudio.popularmovies.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Detail">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="id.co.lazystudio.popularmovies.MainActivity" />
+        </activity>
+        <activity
+            android:name=".MyFavoriteActivity"
+            android:label="@string/title_activity_my_favorite"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.popularmovies.MainActivity" />
