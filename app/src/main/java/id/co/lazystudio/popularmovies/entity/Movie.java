@@ -80,6 +80,18 @@ public class Movie implements Parcelable {
         return title;
     }
 
+    public String getRuntime() {
+        return runtime+" min";
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
     public String getReleaseDate() {
         SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
@@ -97,16 +109,8 @@ public class Movie implements Parcelable {
         return result;
     }
 
-    public String getRuntime() {
-        return runtime+" min";
-    }
-
-    public String getTagline() {
-        return tagline;
-    }
-
-    public String getOverview() {
-        return overview;
+    public String getReleaseDateDb(){
+        return releaseDate;
     }
 
     public String getPosterPath(Context context, int sizeIndex) {
@@ -119,6 +123,10 @@ public class Movie implements Parcelable {
                 posterPath;
     }
 
+    public String getPosterPathDb(){
+        return posterPath;
+    }
+
     public String getBackdropPath(Context context, int sizeIndex) {
         TmdbConfigurationPreference conf = new TmdbConfigurationPreference(context);
 
@@ -129,14 +137,26 @@ public class Movie implements Parcelable {
                 backdropPath;
     }
 
+    public String getBackdropPathDb(){
+        return backdropPath;
+    }
+
     public String getPopularity() {
         DecimalFormat df = new DecimalFormat("#.00");
         return popularity > 0 ? df.format(popularity) : "-";
     }
 
+    public String getPopularityDb(){
+        return String.valueOf(popularity);
+    }
+
     public String getVoteAverage() {
         DecimalFormat df = new DecimalFormat("#.00");
         return voteCount > 0 ? df.format(voteAverage) : "-";
+    }
+
+    public String getVoteAverageDb(){
+        return String.valueOf(voteAverage);
     }
 
     public int getVoteCount() {
@@ -220,4 +240,40 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setVoteCount(int voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
+    }
+
+    public void setPopularity(float popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setVoteAverage(float voteAverage) {
+        this.voteAverage = voteAverage;
+    }
 }

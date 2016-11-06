@@ -33,7 +33,7 @@ public class MovieProvider extends ContentProvider{
 
     private static final String sMovieSelection =
             MovieContract.MovieEntry.TABLE_NAME+
-                    "." + MovieContract.MovieEntry._ID + " = ? ";
+                    "." + MovieContract.MovieEntry.COLUMN_ID + " = ? ";
 
 
     private Cursor getMovies(Uri uri, String[] projection, String sortOrder) {

@@ -4,38 +4,39 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import id.co.lazystudio.popularmovies.adapter.ListMovieAdapter;
-import id.co.lazystudio.popularmovies.connection.TmdbClient;
-import id.co.lazystudio.popularmovies.connection.TmdbService;
+import id.co.lazystudio.popularmovies.adapter.MyFavoriteAdapter;
+import id.co.lazystudio.popularmovies.data.MovieContract;
 import id.co.lazystudio.popularmovies.entity.Movie;
 import id.co.lazystudio.popularmovies.listener.EndlessRecyclerViewScrollListener;
-import id.co.lazystudio.popularmovies.parser.MovieListParser;
 import id.co.lazystudio.popularmovies.utils.Utils;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+import static android.os.Build.VERSION_CODES.M;
 
 public class MyFavoriteActivity extends AppCompatActivity {
 
-    public static final String POPULAR = "popular";
-    public static final String TOP_RATED = "top_rated";
+    public static final String LOG_TAG = MyFavoriteActivity.class.getSimpleName();
 
     List<Movie> mMovieList = new ArrayList<>();
     private ProgressBar listProgressBar;
@@ -50,7 +51,7 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
     TextView mNotificationTextView;
 
-    ListMovieAdapter mListMovieAdapter;
+    MyFavoriteAdapter mMyFavoriteAdapter;
     RecyclerView mListMovieRecyclerView;
 
     EndlessRecyclerViewScrollListener endlessListener;
@@ -59,15 +60,18 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
     IntentFilter mFilter;
 
+    private RecyclerView.LayoutManager mLayoutManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_my_favorite);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            if (Build.VERSION.SDK_INT >= M)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
             else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -79,34 +83,40 @@ public class MyFavoriteActivity extends AppCompatActivity {
         listProgressBar = (ProgressBar) findViewById(R.id.list_movie_progressbar);
         mNotificationTextView = (TextView) findViewById(R.id.notification_textview);
 
-        mType = POPULAR;
         getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_my_favorite));
 
         mListMovieRecyclerView = (RecyclerView) findViewById(R.id.list_movie_recyclerview);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        mListMovieRecyclerView.setLayoutManager(layoutManager);
-        mListMovieAdapter = new ListMovieAdapter(this, mMovieList);
-        mListMovieRecyclerView.setAdapter(mListMovieAdapter);
+        //mListMovieRecyclerView.setLayoutManager(layoutManager);
 
-        endlessListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                if (!(loadingMore) && mPage < mTotalPage) {
-                    getMovieList(MyFavoriteActivity.this);
-                }
-            }
-        };
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mListMovieRecyclerView.setLayoutManager(mLayoutManager);
+        mListMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
+        mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
+
+        Log.v("Total Movie 1",""+mMovieList.size());
+
+        getDataFromDb();
+
+        Log.v("Total Movie 2",""+mMovieList.size());
+
+        if (mMovieList.size() > 0){
+            isSuccess = true;
+            mTotalItem = mMovieList.size();
+            setComplete();
+        }
+        else
+            setComplete(200);
 
         mNetworkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(Utils.isInternetConnected(context)){
-                    getMovieList(MyFavoriteActivity.this);
-
-                    mListMovieRecyclerView.addOnScrollListener(endlessListener);
+                    //show ads
                 }else{
-                    mListMovieRecyclerView.removeOnScrollListener(endlessListener);
                     setComplete(-1);
                 }
             }
@@ -116,56 +126,63 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
         registerReceiver(mNetworkReceiver, mFilter);
 
-        getMovieList(this);
     }
+    private void getDataFromDb(){
+        Uri movieUri = MovieContract.MovieEntry.buildMovie();
+        Log.v(LOG_TAG, "URI: " + movieUri);
 
-    private void getMovieList(final Context context){
-        if(!loadingMore) {
-            if (Utils.isInternetConnected(context)) {
+        String sortOrder = MovieContract.MovieEntry._ID + " DESC";
 
-                Log.e("page", mPage + "");
+        Cursor cursor;
+        int nCursor;
 
-                mNotificationTextView.setVisibility(View.GONE);
-                listProgressBar.setVisibility(View.VISIBLE);
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+        cursor = getContentResolver().query(
+                movieUri,
+                null,
+                null,
+                null,
+                sortOrder
+        );
 
-                loadingMore = true;
+        if(cursor == null){
+            Toast.makeText(getBaseContext(),"Database kosong", Toast.LENGTH_SHORT).show();
+        }else {
+            cursor.moveToFirst();
+            Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+            boolean isCursor = cursor.moveToFirst();
+            nCursor = cursor.getCount();
+            Log.v(LOG_TAG,"Jml cursor:"+ nCursor);
+            if(isCursor){
+                for (int i=0;i<nCursor;i++){
+                    Movie movie = new Movie();
+                    int id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
+                    String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+                    String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW));
+                    String releaseDate = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+                    String posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH));
+                    String backdropPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH));
+                    int voteCount = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_COUNT));
+                    float popularity = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY));
+                    float voteAverage = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
 
-                TmdbService tmdbService =
-                        TmdbClient.getClient().create(TmdbService.class);
+                    movie.setId(id);
+                    movie.setTitle(title);
+                    movie.setOverview(overview);
+                    movie.setReleaseDate(releaseDate);
+                    movie.setPosterPath(posterPath);
+                    movie.setBackdropPath(backdropPath);
+                    movie.setVoteCount(voteCount);
+                    movie.setPopularity(popularity);
+                    movie.setVoteAverage(voteAverage);
 
-                Call<MovieListParser> movieListCall;
-                if (mType.equals(TOP_RATED)) {
-                    movieListCall = tmdbService.getTopRated(mPage);
-                } else {
-                    movieListCall = tmdbService.getPopular(mPage);
+                    Log.v(LOG_TAG,"judul "+ cursor.getPosition()+": "+posterPath);
+                    mMovieList.add(movie);
+
+                    cursor.moveToNext();
                 }
 
-                movieListCall.enqueue(new Callback<MovieListParser>() {
-                    @Override
-                    public void onResponse(Call<MovieListParser> call, Response<MovieListParser> response) {
-                        if (response.code() != 200) {
-                            setComplete(400);
-                        } else {
-                            isSuccess = true;
-                            mTotalItem = response.body().getTotalResult();
-                            mListMovieAdapter.setTotalItem(mTotalItem);
-                            mMovieList.addAll(response.body().getMovies());
-                            mTotalPage = response.body().getTotalPages();
-
-                            if (mMovieList.size() > 0)
-                                setComplete();
-                            else
-                                setComplete(200);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<MovieListParser> call, Throwable t) {
-                        setComplete(400);
-                    }
-                });
-            } else {
-                setComplete(-1);
             }
         }
     }
@@ -185,7 +202,7 @@ public class MyFavoriteActivity extends AppCompatActivity {
         Utils.setProcessComplete(listProgressBar);
         if(isSuccess)
             ++mPage;
-        mListMovieAdapter.updateData(mTotalItem);
+        mMyFavoriteAdapter.updateData(mTotalItem);
     }
 
     private void setComplete(int error){

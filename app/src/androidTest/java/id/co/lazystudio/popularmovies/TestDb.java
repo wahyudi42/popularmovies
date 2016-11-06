@@ -43,6 +43,7 @@ public class TestDb extends AndroidTestCase {
         movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "path poster");
         movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "path backdrop");
         movieValues.put(MovieEntry.COLUMN_POPULARITY, 100);
+        movieValues.put(MovieEntry.COLUMN_VOTE_COUNT, 900);
         movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 56.9);
 
 
@@ -88,7 +89,8 @@ public class TestDb extends AndroidTestCase {
         movieValues.put(MovieEntry.COLUMN_OVERVIEW, "Overview film 2");
         movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "path poster");
         movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "path backdrop");
-        movieValues.put(MovieEntry.COLUMN_POPULARITY, 88);
+        movieValues.put(MovieEntry.COLUMN_POPULARITY, 88.8);
+        movieValues.put(MovieEntry.COLUMN_VOTE_COUNT, 900);
         movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 99.9);
 
         return movieValues;

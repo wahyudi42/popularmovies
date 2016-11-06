@@ -45,6 +45,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.popularmovies.MainActivity" />
         </activity>
+
         <activity
             android:name=".MyFavoriteActivity"
             android:label="@string/title_activity_my_favorite"

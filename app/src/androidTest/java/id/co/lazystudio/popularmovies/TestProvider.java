@@ -59,6 +59,7 @@ public class TestProvider extends AndroidTestCase {
         movieValues1.put(MovieEntry.COLUMN_POSTER_PATH, "path poster");
         movieValues1.put(MovieEntry.COLUMN_BACKDROP_PATH, "path backdrop");
         movieValues1.put(MovieEntry.COLUMN_POPULARITY, 66);
+        movieValues1.put(MovieEntry.COLUMN_VOTE_COUNT, 900);
         movieValues1.put(MovieEntry.COLUMN_VOTE_AVERAGE, 49.9);
 
         Uri movieInsertUri = mContext.getContentResolver()
@@ -126,6 +127,7 @@ public class TestProvider extends AndroidTestCase {
         movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "path poster");
         movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "path backdrop");
         movieValues.put(MovieEntry.COLUMN_POPULARITY, 77);
+        movieValues.put(MovieEntry.COLUMN_VOTE_COUNT, 900);
         movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 87.9);
 
         return  movieValues;

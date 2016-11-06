@@ -39,6 +39,7 @@ public class MovieContract {
         public static final String COLUMN_POSTER_PATH = "poster_path";
         public static final String COLUMN_BACKDROP_PATH = "backdrop_path";
         public static final String COLUMN_POPULARITY = "popularity";
+        public static final String COLUMN_VOTE_COUNT = "vote_count";
         public static final String COLUMN_VOTE_AVERAGE = "vote_average";
 
         // Uri untuk insert data
