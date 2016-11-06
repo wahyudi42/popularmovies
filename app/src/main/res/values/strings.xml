@@ -28,5 +28,8 @@
     <string name="title_activity_my_favorite">My Favorite</string>
     <string name="content_authority">id.co.lazystudio.popularmovies</string>
     <string name="empty_favorite">Favorite data is empty</string>
+    <string name="native_app_id">ca-app-pub-7362515929430931~5722985000</string>
+    <string name="native_ads_id">ca-app-pub-7362515929430931/7199718202</string>
+
 
 </resources>

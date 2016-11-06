@@ -33,9 +33,11 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.Vi
 
     int currentPage = 0;
 
+    public static final int ITEM_TYPE_NORMAL = 0;
+    public static final int ITEM_TYPE_WITH_ADS = 1;
+
     public MyFavoriteAdapter(Context c, List<Movie> movies){
         mContext = c;
-
         mAllMovieList = movies;
     }
 
@@ -133,4 +135,5 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.Vi
 
         super.notifyDataSetChanged();
     }
+
 }

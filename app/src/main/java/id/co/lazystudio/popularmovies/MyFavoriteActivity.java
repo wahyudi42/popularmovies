@@ -21,9 +21,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +78,13 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final NativeExpressAdView adView = (NativeExpressAdView) findViewById(R.id.adView);
+        AdRequest request = new AdRequest.Builder()
+                .addTestDevice("B61303E09133F379EC813EB0383AECBE")
+                .build();
+        adView.loadAd(request);
+
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= M)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
@@ -98,6 +109,7 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
                     //show ads
                 }else {
                     Utils.setProcessError(getBaseContext(), mNotificationTextView, -1);
+                    adView.setVisibility(View.GONE);
                 }
             }
         };
@@ -178,6 +190,7 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
 
         mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
         mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
+
 
         if(cursor == null){
             Toast.makeText(getBaseContext(),"Database kosong", Toast.LENGTH_SHORT).show();
