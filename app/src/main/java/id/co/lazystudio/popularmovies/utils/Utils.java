@@ -30,6 +30,9 @@ public class Utils {
         String text;
         TextView textView = (TextView) view;
         switch (type){
+            case 500:
+                text = context.getResources().getString(R.string.empty_favorite);
+                break;
             case 400:
                 text = context.getResources().getString(R.string.error_server_error);
                 break;

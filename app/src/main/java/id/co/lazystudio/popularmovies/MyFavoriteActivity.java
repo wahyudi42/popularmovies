@@ -11,9 +11,11 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -34,7 +36,7 @@ import id.co.lazystudio.popularmovies.utils.Utils;
 
 import static android.os.Build.VERSION_CODES.M;
 
-public class MyFavoriteActivity extends AppCompatActivity {
+public class MyFavoriteActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     public static final String LOG_TAG = MyFavoriteActivity.class.getSimpleName();
 
@@ -61,6 +63,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
     IntentFilter mFilter;
 
     private RecyclerView.LayoutManager mLayoutManager;
+    private static final int MOVIE_LOADER = 0;
+
 
 
     @Override
@@ -87,37 +91,13 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
         mListMovieRecyclerView = (RecyclerView) findViewById(R.id.list_movie_recyclerview);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
-        //mListMovieRecyclerView.setLayoutManager(layoutManager);
-
-        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mListMovieRecyclerView.setLayoutManager(mLayoutManager);
-        mListMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
-        mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
-
-        Log.v("Total Movie 1",""+mMovieList.size());
-
-        getDataFromDb();
-
-        Log.v("Total Movie 2",""+mMovieList.size());
-
-        if (mMovieList.size() > 0){
-            isSuccess = true;
-            mTotalItem = mMovieList.size();
-            setComplete();
-        }
-        else
-            setComplete(200);
-
         mNetworkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(Utils.isInternetConnected(context)){
                     //show ads
-                }else{
-                    setComplete(-1);
+                }else {
+                    Utils.setProcessError(getBaseContext(), mNotificationTextView, -1);
                 }
             }
         };
@@ -125,6 +105,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
         mFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
         registerReceiver(mNetworkReceiver, mFilter);
+
+        getSupportLoaderManager().initLoader(MOVIE_LOADER, null, this);
 
     }
     private void getDataFromDb(){
@@ -187,6 +169,66 @@ public class MyFavoriteActivity extends AppCompatActivity {
         }
     }
 
+    private void setRecycleData(Cursor cursor){
+
+        mMovieList.clear();
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mListMovieRecyclerView.setLayoutManager(mLayoutManager);
+        mListMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
+        mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
+
+        if(cursor == null){
+            Toast.makeText(getBaseContext(),"Database kosong", Toast.LENGTH_SHORT).show();
+        }else {
+            cursor.moveToFirst();
+            Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
+            boolean isCursor = cursor.moveToFirst();
+            int nCursor = cursor.getCount();
+            Log.v(LOG_TAG,"Jml cursor:"+ nCursor);
+            if(isCursor){
+                for (int i=0;i<nCursor;i++){
+                    Movie movie = new Movie();
+                    int id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
+                    String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+                    String overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW));
+                    String releaseDate = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+                    String posterPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH));
+                    String backdropPath = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH));
+                    int voteCount = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_COUNT));
+                    float popularity = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY));
+                    float voteAverage = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
+
+                    movie.setId(id);
+                    movie.setTitle(title);
+                    movie.setOverview(overview);
+                    movie.setReleaseDate(releaseDate);
+                    movie.setPosterPath(posterPath);
+                    movie.setBackdropPath(backdropPath);
+                    movie.setVoteCount(voteCount);
+                    movie.setPopularity(popularity);
+                    movie.setVoteAverage(voteAverage);
+
+                    Log.v(LOG_TAG,"judul "+ cursor.getPosition()+": "+posterPath);
+                    mMovieList.add(movie);
+
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        Log.v("Total Movie",""+mMovieList.size());
+
+        if (mMovieList.size() > 0){
+            isSuccess = true;
+            mTotalItem = mMovieList.size();
+            setComplete();
+        }else {
+            Utils.setProcessError(getBaseContext(), mNotificationTextView, 500);
+        }
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -205,12 +247,6 @@ public class MyFavoriteActivity extends AppCompatActivity {
         mMyFavoriteAdapter.updateData(mTotalItem);
     }
 
-    private void setComplete(int error){
-        loadingMore = false;
-        isSuccess = false;
-        Utils.setProcessError(this, mNotificationTextView, error);
-        setComplete();
-    }
 
     @Override
     protected void onStop() {
@@ -222,5 +258,35 @@ public class MyFavoriteActivity extends AppCompatActivity {
     protected void onResume() {
         registerReceiver(mNetworkReceiver, mFilter);
         super.onResume();
+    }
+
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        Uri movieUri = MovieContract.MovieEntry.buildMovie();
+        Log.v(LOG_TAG, "URI Loader: " + movieUri);
+
+        String sortOrder = MovieContract.MovieEntry._ID + " DESC";
+
+        // Now create and return a CursorLoader that will take care of
+        // creating a Cursor for the data being displayed.
+
+        return new CursorLoader(
+                getBaseContext(),
+                movieUri,
+                null,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setRecycleData(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
     }
 }
