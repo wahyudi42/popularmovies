@@ -26,4 +26,6 @@
     <!-- version 2 -->
     <string name="action_favorite">My Favorite</string>
     <string name="title_activity_my_favorite">My Favorite</string>
+    <string name="content_authority">id.co.lazystudio.popularmovies</string>
+
 </resources>

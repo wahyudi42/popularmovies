@@ -53,6 +53,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="id.co.lazystudio.popularmovies.MainActivity" />
         </activity>
+
+        <!-- content provider -->
+        <provider
+            android:enabled="true"
+            android:exported="false"
+            android:syncable="true"
+            android:authorities="@string/content_authority"
+            android:name=".data.MovieProvider"
+            android:permission="dcs.beritauniversitas.LICENSE_TO_KILL"/>
+
     </application>
 
 </manifest>

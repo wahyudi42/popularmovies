@@ -79,4 +79,18 @@ public class TestDb extends AndroidTestCase {
         }
         valueCursor.close();
     }
+
+    static ContentValues createMovieValues(long newsRowId) {
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieEntry.COLUMN_ID, "1012");
+        movieValues.put(MovieEntry.COLUMN_TITLE, "Judul Film 2");
+        movieValues.put(MovieEntry.COLUMN_RELEASE_DATE, "2 Januari 2017");
+        movieValues.put(MovieEntry.COLUMN_OVERVIEW, "Overview film 2");
+        movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "path poster");
+        movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "path backdrop");
+        movieValues.put(MovieEntry.COLUMN_POPULARITY, 88);
+        movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 99.9);
+
+        return movieValues;
+    }
 }
