@@ -64,6 +64,7 @@
             android:name=".data.MovieProvider"
             android:permission="dcs.beritauniversitas.LICENSE_TO_KILL"/>
 
+
     </application>
 
 </manifest>

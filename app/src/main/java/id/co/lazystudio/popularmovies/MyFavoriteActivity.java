@@ -91,11 +91,14 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
 
         mListMovieRecyclerView = (RecyclerView) findViewById(R.id.list_movie_recyclerview);
 
+        final LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks = this;
+
         mNetworkReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if(Utils.isInternetConnected(context)){
                     //show ads
+                    getSupportLoaderManager().restartLoader(0, null,loaderCallbacks);
                 }else {
                     Utils.setProcessError(getBaseContext(), mNotificationTextView, -1);
                     //
@@ -172,18 +175,6 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
         }
     }
 
-    private List<Movie> manipulateListMovie(List<Movie> mMovieList){
-        List<Movie> movieList = new ArrayList<>();
-        movieList.addAll(mMovieList);
-        int sumList = mMovieList.size()+(mMovieList.size()/5);
-        for(int i=0;i<sumList;i++){
-            if(i%5==0){
-                movieList.add(i,mMovieList.get(i-1));
-            }
-        }
-        return movieList;
-    }
-
     private void setRecycleData(Cursor cursor){
 
         mMovieList.clear();
@@ -226,9 +217,17 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
 
                     Log.v(LOG_TAG,"judul "+ cursor.getPosition()+": "+posterPath);
                     if(i%5==0){
-                        adsMovie.setAds(true);
-                        mMovieList.add(adsMovie);
-                        mMovieList.add(movie);
+                        if(Utils.isInternetConnected(getBaseContext())){
+                            //show ads
+                            adsMovie.setAds(true);
+                            mMovieList.add(adsMovie);
+                            mMovieList.add(movie);
+                            Utils.setProcessComplete(mNotificationTextView);
+                        }else {
+                            Utils.setProcessError(getBaseContext(), mNotificationTextView, -1);
+                            mMovieList.add(movie);
+                        }
+
                     }else{
                         mMovieList.add(movie);
                     }
