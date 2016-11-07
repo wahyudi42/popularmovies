@@ -57,6 +57,8 @@ public class Movie implements Parcelable {
     @SerializedName("video")
     private boolean video;
 
+    private boolean isAds;
+
     public Movie(){
 
     }
@@ -275,5 +277,13 @@ public class Movie implements Parcelable {
 
     public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public boolean isAds() {
+        return isAds;
+    }
+
+    public void setAds(boolean ads) {
+        isAds = ads;
     }
 }

@@ -3,6 +3,7 @@ package id.co.lazystudio.popularmovies.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -21,11 +24,13 @@ import id.co.lazystudio.popularmovies.DetailMovie;
 import id.co.lazystudio.popularmovies.R;
 import id.co.lazystudio.popularmovies.entity.Movie;
 
+import static id.co.lazystudio.popularmovies.R.id.adView;
+
 /**
  * Created by faqiharifian on 04/10/16.
  */
 
-public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.ViewHolder> {
+public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     Context mContext;
     List<Movie> mAllMovieList;
     List<Movie> mMovieList = new ArrayList<>();
@@ -33,7 +38,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.Vi
 
     int currentPage = 0;
 
-    public static final int ITEM_TYPE_NORMAL = 0;
+    public static final int ITEM_TYPE_NORMAL= 0;
     public static final int ITEM_TYPE_WITH_ADS = 1;
 
     public MyFavoriteAdapter(Context c, List<Movie> movies){
@@ -46,26 +51,45 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.Vi
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_favorite, parent, false);
-        final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
-        final TextView title = (TextView) v.findViewById(R.id.title_textview);
-
-        imageView.post(new Runnable() {
-            @Override
-            public void run() {
-                final RelativeLayout posterRelativeLayout = (RelativeLayout) v.findViewById(R.id.poster_relativelayout);
-                final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, posterRelativeLayout.getWidth() * 3 / 2);
-                imageView.setLayoutParams(params);
-            }
-        });
-        return new ViewHolder(v);
+    public int getItemViewType(int position) {
+        Log.v("Judul Item",""+mAllMovieList.get(position).getTitle());
+        Log.v("Item ads",""+position+" ="+mAllMovieList.get(position).isAds());
+        return (mAllMovieList.get(position).isAds() ? ITEM_TYPE_WITH_ADS : ITEM_TYPE_NORMAL);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Movie movie = mMovieList.get(position);
-        holder.bind(movie);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType  == ITEM_TYPE_WITH_ADS) {
+            final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ads, parent, false);
+            return new CustomViewHolder(v); // view holder for header items
+        }else if(viewType == ITEM_TYPE_NORMAL){
+            final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_my_favorite, parent, false);
+            final ImageView imageView = (ImageView) v.findViewById(R.id.poster_imageview);
+            final TextView title = (TextView) v.findViewById(R.id.title_textview);
+
+            imageView.post(new Runnable() {
+                @Override
+                public void run() {
+                    final RelativeLayout posterRelativeLayout = (RelativeLayout) v.findViewById(R.id.poster_relativelayout);
+                    final RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, posterRelativeLayout.getWidth() * 3 / 2);
+                    imageView.setLayoutParams(params);
+                }
+            });
+            return new ViewHolder(v); // view holder for normal items
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        final int itemType = getItemViewType(position);
+        if (itemType == ITEM_TYPE_WITH_ADS) {
+            ((CustomViewHolder)holder).bind();
+        }else if(itemType == ITEM_TYPE_NORMAL){
+            Movie movie = mMovieList.get(position);
+            ((ViewHolder)holder).bind(movie);
+        }
+
     }
 
     @Override
@@ -118,6 +142,25 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteAdapter.Vi
             });
         }
     }
+
+    public class CustomViewHolder extends RecyclerView.ViewHolder{
+        private View parentView;
+        private NativeExpressAdView nativeExpressAdView;
+
+        public CustomViewHolder(View view){
+            super(view);
+            parentView = view;
+            nativeExpressAdView = (NativeExpressAdView) view.findViewById(adView);
+        }
+
+        public void bind(){
+            AdRequest request = new AdRequest.Builder()
+                    .addTestDevice("B61303E09133F379EC813EB0383AECBE")
+                    .build();
+            nativeExpressAdView.loadAd(request);
+        }
+    }
+
 
     public void updateData(int totalItem){
         mMovieList = new ArrayList<>();

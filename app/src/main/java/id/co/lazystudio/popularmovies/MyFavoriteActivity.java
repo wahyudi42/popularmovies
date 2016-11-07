@@ -21,13 +21,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.NativeExpressAdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,13 +74,6 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final NativeExpressAdView adView = (NativeExpressAdView) findViewById(R.id.adView);
-        AdRequest request = new AdRequest.Builder()
-                .addTestDevice("B61303E09133F379EC813EB0383AECBE")
-                .build();
-        adView.loadAd(request);
-
-
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (Build.VERSION.SDK_INT >= M)
                 getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark, null));
@@ -109,7 +98,7 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
                     //show ads
                 }else {
                     Utils.setProcessError(getBaseContext(), mNotificationTextView, -1);
-                    adView.setVisibility(View.GONE);
+                    //
                 }
             }
         };
@@ -147,9 +136,12 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
             Log.v("Cursor Object", DatabaseUtils.dumpCursorToString(cursor));
             boolean isCursor = cursor.moveToFirst();
             nCursor = cursor.getCount();
+            int nMod = 1;
             Log.v(LOG_TAG,"Jml cursor:"+ nCursor);
+            Log.v(LOG_TAG,"Object cursor"+ cursor.toString());
             if(isCursor){
                 for (int i=0;i<nCursor;i++){
+
                     Movie movie = new Movie();
                     int id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
                     String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
@@ -160,6 +152,7 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
                     int voteCount = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_COUNT));
                     float popularity = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY));
                     float voteAverage = (float) cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
+                    boolean ads = true;
 
                     movie.setId(id);
                     movie.setTitle(title);
@@ -172,13 +165,23 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
                     movie.setVoteAverage(voteAverage);
 
                     Log.v(LOG_TAG,"judul "+ cursor.getPosition()+": "+posterPath);
-                    mMovieList.add(movie);
-
                     cursor.moveToNext();
                 }
 
             }
         }
+    }
+
+    private List<Movie> manipulateListMovie(List<Movie> mMovieList){
+        List<Movie> movieList = new ArrayList<>();
+        movieList.addAll(mMovieList);
+        int sumList = mMovieList.size()+(mMovieList.size()/5);
+        for(int i=0;i<sumList;i++){
+            if(i%5==0){
+                movieList.add(i,mMovieList.get(i-1));
+            }
+        }
+        return movieList;
     }
 
     private void setRecycleData(Cursor cursor){
@@ -187,10 +190,6 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mListMovieRecyclerView.setLayoutManager(mLayoutManager);
         mListMovieRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
-        mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
-
 
         if(cursor == null){
             Toast.makeText(getBaseContext(),"Database kosong", Toast.LENGTH_SHORT).show();
@@ -202,6 +201,7 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
             Log.v(LOG_TAG,"Jml cursor:"+ nCursor);
             if(isCursor){
                 for (int i=0;i<nCursor;i++){
+                    Movie adsMovie = new Movie();
                     Movie movie = new Movie();
                     int id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
                     String title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
@@ -222,16 +222,26 @@ public class MyFavoriteActivity extends AppCompatActivity implements LoaderManag
                     movie.setVoteCount(voteCount);
                     movie.setPopularity(popularity);
                     movie.setVoteAverage(voteAverage);
+                    movie.setAds(false);
 
                     Log.v(LOG_TAG,"judul "+ cursor.getPosition()+": "+posterPath);
-                    mMovieList.add(movie);
-
+                    if(i%5==0){
+                        adsMovie.setAds(true);
+                        mMovieList.add(adsMovie);
+                        mMovieList.add(movie);
+                    }else{
+                        mMovieList.add(movie);
+                    }
                     cursor.moveToNext();
                 }
             }
+
         }
 
-        Log.v("Total Movie",""+mMovieList.size());
+        Log.v("Total Movie ",""+mMovieList.size());
+        Log.v("Object Movie",""+mMovieList.toString());
+        mMyFavoriteAdapter = new MyFavoriteAdapter(this, mMovieList);
+        mListMovieRecyclerView.setAdapter(mMyFavoriteAdapter);
 
         if (mMovieList.size() > 0){
             isSuccess = true;
